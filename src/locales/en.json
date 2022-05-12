@@ -1,3 +1,14 @@
 {
+  "nav": {
+    "home": "Home",
+    "contactUs": "Contact",
+    "aboutUs": "About",
+    "page": "Page",
+    "general": "General",
+    "shops": "Shop",
+    "categories": "Categories",
+    "faq": "FAQ",
+    "login": "Login"
+  },
   "message": "hello i18n !!"
 }
