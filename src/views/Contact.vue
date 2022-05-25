@@ -1,6 +1,14 @@
 <template>
   <div class="map w-100">
-    <img class="img-fluid w-100" src="@/assets/GoogleMapTA.webp" alt="" />
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13675.833764016936!2d31.3732275!3d31.0274075!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x859ee8ea1a8da4ae!2sTechnomasr%20for%20web%20solutions!5e0!3m2!1sen!2seg!4v1596684538546!5m2!1sen!2seg"
+      style="width: 100%; height: 300px; border: 0;"
+      frameborder="0"
+      allowfullscreen=""
+      aria-hidden="false"
+      tabindex="0"
+    ></iframe>
+    <!-- <img class="img-fluid w-100" src="@/assets/GoogleMapTA.webp" alt="" /> -->
   </div>
   <div class="container row mx-auto">
     <div class="card mx-auto mb-2 tra">

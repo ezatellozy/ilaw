@@ -10,5 +10,20 @@
     "faq": "FAQ",
     "login": "Login"
   },
-  "message": "hello i18n !!"
+  "buttons": {
+    "Recover Password": "Recover Password",
+    "Remember your password?": "Username or email",
+    "Login": "Login"
+  },
+  "misc": {
+    "SHOP BY CATEGORY": "SHOP BY CATEGORY",
+    "Username or email": "Username or email",
+    "Account": "Account",
+    "Password": "Password",
+    "Remember me": "Remember me",
+    "Forgot Password?": "Forgot Password?",
+    "New Account": "New Account",
+    "New Publisher Account": "New Publisher Account",
+    "Email": "Email"
+  }
 }

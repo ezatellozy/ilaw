@@ -177,6 +177,22 @@ h2.title {
   opacity: 1;
 }
 
+.show-side-enter-from,
+.show-side-leave-to {
+  transform: translateX(-100%);
+  transition: all 150ms ease-in 0s;
+  // opacity: 0;
+}
+.show-side-enter-active,
+.show-side-leave-active {
+  transition: transform 0.2s ease;
+}
+.show-side-enter-to,
+.show-side-leave-from {
+  transform: translateX(0);
+  transition: all 150ms ease-in 0s;
+}
+
 .dropdown-toggle {
   padding: 8px !important;
 }

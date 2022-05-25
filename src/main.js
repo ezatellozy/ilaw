@@ -11,7 +11,8 @@ import './style/main.scss'
 import BootstrapVue3 from 'bootstrap-vue-3'
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 import 'bootstrap/dist/css/bootstrap.css'
-
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 // import '@/assets/bootstrap-select/dist/js/bootstrap-select.min.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -34,7 +35,7 @@ app.component('FontAwesomeIcon', FontAwesomeIcon)
 app.component('BaseCard', BaseCard)
 
 app.use(BootstrapVue3)
-
+app.use(VueAxios, axios)
 app.use(store)
 app.use(router)
 app.mount('#app')

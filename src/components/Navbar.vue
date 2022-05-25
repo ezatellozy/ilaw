@@ -231,12 +231,14 @@
       </div>
     </div>
   </div>
-  <transition name="fade">
+
+  <transition name="show-side">
     <sidebar-categories
       @closeMenu="openGategoryMenu"
       v-if="categoriesSideMenu"
     />
   </transition>
+
   <transition name="fade">
     <user-account @closeMenu="openUserMenu" v-if="userAccount" />
   </transition>
@@ -246,7 +248,6 @@
 </template>
 
 <script>
-// import '@/assets/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar'
 import Cookies from 'js-cookie'
 import SidebarCategories from '@/components/SidebarCategories.vue'
 import UserAccount from './UserAccount.vue'

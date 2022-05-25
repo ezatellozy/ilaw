@@ -71,12 +71,6 @@
       imgSrc="./images.jpg"
       partner="true"
     />
-    <!-- <slider
-      title="Our partner"
-      partner="true"
-      imgSrc="./img3.png"
-      name="partner"
-    /> -->
   </div>
 </template>
 

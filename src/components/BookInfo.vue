@@ -133,7 +133,7 @@
                           <label class="screen-reader-text sr-only">
                             Quantity
                           </label>
-                          <a class="js-minus text-dark" href="javascript:;">
+                          <button class="js-minus text-dark" @click="qtyMinus">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -146,18 +146,18 @@
                                 d="M-0.000,-0.000 L10.000,-0.000 L10.000,1.000 L-0.000,1.000 L-0.000,-0.000 Z"
                               />
                             </svg>
-                          </a>
+                          </button>
                           <input
                             type="number"
-                            class="input-text qty text js-result form-control text-center border-0"
+                            class="input-text qty text form-control text-center border-0"
                             step="1"
                             min="1"
                             max="100"
                             name="quantity"
-                            value="1"
+                            v-model="quantity"
                             title="Qty"
                           />
-                          <a class="js-plus text-dark" href="javascript:;">
+                          <button class="js-plus text-dark" @click="qtyPlus">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -170,7 +170,7 @@
                                 d="M10.000,5.000 L6.000,5.000 L6.000,10.000 L5.000,10.000 L5.000,5.000 L-0.000,5.000 L-0.000,4.000 L5.000,4.000 L5.000,-0.000 L6.000,-0.000 L6.000,4.000 L10.000,4.000 L10.000,5.000 Z"
                               />
                             </svg>
-                          </a>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -956,6 +956,7 @@
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import BookCard from '@/components/BookCard.vue'
+import { ref } from 'vue'
 export default {
   components: { Carousel, Slide, Pagination, BookCard },
   data() {
@@ -970,13 +971,11 @@ export default {
       settings: {
         autoplay: 5000,
         itemsToShow: 1,
-        // wrapAround: true,
         snapAlign: 'center',
       },
       settingsBook: {
         autoplay: 5000,
         itemsToShow: 1,
-        // wrapAround: true,
         snapAlign: 'center',
         breakpoints: {
           576: {
@@ -1005,6 +1004,18 @@ export default {
       this.tabs[tab] = true
     },
   },
+
+  setup() {
+    const quantity = ref(1)
+    function qtyPlus() {
+      quantity.value++
+    }
+    function qtyMinus() {
+      if (quantity.value > 1) quantity.value--
+    }
+
+    return { quantity, qtyPlus, qtyMinus }
+  },
 }
 </script>
 <style scoped lang="scss">
@@ -1024,6 +1035,14 @@ export default {
       border-color: #161619;
     }
   }
+}
+.js-minus,
+.js-plus {
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  box-shadow: none;
+  outline: none !important;
 }
 
 a {

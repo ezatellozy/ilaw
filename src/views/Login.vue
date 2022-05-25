@@ -4,7 +4,7 @@
       <header class="border-bottom px-4 px-md-6 py-4">
         <h2 class="font-size-3 mb-0 d-flex align-items-center">
           <i class="flaticon-user mr-3 font-size-5"></i>
-          Account
+          {{ $t('misc.Account') }}
         </h2>
       </header>
 
@@ -12,15 +12,14 @@
         <div class="form-group mb-4">
           <div class="js-form-message js-focus-state">
             <label id="signinEmailLabel" class="form-label" for="signinEmail">
-              Username or email *
+              {{ $t('misc.Username or email') }} *
             </label>
             <input
               type="email"
               class="form-control rounded-0 height-4 px-4"
               name="email"
               id="signinEmail"
-              placeholder="creativelayers088@gmail.com"
-              aria-label="creativelayers088@gmail.com"
+              :placeholder="$t('misc.Username or email')"
               aria-describedby="signinEmailLabel"
               required=""
             />

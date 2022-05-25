@@ -34,39 +34,57 @@
                   <div class="zeynep pt-4">
                     <ul>
                       <li class="has-submenu">
-                        <a href="#" role="button" data-submenu="off-pages">
+                        <a
+                          href="#"
+                          role="button"
+                          @click="openPages = !openPages"
+                          data-submenu="off-pages"
+                        >
                           Pages
                         </a>
 
-                        <div id="off-pages" class="submenu">
+                        <div
+                          id="off-pages"
+                          class="submenu"
+                          :class="openPages ? 'opened' : ''"
+                        >
                           <div
                             class="submenu-header"
                             data-submenu-close="off-pages"
+                            @click="openPages = !openPages"
                           >
                             <a href="#">Pages</a>
                           </div>
+
                           <ul>
                             <li>
                               <router-link to="/">
                                 {{ $t('nav.home') }}
                               </router-link>
                             </li>
+
                             <li class="has-submenu">
                               <a
                                 href="#"
                                 role="button"
+                                @click="openShop = !openShop"
                                 data-submenu="off-single-product"
                               >
                                 {{ $t('nav.shops') }}
                               </a>
 
-                              <div class="submenu js-scrollbar">
+                              <div
+                                class="submenu js-scrollbar"
+                                :class="openShop ? 'opened' : ''"
+                              >
                                 <div
                                   class="submenu-header"
                                   data-submenu-close="off-single-product"
+                                  @click="openShop = !openShop"
                                 >
                                   <a href="#">{{ $t('nav.shops') }}</a>
                                 </div>
+
                                 <ul class="">
                                   <li>
                                     <a href="#">
@@ -107,31 +125,46 @@
                         </div>
                       </li>
                       <li class="has-submenu">
-                        <a href="#" role="button" data-submenu="off-single">
+                        <a
+                          href="#"
+                          role="button"
+                          @click="openCategories = !openCategories"
+                          data-submenu="off-single-product"
+                        >
                           {{ $t('nav.categories') }}
                         </a>
 
-                        <div class="submenu js-scrollbar">
+                        <div
+                          class="submenu js-scrollbar"
+                          :class="openCategories ? 'opened' : ''"
+                        >
                           <div
                             class="submenu-header"
-                            data-submenu-close="off-single"
+                            data-submenu-close="off-single-product"
+                            @click="openCategories = !openCategories"
                           >
                             <a href="#">{{ $t('nav.categories') }}</a>
                           </div>
-                          <ul>
+
+                          <ul class="">
                             <li class="has-submenu">
                               <a
                                 href="#"
                                 role="button"
+                                @click="category1 = !category1"
                                 data-submenu="off-single-product"
                               >
                                 category1
                               </a>
 
-                              <div class="submenu js-scrollbar">
+                              <div
+                                class="submenu js-scrollbar"
+                                :class="category1 ? 'opened' : ''"
+                              >
                                 <div
                                   class="submenu-header"
                                   data-submenu-close="off-single-product"
+                                  @click="category1 = !category1"
                                 >
                                   <a href="#">category1</a>
                                 </div>
@@ -234,24 +267,17 @@
 <script>
 export default {
   data() {
-    return {}
+    return {
+      openShop: false,
+      openPages: false,
+      openCategories: false,
+      category1: false,
+    }
   },
   methods: {
     closeGategoryMenu() {
       this.$emit('closeMenu')
     },
-  },
-  mounted() {
-    let hasSubmenu = document.querySelectorAll('.has-submenu')
-    hasSubmenu.forEach((el) => {
-      el.addEventListener('click', (e) => {
-        if (e.target.dataset.submenu) {
-          e.target.nextSibling.classList.add('opened')
-        } else if (e.target.parentNode.dataset.submenuClose) {
-          e.target.parentNode.parentNode.classList.remove('opened')
-        }
-      })
-    })
   },
 }
 </script>

@@ -21,6 +21,7 @@
               aria-label="Jack Wayley"
               placeholder="Ali"
               required=""
+              v-model="firstName"
               data-error-class="u-has-error"
               data-msg="Please enter your name."
               data-success-class="u-has-success"
@@ -40,6 +41,7 @@
               aria-label="Jack Wayley"
               placeholder="TUF.."
               required=""
+              v-model="lastName"
               data-error-class="u-has-error"
               data-msg="Please enter your name."
               data-success-class="u-has-success"
@@ -58,6 +60,7 @@
               aria-label="Jack Wayley"
               id="exampleFormControlInput3"
               required=""
+              v-model="dName"
               data-error-class="u-has-error"
               data-msg="Please enter your name."
               data-success-class="u-has-success"
@@ -76,6 +79,7 @@
               id="exampleFormControlInput4"
               aria-label="Jack Wayley"
               required=""
+              v-model="email"
               data-error-class="u-has-error"
               data-msg="Please enter your name."
               data-success-class="u-has-success"
@@ -155,7 +159,17 @@
 </template>
 
 <script>
-export default {}
+import { ref } from 'vue'
+export default {
+  setup() {
+    const firstName = ref('')
+    const lastName = ref('')
+    const dName = ref('')
+    const email = ref('')
+
+    return { firstName, lastName, dName, email }
+  },
+}
 </script>
 
 <style></style>
