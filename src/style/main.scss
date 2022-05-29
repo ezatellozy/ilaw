@@ -14,13 +14,16 @@ body {
   font-family: 'Inter', 'Cerebri Sans', Helvetica, Arial, sans-serif !important;
 }
 
-.is-rtl{
+.is-rtl {
   direction: rtl;
 }
 
 ul,
 a {
   text-decoration: none !important;
+}
+.list-unstyled {
+  padding: 0 !important;
 }
 
 li {

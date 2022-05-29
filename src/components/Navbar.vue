@@ -32,14 +32,18 @@
                 >
                   <router-link to="/shop">
                     <b-dropdown-item>
-                      By Books
+                      {{ $t('misc.By Books') }}
                     </b-dropdown-item>
                   </router-link>
                   <router-link to="/publisher">
-                    <b-dropdown-item>By Vendor / publisher</b-dropdown-item>
+                    <b-dropdown-item>
+                      {{ $t('misc.By Vendor / publisher') }}
+                    </b-dropdown-item>
                   </router-link>
                   <router-link to="/author">
-                    <b-dropdown-item>By Author</b-dropdown-item>
+                    <b-dropdown-item>
+                      {{ $t('misc.By Author') }}
+                    </b-dropdown-item>
                   </router-link>
                 </b-dropdown>
               </li>
@@ -145,16 +149,16 @@
                   d="M-0.000,16.000 L20.000,16.000 L20.000,18.000 L-0.000,18.000 L-0.000,16.000 Z"
                 />
               </svg>
-              <span class="ml-3">{{ $t('misc.Browse categories') }}</span>
+              <span class="ml-3">
+                {{ $t('misc.Browse categories') }}
+              </span>
             </a>
 
             <ul class="nav d-md-none ml-auto">
               <li class="nav-item">
-                <!-- Account Sidebar Toggle Button - Mobile -->
                 <button class="nav-link btn text-white" @click="openUserMenu">
                   <i class="glph-icon flaticon-user font-size-4"></i>
                 </button>
-                <!-- End Account Sidebar Toggle Button - Mobile -->
               </li>
             </ul>
           </div>
@@ -165,7 +169,12 @@
               <div class="input-group input-group-borderless w-100">
                 <input
                   type="text"
-                  class="form-control rounded-left-1 px-3 border-right"
+                  class="form-control px-3"
+                  :class="
+                    $i18n.locale == 'ar'
+                      ? 'border-left rounded-right-1'
+                      : 'border-right'
+                  "
                   placeholder="Search for books by keyword"
                   aria-label="Amount (to the nearest dollar)"
                 />
@@ -175,7 +184,7 @@
                     id="inputGroupSelect01"
                     style="cursor: pointer;"
                   >
-                    <option selected>All Categories</option>
+                    <option selected>{{ $t('misc.All Categories') }}</option>
 
                     <option
                       v-for="category in categories"
@@ -203,7 +212,18 @@
             </li>
             <li class="nav-item">
               <!-- Account Sidebar Toggle Button -->
-              <button class="nav-link btn text-white" @click="openUserMenu">
+              <router-link
+                to="/account"
+                class="nav-link btn text-white"
+                v-if="isLoggedIn"
+              >
+                <i class="glph-icon flaticon-user font-size-4"></i>
+              </router-link>
+              <button
+                class="nav-link btn text-white"
+                @click="openUserMenu"
+                v-else
+              >
                 <i class="glph-icon flaticon-user font-size-4"></i>
               </button>
               <!-- End Account Sidebar Toggle Button -->
@@ -271,10 +291,14 @@ export default {
   },
   mounted() {
     this.getSettings()
+    console.log(this.isLoggedIn)
   },
   computed: {
     userAccount() {
       return this.$store.getters.loginMenu
+    },
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn
     },
   },
   methods: {
@@ -400,6 +424,17 @@ button.btn:focus {
   .modal-content {
     border: unset !important;
     border-radius: unset !important;
+  }
+}
+.is-rtl {
+  .offcanvas-toggler {
+    direction: ltr !important;
+  }
+  .input-group:not(.has-validation)
+    > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu),
+  .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n + 3) {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
   }
 }
 </style>

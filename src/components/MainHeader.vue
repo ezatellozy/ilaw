@@ -130,4 +130,14 @@ export default {
     box-shadow: none !important;
   }
 }
+
+.is-rtl {
+  .btn-group {
+    &:hover {
+      .dropdown-menu {
+        inset: 0px auto auto 0px !important;
+      }
+    }
+  }
+}
 </style>

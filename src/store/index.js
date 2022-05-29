@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
+import Cookies from 'js-cookie'
 
 export default createStore({
   state: {
@@ -7,7 +8,7 @@ export default createStore({
     user: null,
     loginMenu: false,
     publisher: null,
-    token: null,
+    token: Cookies.get('token') || null,
   },
   getters: {
     isLoggedIn: (state) => !!state.token,
@@ -23,7 +24,7 @@ export default createStore({
     },
     auth_success(state) {
       state.status = 'success'
-      // state.token = mixin.getCookie('token')
+      state.token = Cookies.get('token')
       state.user = JSON.parse(localStorage.getItem('user'))
     },
     auth_error(state) {
@@ -35,57 +36,63 @@ export default createStore({
     },
   },
   actions: {
-    login({ commit }, user) {
+    login(context, user) {
       // return new Promise((resolve, reject) => {
-      commit('auth_request')
+      context.commit('auth_request')
       axios({
-        url: '/auth/user/login',
-        data: user,
+        url: '/user/login',
+        data: { email: user.email, password: user.password },
         method: 'POST',
       })
         .then((resp) => {
           console.log(resp)
-          // const token = resp.data.token
-          // const user = resp.data.user
-          // mixin.setCookie('token', token)
-          // localStorage.setItem('user', JSON.stringify(user))
+          const token = resp.data.access_token
+          const user = resp.data.user
+          Cookies.set('token', token)
+          localStorage.setItem('user', JSON.stringify(user))
           // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-          // commit('auth_success')
+
+          context.commit('auth_success')
+          setTimeout(() => {
+            window.location.reload()
+          }, 300)
+
           // resolve(resp)
         })
         .catch((err) => {
           console.log(err)
-          // commit('auth_error')
-          // mixin.eraseCookie('token')
+          context.commit('auth_error')
+          Cookies.remove('token')
           // reject(err)
         })
       // })
     },
-    register({ commit }, user) {
-      // return new Promise((resolve, reject) => {
-      commit('auth_request')
-      axios({
-        url: '/auth/user/register',
-        data: user,
-        method: 'POST',
+
+    register(context, user) {
+      return new Promise((resolve, reject) => {
+        context.commit('auth_request')
+        axios({
+          url: '/user/register',
+          data: user,
+          method: 'POST',
+        })
+          .then((resp) => {
+            console.log(resp)
+            // const token = resp.data.token
+            // const user = resp.data.user
+            // // mixin.setCookie('token', token)
+            // localStorage.setItem('user', JSON.stringify(user))
+            // axios.defaults.headers.common['Authorization'] = 'bearer ' + token
+            // commit('auth_success')
+            context.dispatch('login', user)
+            resolve(resp)
+          })
+          .catch((err) => {
+            context.commit('auth_error', err)
+            Cookies.remove('token')
+            reject(err)
+          })
       })
-        .then((resp) => {
-          console.log(resp)
-          // const token = resp.data.token
-          // const user = resp.data.user
-          // // mixin.setCookie('token', token)
-          // localStorage.setItem('user', JSON.stringify(user))
-          // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-          // commit('auth_success')
-          // resolve(resp)
-        })
-        .catch((err) => {
-          // commit('auth_error', err)
-          // mixin.eraseCookie('token')
-          console.log(err)
-          // reject(err)
-        })
-      // })
     },
     logout({ commit }) {
       return new Promise((resolve, reject) => {

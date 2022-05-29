@@ -63,6 +63,7 @@ import Login from './Login.vue'
 import NewAccount from './NewAccount.vue'
 import ForgotPassword from './ForgotPassword.vue'
 export default {
+  components: { Login, NewAccount, ForgotPassword },
   data() {
     return {
       signIn: true,
@@ -75,13 +76,13 @@ export default {
       this.$emit('closeMenu')
     },
     setting(event) {
+      console.log(event)
       this.signIn = false
       this.signUp = false
       this.forgotPassword = false
       this[event] = true
     },
   },
-  components: { Login, NewAccount, ForgotPassword },
 }
 </script>
 

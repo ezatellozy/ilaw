@@ -35,7 +35,7 @@
                     <ul>
                       <li class="has-submenu">
                         <a href="#" role="button" data-submenu="off-pages">
-                          Pages
+                          {{ $t('misc.Pages') }}
                         </a>
 
                         <div id="off-pages" class="submenu">
@@ -43,15 +43,15 @@
                             class="submenu-header"
                             data-submenu-close="off-pages"
                           >
-                            <a href="#">Pages</a>
+                            <a href="#">{{ $t('misc.Pages') }}</a>
                           </div>
                           <ul>
-                            <li>
+                            <li class="nav-item">
                               <router-link to="/">
                                 {{ $t('nav.home') }}
                               </router-link>
                             </li>
-                            <li class="has-submenu">
+                            <li class="has-submenu nav-item">
                               <a
                                 href="#"
                                 role="button"
@@ -70,18 +70,18 @@
                                 <ul class="">
                                   <li>
                                     <a href="#">
-                                      By Books
+                                      {{ $t('misc.By Books') }}
                                     </a>
                                   </li>
 
                                   <li>
                                     <a href="#">
-                                      By Vendor / publisher
+                                      {{ $t('misc.By Vendor / publisher') }}
                                     </a>
                                   </li>
                                   <li>
                                     <a href="#">
-                                      By Author (like page author list)
+                                      {{ $t('misc.By Author') }}
                                     </a>
                                   </li>
                                 </ul>
@@ -212,16 +212,20 @@
                 </div>
 
                 <div class="px-4 px-md-5 pt-5 pb-4 border-bottom">
-                  <h2 class="font-size-3 mb-3">HELP & SETTINGS</h2>
+                  <h2 class="font-size-3 mb-3">
+                    {{ $t('misc.HELP & SETTINGS') }}
+                  </h2>
                   <ul class="list-group list-group-flush list-group-borderless">
                     <li class="list-group-item px-0 py-2 border-0">
-                      <a href="#" class="h-primary">Your Account</a>
+                      <a href="#" class="h-primary">{{ $t('misc.Account') }}</a>
                     </li>
                     <li class="list-group-item px-0 py-2 border-0">
-                      <a href="#" class="h-primary">Help</a>
+                      <a href="#" class="h-primary">{{ $t('misc.Help') }}</a>
                     </li>
                     <li class="list-group-item px-0 py-2 border-0">
-                      <a href="#" class="h-primary">Sign In</a>
+                      <a href="#" class="h-primary">
+                        {{ $t('buttons.Login') }}
+                      </a>
                     </li>
                   </ul>
                 </div>
@@ -319,6 +323,16 @@ export default {
       background-color: rgba(0, 0, 0, 0.63);
       z-index: 100;
     }
+  }
+}
+
+.router-link-active.router-link-exact-active {
+  font-weight: bold;
+}
+
+.is-rtl {
+  .has-submenu {
+    direction: ltr;
   }
 }
 </style>

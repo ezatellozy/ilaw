@@ -16,10 +16,12 @@
     "Remember your password?": "Username or email",
     "Send": "Send",
     "Reset": "Reset",
-    "Login": "Login"
+    "Login": "Login",
+    "Login as a vendor": "Login as a vendor"
   },
   "misc": {
     "SHOP BY CATEGORY": "SHOP BY CATEGORY",
+    "HELP & SETTINGS": "HELP & SETTINGS",
     "Username or email": "Username or email",
     "Account": "Account",
     "Password": "Password",
@@ -43,6 +45,11 @@
     "loginRegister": "Sign in/Join",
     "Browse categories": "Browse categories",
     "All Categories": "All Categories",
+    "By Books": "By Books",
+    "By Vendor / publisher": "By Vendor / publisher",
+    "By Author": "By Author",
+    "Pages": "Pages",
+    "Help": "Help",
     "Call toll-free": "Call toll-free"
   }
 }

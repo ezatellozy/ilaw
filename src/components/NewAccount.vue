@@ -101,6 +101,7 @@
             id="country"
             required=""
             v-model="form.country_id"
+            @change="getGovernment($event)"
             class="form-select rounded-0 height-4 px-4"
           >
             <option value="" disabled>Select country</option>
@@ -109,12 +110,12 @@
               :key="country.id"
               :value="country.id"
             >
-              {{ country.name_en }}
+              {{ country.name }}
             </option>
           </select>
         </div>
       </div>
-      <div class="form-group mb-4">
+      <div class="form-group mb-4" v-if="governments">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="governorate">
             Governorate
@@ -132,7 +133,7 @@
               :key="government.id"
               :value="government.id"
             >
-              {{ government.name_en }}
+              {{ government.name }}
             </option>
           </select>
         </div>
@@ -151,7 +152,7 @@
           >
             <option value="" disabled>Select city</option>
             <option v-for="city in cities" :key="city.id" :value="city.id">
-              {{ city.name_en }}
+              {{ city.name }}
             </option>
           </select>
           <!-- <input
@@ -234,7 +235,7 @@ export default {
   mounted() {
     this.getCountries()
     this.getCities()
-    this.getGovernment()
+    // this.getGovernment()
   },
   methods: {
     setting(e) {
@@ -250,8 +251,9 @@ export default {
         this.cities = res.data.data
       })
     },
-    getGovernment() {
-      axios.get('governorates/governorates').then((res) => {
+    getGovernment(e) {
+      console.log(e)
+      axios.get(`governorates/governorates/`).then((res) => {
         this.governments = res.data.data
       })
     },

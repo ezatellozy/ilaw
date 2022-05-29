@@ -16,6 +16,9 @@ import Publisher from '../views/Publisher.vue'
 import Authers from '../views/Authers.vue'
 import OrderRecived from '../views/OrderRecived.vue'
 import Book from '@/components/BookInfo.vue'
+import createStore from '@/store'
+import Cookies from 'js-cookie'
+const store = createStore
 
 const routes = [
   {
@@ -86,22 +89,37 @@ const routes = [
   {
     path: '/account',
     name: 'account',
+    meta: {
+      auth: true,
+    },
     children: [
       {
         path: 'wishlist',
         component: () => import('@/components/Wishlist.vue'),
+        meta: {
+          auth: true,
+        },
       },
       {
         path: 'addresses',
         component: () => import('@/components/Addresses.vue'),
+        meta: {
+          auth: true,
+        },
       },
       {
         path: 'account-details',
         component: () => import('@/components/AccountDetails.vue'),
+        meta: {
+          auth: true,
+        },
       },
       {
         path: 'dashboard',
         component: () => import('@/components/Dashboard.vue'),
+        meta: {
+          auth: true,
+        },
       },
     ],
     component: Account,
@@ -126,6 +144,17 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  const token = Cookies.get('token')
+
+  if (to.meta.auth && token == undefined) {
+    next('/')
+    store.commit('login_Menu')
+  } else {
+    next()
+  }
 })
 
 export default router

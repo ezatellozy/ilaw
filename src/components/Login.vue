@@ -64,7 +64,12 @@
     </div>
     <div class="mb-4d75">
       <button type="submit" class="btn btn-block py-3 rounded-0 btn-dark">
-        Sign In
+        {{ $t('buttons.Login') }}
+      </button>
+    </div>
+    <div class="mb-4d75">
+      <button class="btn btn-block py-3 rounded-0 btn-dark">
+        {{ $t('buttons.Login as a vendor') }}
       </button>
     </div>
 
@@ -106,7 +111,6 @@ export default {
 
     function login() {
       store.dispatch('login', form)
-      // console.log(email.value, password.value, rememberMe.value)
     }
 
     return { form, rememberMe, login }
