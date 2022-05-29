@@ -13,6 +13,11 @@ body {
   text-align: left;
   font-family: 'Inter', 'Cerebri Sans', Helvetica, Arial, sans-serif !important;
 }
+
+.is-rtl{
+  direction: rtl;
+}
+
 ul,
 a {
   text-decoration: none !important;

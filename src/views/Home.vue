@@ -34,6 +34,28 @@ import AttractFeatures from '@/components/AttractFeatures.vue'
 export default {
   name: 'Home',
   components: { Intro, Content, Slider, AttractFeatures },
+  data() {
+    return {
+      authors: null,
+      publisher: null,
+    }
+  },
+  methods: {
+    getAuthors() {
+      this.axios.get('writer/writers').then((data) => {
+        console.log(data.data)
+      })
+    },
+    getPublisher() {
+      this.axios.get('vendors/vendors').then((data) => {
+        console.log(data.data)
+      })
+    },
+  },
+  mounted() {
+    this.getAuthors()
+    this.getPublisher()
+  },
 }
 </script>
 

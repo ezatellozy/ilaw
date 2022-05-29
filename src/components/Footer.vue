@@ -2,175 +2,171 @@
   <footer>
     <div class="border-top space-top-3">
       <div class="border-bottom pb-5 space-bottom-lg-3">
-        <div class="container">
+        <div class="container overflow-hidden">
           <b-row>
             <div class="col-lg-6 mb-6 mb-lg-0">
               <div class="row">
-                <figure class="col-6 d-none d-sm-block">
-                  <img
-                    src="@/assets/technologo.png"
-                    class="image-fluid"
-                    alt=""
-                  />
-                </figure>
-
-                <div class="pb-6 col-sm-6 text-center text-sm-start">
-                  <a href="/" class="d-inline-block mb-5">
-                    LOGO ILAW
-                  </a>
-                  <address class="font-size-2 mb-5">
-                    <span class="mb-2 font-weight-normal text-dark">
-                      1418 River Drive, Suite 35 Cottonhall, CA 9622
-                      <br />
-                      United States
-                    </span>
-                  </address>
-                  <div class="mb-4">
-                    <a
-                      href="mailto:sale@bookworm.com"
-                      class="font-size-2 d-block link-black-100 mb-1"
-                    >
-                      <font-awesome-icon
-                        :icon="['fas', 'envelope']"
-                        size="lg"
-                        class="me-2"
-                      />
-                      sale@ilaw.com
-                    </a>
-                    <a
-                      href="tel:+1246-345-0695"
-                      class="font-size-2 d-block link-black-100"
-                    >
-                      <font-awesome-icon
-                        :icon="['fas', 'phone']"
-                        size="lg"
-                        class="me-2"
-                      />
-                      +10101101011
-                    </a>
-                  </div>
-                  <ul
-                    class="list-unstyled social justify-content-sm-start justify-content-center mb-0 d-flex"
+                <div class="col-sm-5">
+                  <figure class="brandlogo">
+                    <img src="@/assets/logo.png" class="img-fluid" alt="" />
+                  </figure>
+                  <div
+                    class="pt-4 text-center text-sm-start"
+                    :class="
+                      $i18n.locale == 'ar' ? 'text-sm-end' : 'text-sm-start'
+                    "
                   >
-                    <li class="btn pl-0">
-                      <a class="link-black-100" href="#">
-                        <span class="fab fa-instagram"></span>
+                    <address class="font-size-2 mb-5">
+                      <span class="mb-2 font-weight-normal text-dark">
+                        {{ address }}
+                      </span>
+                    </address>
+                    <div class="mb-4">
+                      <a
+                        :href="`mailto:${contactEmail}`"
+                        class="font-size-2 d-block link-black-100 mb-1"
+                      >
+                        <font-awesome-icon
+                          :icon="['fas', 'envelope']"
+                          size="lg"
+                          :class="$i18n.locale == 'ar' ? 'ms-2' : 'me-2'"
+                        />
+                        {{ contactEmail }}
                       </a>
-                    </li>
-                    <li class="btn">
-                      <a class="link-black-100" href="#">
-                        <span class="fab fa-facebook-f"></span>
+                      <a
+                        :href="`tel:${phone}`"
+                        class="font-size-2 d-block link-black-100"
+                      >
+                        <font-awesome-icon
+                          :icon="['fas', 'phone']"
+                          size="lg"
+                          :class="$i18n.locale == 'ar' ? 'ms-2' : 'me-2'"
+                        />
+                        {{ phone }}
                       </a>
-                    </li>
-                    <li class="btn">
-                      <a class="link-black-100" href="#">
-                        <span class="fab fa-youtube"></span>
-                      </a>
-                    </li>
-                    <li class="btn">
-                      <a class="link-black-100" href="#">
-                        <span class="fab fa-twitter"></span>
-                      </a>
-                    </li>
-                    <li class="btn">
-                      <a class="link-black-100" href="#">
-                        <span class="fab fa-pinterest"></span>
-                      </a>
-                    </li>
-                  </ul>
+                    </div>
+                    <ul
+                      class="list-unstyled social justify-content-center justify-content-sm-start p-0 mb-0 d-flex"
+                    >
+                      <li
+                        class="btn"
+                        v-if="instgram"
+                        :class="$i18n.locale == 'ar' ? 'pr-0' : 'pl-0'"
+                      >
+                        <a
+                          class="link-black-100"
+                          target="_blank"
+                          :href="instgram"
+                        >
+                          <span class="fab fa-instagram"></span>
+                        </a>
+                      </li>
+                      <li class="btn" v-if="facebook">
+                        <a
+                          class="link-black-100"
+                          target="_blank"
+                          :href="facebook"
+                        >
+                          <span class="fab fa-facebook-f"></span>
+                        </a>
+                      </li>
+                      <li class="btn" v-if="youtube">
+                        <a
+                          class="link-black-100"
+                          target="_blank"
+                          :href="youtube"
+                        >
+                          <span class="fab fa-youtube"></span>
+                        </a>
+                      </li>
+                      <li
+                        class="btn"
+                        v-if="twitter"
+                        :class="$i18n.locale == 'ar' ? 'pl-0' : ''"
+                      >
+                        <a
+                          class="link-black-100"
+                          target="_blank"
+                          :href="twitter"
+                        >
+                          <span class="fab fa-twitter"></span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="col-sm-7">
+                  <iframe
+                    :src="mapAddessLink"
+                    style="width: 100%; height: 300px; border: 0;"
+                    frameborder="0"
+                    allowfullscreen=""
+                    aria-hidden="false"
+                    tabindex="0"
+                  ></iframe>
                 </div>
               </div>
             </div>
             <div class="col-4 col-lg-2 mb-6 mb-lg-0">
               <h4 class="font-size-3 font-weight-medium mb-2 mb-xl-5 pb-xl-1">
-                Explore
+                {{ $t('misc.Explore') }}
               </h4>
               <ul class="list-unstyled mb-0">
                 <li class="pb-2">
                   <a
                     class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
+                    href="/"
                   >
-                    About as
+                    {{ $t('nav.home') }}
                   </a>
                 </li>
                 <li class="py-2">
                   <a
                     class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
+                    href="/shop"
                   >
-                    Sitemap
+                    {{ $t('nav.shops') }}
                   </a>
                 </li>
                 <li class="py-2">
                   <a
                     class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
+                    href="/faq"
                   >
-                    Bookmarks
+                    {{ $t('nav.faq') }}
                   </a>
                 </li>
-                <li class="pt-2">
+                <li class="py-2">
                   <a
+                    role="button"
+                    @click="openUserMenu"
                     class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
                   >
-                    Sign in/Join
+                    {{ $t('misc.loginRegister') }}
                   </a>
                 </li>
               </ul>
             </div>
             <div class="col-4 col-lg-2 mb-6 mb-lg-0">
               <h4 class="font-size-3 font-weight-medium mb-2 mb-xl-5 pb-xl-1">
-                Customer Service
+                {{ $t('misc.Customer Service') }}
               </h4>
               <ul class="list-unstyled mb-0">
-                <li class="pb-2">
+                <li class="py-2">
                   <a
                     class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
+                    href="/about-us"
                   >
-                    Help Center
+                    {{ $t('nav.aboutUs') }}
                   </a>
                 </li>
                 <li class="py-2">
                   <a
                     class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
+                    href="/contact"
                   >
-                    Returns
-                  </a>
-                </li>
-                <li class="py-2">
-                  <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
-                  >
-                    Product Recalls
-                  </a>
-                </li>
-                <li class="py-2">
-                  <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
-                  >
-                    Accessibility
-                  </a>
-                </li>
-                <li class="py-2">
-                  <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
-                  >
-                    Contact Us
-                  </a>
-                </li>
-                <li class="pt-2">
-                  <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
-                  >
-                    Store Pickup
+                    {{ $t('nav.contactUs') }}
                   </a>
                 </li>
               </ul>
@@ -178,55 +174,19 @@
 
             <div class="col-4 col-lg-2 mb-6 mb-lg-0">
               <h4 class="font-size-3 font-weight-medium mb-2 mb-xl-5 pb-xl-1">
-                Categories
+                {{ $t('nav.categories') }}
               </h4>
               <ul class="list-unstyled mb-0">
-                <li class="pb-2">
+                <li
+                  class="py-2"
+                  v-for="category in categories"
+                  :key="category.id"
+                >
                   <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
+                    class="widgets-hover transition-3d-hover text-capitalize font-size-2 link-black-100"
+                    :href="`shop/${category.id}`"
                   >
-                    Action
-                  </a>
-                </li>
-                <li class="py-2">
-                  <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
-                  >
-                    Comedy
-                  </a>
-                </li>
-                <li class="py-2">
-                  <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
-                  >
-                    Drama
-                  </a>
-                </li>
-                <li class="py-2">
-                  <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
-                  >
-                    Horror
-                  </a>
-                </li>
-                <li class="py-2">
-                  <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
-                  >
-                    Kids
-                  </a>
-                </li>
-                <li class="pt-2">
-                  <a
-                    class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="#"
-                  >
-                    Romantic Comedy
+                    {{ category.name }}
                   </a>
                 </li>
               </ul>
@@ -241,11 +201,11 @@
           >
             <!-- Copyright -->
             <p class="mb-3 mb-lg-0 font-size-2">
-              ©2022 ilaw. All rights reserved
+              {{ $t('misc.All rights reserved') }}
             </p>
             <!-- End Copyright -->
             <p class="mb-3 mb-lg-0 font-size-2">
-              Powered by Technomasr
+              {{ $t('misc.Powered by Technomasr') }}
             </p>
           </div>
         </div>
@@ -255,7 +215,59 @@
 </template>
 
 <script>
-export default {}
+export default {
+  props: ['categories'],
+  data() {
+    return {
+      contactEmail: '',
+      phone: '',
+      instgram: '',
+      mapAddessLink: '',
+      facebook: '',
+      youtube: '',
+      twitter: '',
+    }
+  },
+  mounted() {
+    this.getSettings()
+  },
+  methods: {
+    getSettings() {
+      this.axios.get('Settings/settings').then((data) => {
+        let resault = data.data.setting
+        for (let i = 0; i < resault.length; i += 1) {
+          if (resault[i].key == 'address') {
+            this.address = resault[i].value
+          } else if (resault[i].key == 'email') {
+            this.contactEmail = resault[i].value
+          } else if (resault[i].key == 'phone') {
+            this.phone = resault[i].value
+          } else if (resault[i].key == 'instgram') {
+            this.instgram = resault[i].value
+          } else if (resault[i].key == 'facebook') {
+            this.facebook = resault[i].value
+          } else if (resault[i].key == 'youtube') {
+            this.youtube = resault[i].value
+          } else if (resault[i].key == 'twitter') {
+            this.twitter = resault[i].value
+          } else if (resault[i].key == 'map_addess_link') {
+            this.mapAddessLink = resault[i].value
+          }
+        }
+      })
+    },
+    openUserMenu() {
+      this.$store.commit('login_Menu')
+    },
+  },
+}
 </script>
 
-<style></style>
+<style lang="scss">
+.brandlogo {
+  @media (max-width: 576px) {
+    margin: 0 auto !important;
+  }
+  max-width: 14rem;
+}
+</style>

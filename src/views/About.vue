@@ -13,49 +13,36 @@
         >
           <div class="mb-4 mb-lg-7 ml-xl-4">
             <h6 class="font-weight medium font-size-10 mb-4 mb-lg-7">
-              Welcome to Bookworm
+              {{ welcomeTitle }}
             </h6>
             <p class="font-weight-medium font-italic">
-              “ Many desktop publishing packages and web page editors now use
-              Lorem Ipsum as their default model search for eolved over
-              sometimes by accident, sometimes on purpose ”
+              “ {{ welcomeSubject }} ”
             </p>
           </div>
           <div class="mb-4 pb-xl-1 ml-xl-4">
             <h6 class="font-weight-medium font-size-4 mb-4">
-              What we really do?
+              {{ contentQuestion }}
             </h6>
             <p class="font-size-2">
-              Mauris tempus erat laoreet turpis lobortis, eu tincidunt erat
-              fermentum. Aliquam non tincidunt urna. Integer tincidunt nec nisl
-              vitae ullamcorper. Proin sed ultrices erat. Praesent varius
-              ultrices massa at faucibus. Aenean dignissim, orci sed faucibus
-              pharetra, dui mi dignissim tortor, sit amet condimentum mi ligula
-              sit amet augue. Pellentesque vitae eros eget enim mollis placerat.
-              Aliquam non tincidunt urna. Integer tincidunt nec nisl vitae
-              ullamcorper. Proin sed ultrices erat. Praesent varius ultrices
-              massa at faucibus. Aenean dignissim, orci sed faucibus pharetra,
-              dui mi dignissim tortor, sit amet condimentum mi ligula sit amet
-              augue. Pellentesque vitae eros eget enim mollis placerat.
+              {{ contentAnswer }}
             </p>
           </div>
           <div class="ml-xl-4">
             <div class="row">
               <div class="col-md-6">
-                <h6 class="font-weight-medium font-size-4">Our Vision</h6>
+                <h6 class="font-weight-medium font-size-4">
+                  {{ $t('misc.Our Vision') }}
+                </h6>
                 <p class="font-size-2">
-                  Pellentesque sodales augue eget ultricies ultricies. Cum
-                  sociis natoque penatibus et magnis dis parturient montes,
-                  nascetur ridiculus mus. Curabitur sagittis ultrices
-                  condimentum.
+                  {{ ourVision }}
                 </p>
               </div>
               <div class="col-md-6">
-                <h6 class="font-weight-medium font-size-4">Our Vision</h6>
+                <h6 class="font-weight-medium font-size-4">
+                  {{ $t('misc.Our Mission') }}
+                </h6>
                 <p class="font-size-2">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
-                  quis diam erat. Duis velit lectus, posuere a blandit metus
-                  mauris, tristique quis sapien eu, rutrum vulputate enim.
+                  {{ ourMission }}
                 </p>
               </div>
             </div>
@@ -78,7 +65,50 @@
 import Slider from '@/components/Slider.vue'
 export default {
   components: { Slider },
+  data() {
+    return {
+      settings: [],
+      welcomeTitle: '',
+      welcomeSubject: '',
+      contentQuestion: '',
+      contentAnswer: '',
+      ourVision: '',
+      ourMission: '',
+    }
+  },
+  mounted() {
+    this.getSettings()
+  },
+  methods: {
+    getSettings() {
+      this.axios.get('Settings/settings').then((data) => {
+        let resault = data.data.setting
+        for (let i = 0; i < resault.length; i += 1) {
+          if (resault[i].key == 'welcome title') {
+            this.welcomeTitle = resault[i].value
+          } else if (resault[i].key == 'welcome subject') {
+            this.welcomeSubject = resault[i].value
+          } else if (resault[i].key == 'content question') {
+            this.contentQuestion = resault[i].value
+          } else if (resault[i].key == 'content answer') {
+            this.contentAnswer = resault[i].value
+          } else if (resault[i].key == 'our vision') {
+            this.ourVision = resault[i].value
+          } else if (resault[i].key == 'our mission') {
+            this.ourMission = resault[i].value
+          }
+        }
+      })
+    },
+  },
 }
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.is-rtl {
+  p,
+  h6 {
+    text-align: start;
+  }
+}
+</style>

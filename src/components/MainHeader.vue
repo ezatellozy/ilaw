@@ -31,10 +31,15 @@
             </b-dropdown>
           </li>
           <li class="nav-item">
-            <b-dropdown id="language" text="English">
-              <b-dropdown-item>العربية</b-dropdown-item>
-              <b-dropdown-item>English</b-dropdown-item>
-              <b-dropdown-item>France</b-dropdown-item>
+            <b-dropdown v-model="locale" id="language" :text="locale">
+              <b-dropdown-item
+                v-for="lang in langs"
+                :key="lang.value"
+                :value="lang.value"
+                @click="changeLocale(lang.value)"
+              >
+                {{ lang.text }}
+              </b-dropdown-item>
             </b-dropdown>
           </li>
         </ul>
@@ -44,11 +49,47 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 export default {
   data() {
     return {
       miniCart: false,
+      // locale: this.$i18n.locale,
+      langs: [
+        {
+          value: 'ar',
+          text: 'العربية',
+        },
+        {
+          value: 'en',
+          text: 'English',
+        },
+        {
+          value: 'fr',
+          text: 'France',
+        },
+      ],
     }
+  },
+  methods: {
+    changeLocale(lang) {
+      Cookies.set('locale', lang)
+
+      setTimeout(() => {
+        window.location.reload()
+      }, 300)
+    },
+  },
+  computed: {
+    locale() {
+      if (this.$i18n.locale == 'ar') {
+        return 'العربية'
+      } else if (this.$i18n.locale == 'en') {
+        return 'English'
+      } else {
+        return 'France'
+      }
+    },
   },
 }
 </script>
@@ -73,6 +114,10 @@ export default {
   &:hover {
     .dropdown-menu {
       display: block !important;
+      position: absolute;
+      inset: 0px 0px auto auto;
+      margin: 0px;
+      transform: translate3d(0px, 43.6364px, 0px);
     }
   }
   .btn {

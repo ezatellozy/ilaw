@@ -25,32 +25,30 @@
             <!-- Content -->
             <div class="js-scrollbar u-sidebar__body">
               <div class="u-sidebar__content u-header-sidebar__content">
-                <form class="" @submit.prevent>
-                  <div id="login">
-                    <header class="border-bottom px-4 px-md-6 py-4">
-                      <h2 class="font-size-3 mb-0 d-flex align-items-center">
-                        <i class="flaticon-user mr-3 font-size-5"></i>
-                        Account
-                      </h2>
-                    </header>
+                <div id="login">
+                  <header class="border-bottom px-4 px-md-6 py-4">
+                    <h2 class="font-size-3 mb-0 d-flex align-items-center">
+                      <i class="flaticon-user mr-3 font-size-5"></i>
+                      Account
+                    </h2>
+                  </header>
+                </div>
+                <transition name="fade">
+                  <div class="p-4 p-md-6" v-if="signIn">
+                    <Login @setting="setting($event)" />
                   </div>
-                  <transition name="fade">
-                    <div class="p-4 p-md-6" v-if="signIn">
-                      <Login @setting="setting($event)" />
-                    </div>
-                  </transition>
-                  <transition name="fade">
-                    <div id="signup" v-if="signUp">
-                      <NewAccount @setting="setting($event)" />
-                    </div>
-                  </transition>
-                  <transition name="fade">
-                    <div id="forgotPassword" v-if="forgotPassword">
-                      <!-- Title -->
-                      <ForgotPassword @setting="setting($event)" />
-                    </div>
-                  </transition>
-                </form>
+                </transition>
+                <transition name="fade">
+                  <div id="signup" v-if="signUp">
+                    <NewAccount @setting="setting($event)" />
+                  </div>
+                </transition>
+                <transition name="fade">
+                  <div id="forgotPassword" v-if="forgotPassword">
+                    <!-- Title -->
+                    <ForgotPassword @setting="setting($event)" />
+                  </div>
+                </transition>
               </div>
             </div>
           </div>

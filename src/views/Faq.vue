@@ -1,102 +1,17 @@
 <template>
   <div class="container row mx-auto">
     <div class="col-md-8 mx-auto">
-      <h2 class="page-title my-5 text-center main-title">
-        Frequently Asked Questions
+      <h2 class="page-title my-5 text-center main-title fs-5">
+        {{ $t('misc.Frequently Asked Questions') }}
       </h2>
       <div class="accordian">
-        <h4>Shopping</h4>
         <b-accordion>
           <b-accordion-item
-            title="Delivery charges for orders from the Online Shop?"
+            v-for="faq in faqs"
+            :key="faq.id"
+            :title="faq.question"
           >
-            A placerat ac vestibulum integer vehicula suspendisse nostra aptent
-            fermentum tempor a magna erat ligula parturient curae sem conubia
-            vestibulum ac inceptos sodales condimentum cursus nunc mi
-            consectetur condimentum. Tristique parturient nulla ullamcorper at
-            ullamcorper non orci iaculis neque augue.
-          </b-accordion-item>
-          <b-accordion-item
-            title="Delivery charges for orders from the Online Shop?"
-          >
-            A placerat ac vestibulum integer vehicula suspendisse nostra aptent
-            fermentum tempor a magna erat ligula parturient curae sem conubia
-            vestibulum ac inceptos sodales condimentum cursus nunc mi
-            consectetur condimentum. Tristique parturient nulla ullamcorper at
-            ullamcorper non orci iaculis neque augue.
-          </b-accordion-item>
-          <b-accordion-item
-            title="Delivery charges for orders from the Online Shop?"
-          >
-            A placerat ac vestibulum integer vehicula suspendisse nostra aptent
-            fermentum tempor a magna erat ligula parturient curae sem conubia
-            vestibulum ac inceptos sodales condimentum cursus nunc mi
-            consectetur condimentum. Tristique parturient nulla ullamcorper at
-            ullamcorper non orci iaculis neque augue.
-          </b-accordion-item>
-        </b-accordion>
-      </div>
-      <div class="accordian">
-        <h4>Shopping</h4>
-        <b-accordion>
-          <b-accordion-item
-            title="Delivery charges for orders from the Online Shop?"
-          >
-            A placerat ac vestibulum integer vehicula suspendisse nostra aptent
-            fermentum tempor a magna erat ligula parturient curae sem conubia
-            vestibulum ac inceptos sodales condimentum cursus nunc mi
-            consectetur condimentum. Tristique parturient nulla ullamcorper at
-            ullamcorper non orci iaculis neque augue.
-          </b-accordion-item>
-          <b-accordion-item
-            title="Delivery charges for orders from the Online Shop?"
-          >
-            A placerat ac vestibulum integer vehicula suspendisse nostra aptent
-            fermentum tempor a magna erat ligula parturient curae sem conubia
-            vestibulum ac inceptos sodales condimentum cursus nunc mi
-            consectetur condimentum. Tristique parturient nulla ullamcorper at
-            ullamcorper non orci iaculis neque augue.
-          </b-accordion-item>
-          <b-accordion-item
-            title="Delivery charges for orders from the Online Shop?"
-          >
-            A placerat ac vestibulum integer vehicula suspendisse nostra aptent
-            fermentum tempor a magna erat ligula parturient curae sem conubia
-            vestibulum ac inceptos sodales condimentum cursus nunc mi
-            consectetur condimentum. Tristique parturient nulla ullamcorper at
-            ullamcorper non orci iaculis neque augue.
-          </b-accordion-item>
-        </b-accordion>
-      </div>
-      <div class="accordian">
-        <h4>Shopping</h4>
-        <b-accordion>
-          <b-accordion-item
-            title="Delivery charges for orders from the Online Shop?"
-          >
-            A placerat ac vestibulum integer vehicula suspendisse nostra aptent
-            fermentum tempor a magna erat ligula parturient curae sem conubia
-            vestibulum ac inceptos sodales condimentum cursus nunc mi
-            consectetur condimentum. Tristique parturient nulla ullamcorper at
-            ullamcorper non orci iaculis neque augue.
-          </b-accordion-item>
-          <b-accordion-item
-            title="Delivery charges for orders from the Online Shop?"
-          >
-            A placerat ac vestibulum integer vehicula suspendisse nostra aptent
-            fermentum tempor a magna erat ligula parturient curae sem conubia
-            vestibulum ac inceptos sodales condimentum cursus nunc mi
-            consectetur condimentum. Tristique parturient nulla ullamcorper at
-            ullamcorper non orci iaculis neque augue.
-          </b-accordion-item>
-          <b-accordion-item
-            title="Delivery charges for orders from the Online Shop?"
-          >
-            A placerat ac vestibulum integer vehicula suspendisse nostra aptent
-            fermentum tempor a magna erat ligula parturient curae sem conubia
-            vestibulum ac inceptos sodales condimentum cursus nunc mi
-            consectetur condimentum. Tristique parturient nulla ullamcorper at
-            ullamcorper non orci iaculis neque augue.
+            {{ faq.answer }}
           </b-accordion-item>
         </b-accordion>
       </div>
@@ -105,16 +20,43 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      faqs: null,
+    }
+  },
+  methods: {
+    getFaqs() {
+      this.axios.get('FAQ/faqs').then((data) => {
+        this.faqs = data.data.data
+        console.log(this.faqs)
+      })
+    },
+  },
+  mounted() {
+    this.getFaqs()
+  },
+}
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .accordian {
   margin-bottom: 40px;
   h4 {
     margin-bottom: 2rem !important;
     font-size: 1.25rem;
     font-weight: 500;
+  }
+}
+
+.is-rtl {
+  .accordion-button::after {
+    margin-left: unset !important;
+    margin-right: auto !important;
+  }
+  .accordion-body {
+    text-align: start;
   }
 }
 </style>

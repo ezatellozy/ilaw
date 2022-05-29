@@ -1,16 +1,18 @@
 <template>
-  <header id="site-header" class="site-header__v3">
-    <main-header />
-    <navbar />
-  </header>
+  <div :class="$i18n.locale == 'ar' ? 'is-rtl' : ''">
+    <header id="site-header" class="site-header__v3">
+      <main-header />
+      <navbar :categories="categories" />
+    </header>
 
-  <router-view v-slot="{ Component }">
-    <transition name="fade">
-      <component :is="Component" />
-    </transition>
-  </router-view>
+    <router-view v-slot="{ Component }">
+      <transition name="fade">
+        <component :is="Component" />
+      </transition>
+    </router-view>
 
-  <Footer />
+    <Footer :categories="categories" />
+  </div>
 </template>
 
 <script>
@@ -21,6 +23,21 @@ import Navbar from './components/Navbar.vue'
 import Footer from './components/Footer.vue'
 export default {
   components: { MainHeader, Navbar, Footer, Breadcrumb },
+  data() {
+    return {
+      categories: [],
+    }
+  },
+  methods: {
+    getMainGategories() {
+      this.axios.get('sections/sections').then((data) => {
+        this.categories = data.data.data
+      })
+    },
+  },
+  mounted() {
+    this.getMainGategories()
+  },
 }
 </script>
 

@@ -25,7 +25,7 @@ function loadLocaleMessages() {
 }
 
 export default createI18n({
-  locale: Cookies.get('locale') || 'en',
-  fallbackLocale: Cookies.get('locale') || 'en',
+  locale: Cookies.get('locale') || 'ar',
+  fallbackLocale: Cookies.get('locale') || 'ar',
   messages: loadLocaleMessages(),
 })

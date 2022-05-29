@@ -1,116 +1,60 @@
 <template>
   <div class="map w-100">
     <iframe
-      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13675.833764016936!2d31.3732275!3d31.0274075!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x859ee8ea1a8da4ae!2sTechnomasr%20for%20web%20solutions!5e0!3m2!1sen!2seg!4v1596684538546!5m2!1sen!2seg"
+      :src="mapAddessLink"
       style="width: 100%; height: 300px; border: 0;"
       frameborder="0"
       allowfullscreen=""
       aria-hidden="false"
       tabindex="0"
     ></iframe>
-    <!-- <img class="img-fluid w-100" src="@/assets/GoogleMapTA.webp" alt="" /> -->
   </div>
-  <div class="container row mx-auto">
+  <div class="container contacts-us row mx-auto">
     <div class="card mx-auto mb-2 tra">
-      <!-- <div class="mb-5 border-bottom">
-        <h2 class="page-title">Contact us</h2>
-        <p class="mb-3">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio
-          facilis
-        </p>
-        <div class="info">
-          <div class="mb-2">
-            <h3 class="m-0">Office Address</h3>
-          </div>
-          <p class="d-flex align-items-center">
-            <font-awesome-icon
-              class="mx-2"
-              size="lg"
-              :icon="['fas', 'location-dot']"
-            />
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maxime
-            officiis
-          </p>
-        </div>
-        <div class="info">
-          <div class="mb-2">
-            <h3 class="m-0">Phone Number</h3>
-          </div>
-          <p class="d-flex align-items-center">
-            <font-awesome-icon
-              class="mx-2"
-              size="lg"
-              :icon="['fas', 'phone']"
-            />
-            101010101010
-          </p>
-          <p class="d-flex align-items-center">
-            <font-awesome-icon
-              class="mx-2"
-              size="lg"
-              :icon="['fas', 'phone']"
-            />
-            101010101010
-          </p>
-        </div>
-        <div class="info">
-          <div class="mb-2">
-            <h3 class="m0">Email</h3>
-          </div>
-          <p class="d-flex align-items-center">
-            <font-awesome-icon
-              class="mx-2"
-              size="lg"
-              :icon="['fas', 'envelope']"
-            />
-            info@technomasr.com
-          </p>
-        </div>
-      </div> -->
       <div class="ml-xl-4 space-bottom-1 space-bottom-lg-2">
         <div class="mb-4 mb-lg-7">
           <h6 class="font-weight medium font-size-10 mb-4 mb-lg-7">
-            Contact Information
+            {{ $t('misc.Contact Information') }}
           </h6>
           <p class="font-weight-medium font-italic">
-            We will answer any questions you may have about our online sales,
-            rights or partnership service right here.
+            {{ $t('misc.Contact description') }}
           </p>
         </div>
         <div class="mb-4 mb-lg-8">
           <div class="row">
             <div class="col-md-6">
-              <h6 class="font-weight-medium font-size-4 mb-4">
-                New York Office
-              </h6>
-              <address class="font-size-2 mb-5 d-flex align-items-center">
-                <font-awesome-icon size="lg" :icon="['fas', 'location-dot']" />
-                <p class="mb-0 ml-2">
-                  <span class="mb-2 font-weight-normal text-dark">
-                    1418 River Drive, Suite 35 Cottonhall, CA 9622
-                    <br />
-                    United States
+              <address class="font-size-2 mb-5">
+                <p class="d-flex align-items-center">
+                  <font-awesome-icon
+                    size="lg"
+                    :icon="['fas', 'location-dot']"
+                  />
+                  <span
+                    class="mb-2 font-weight-normal text-dark"
+                    :class="$i18n.locale == 'ar' ? 'mr-2' : 'ml-2'"
+                  >
+                    {{ address }}
                   </span>
                 </p>
               </address>
               <div>
                 <a
                   href="mailto:sale@bookworm.com"
-                  class="font-size-2 ml-2 d-block link-black-100 mb-1"
+                  class="font-size-2 mb-2 d-block link-black-100 mb-1"
                 >
                   <font-awesome-icon size="lg" :icon="['fas', 'envelope']" />
-                  <span class="ml-2">
-                    sale@bookworm.com
+                  <span :class="$i18n.locale == 'ar' ? 'mr-2' : 'ml-2'">
+                    {{ contactEmail }}
                   </span>
                 </a>
 
                 <a
                   href="tel:+1246-345-0695"
-                  class="font-size-2 ml-2 d-block link-black-100"
+                  class="font-size-2 d-block link-black-100"
                 >
                   <font-awesome-icon size="lg" :icon="['fas', 'phone']" />
-                  <span class="ml-2">
-                    +1 246-345-0695
+                  <span :class="$i18n.locale == 'ar' ? 'mr-2' : 'ml-2'">
+                    {{ phone }}
                   </span>
                 </a>
               </div>
@@ -118,31 +62,32 @@
           </div>
         </div>
         <div class="mb-5 mb-xl-9 pb-xl-1">
-          <h6 class="font-size-4 font-weight-medium">Social Media</h6>
-          <ul class="list-unstyled mb-0 d-flex">
-            <li class="btn pl-0">
-              <a class="link-black-100" href="#">
+          <h6 class="font-size-4 font-weight-medium">
+            {{ $t('misc.Social Media') }}
+          </h6>
+          <ul class="list-unstyled mb-0 p-0 d-flex">
+            <li
+              class="btn"
+              v-if="instgram"
+              :class="$i18n.locale == 'ar' ? 'pr-0' : 'pl-0'"
+            >
+              <a class="link-black-100" target="_blank" :href="instgram">
                 <span class="fab fa-instagram"></span>
               </a>
             </li>
-            <li class="btn">
-              <a class="link-black-100" href="#">
+            <li class="btn" v-if="facebook">
+              <a class="link-black-100" target="_blank" :href="facebook">
                 <span class="fab fa-facebook-f"></span>
               </a>
             </li>
-            <li class="btn">
-              <a class="link-black-100" href="#">
+            <li class="btn" v-if="youtube">
+              <a class="link-black-100" target="_blank" :href="youtube">
                 <span class="fab fa-youtube"></span>
               </a>
             </li>
-            <li class="btn">
-              <a class="link-black-100" href="#">
+            <li class="btn" v-if="twitter">
+              <a class="link-black-100" target="_blank" :href="twitter">
                 <span class="fab fa-twitter"></span>
-              </a>
-            </li>
-            <li class="btn">
-              <a class="link-black-100" href="#">
-                <span class="fab fa-pinterest"></span>
               </a>
             </li>
           </ul>
@@ -150,8 +95,13 @@
       </div>
 
       <div>
-        <h2 class="page-title">Tell Us Your Message</h2>
-        <b-form class="row form" @submit="onSubmit" @reset="onReset">
+        <h2 class="page-title">{{ $t('misc.Tell Us Your Message') }}</h2>
+        <b-form
+          class="row form"
+          ref="contactFrm"
+          @submit="onSubmit"
+          @reset="onReset"
+        >
           <div class="col-md-6">
             <b-form-group label="Your Name:" label-for="name">
               <b-form-input
@@ -202,11 +152,14 @@
 
           <div class="d-flex justify-content-center">
             <b-button class="send mr-2" type="submit">
-              Send
+              <span v-if="!loading">
+                {{ $t('buttons.Send') }}
+              </span>
+              <Loading v-if="loading" />
             </b-button>
 
-            <b-button class="bg-danger" type="reset">
-              Reset
+            <b-button class="bg-danger mr-2" type="reset">
+              {{ $t('buttons.Reset') }}
             </b-button>
           </div>
         </b-form>
@@ -216,6 +169,7 @@
 </template>
 
 <script>
+import Loading from '../components/Loading.vue'
 export default {
   data() {
     return {
@@ -223,12 +177,67 @@ export default {
       name: '',
       message: '',
       subject: '',
+      address: '',
+      contactEmail: '',
+      phone: '',
+      instgram: '',
+      facebook: '',
+      youtube: '',
+      twitter: '',
+      mapAddessLink: '',
+      loading: false,
     }
   },
+  mounted() {
+    this.getSettings()
+  },
+  methods: {
+    onSubmit() {
+      this.loading = true
+      const frmData = new FormData()
+      frmData.append('email', this.email)
+      frmData.append('name', this.name)
+      frmData.append('message', this.message)
+      frmData.append('subject', this.subject)
+      this.axios.post('Contact/Contacts', frmData).then((data) => {
+        this.$toast.success(data.data.message)
+        this.loading = false
+        this.email = ''
+        this.name = ''
+        this.message = ''
+        this.subject = ''
+      })
+    },
+    getSettings() {
+      this.axios.get('Settings/settings').then((data) => {
+        let resault = data.data.setting
+        for (let i = 0; i < resault.length; i += 1) {
+          if (resault[i].key == 'address') {
+            this.address = resault[i].value
+          } else if (resault[i].key == 'email') {
+            this.contactEmail = resault[i].value
+          } else if (resault[i].key == 'phone') {
+            this.phone = resault[i].value
+          } else if (resault[i].key == 'instgram') {
+            this.instgram = resault[i].value
+          } else if (resault[i].key == 'facebook') {
+            this.facebook = resault[i].value
+          } else if (resault[i].key == 'youtube') {
+            this.youtube = resault[i].value
+          } else if (resault[i].key == 'twitter') {
+            this.twitter = resault[i].value
+          } else if (resault[i].key == 'map_addess_link') {
+            this.mapAddessLink = resault[i].value
+          }
+        }
+      })
+    },
+  },
+  components: { Loading },
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .map {
   max-height: 400px;
   overflow: hidden;
@@ -236,44 +245,58 @@ export default {
     height: auto;
   }
 }
-.page-title {
-  font-size: 32px;
-  line-height: 32px;
-  color: #363f4d;
-  font-weight: 500;
-  margin-bottom: 20px;
-}
-
-button.send {
-  background: #22559d;
-}
-.card {
-  padding: 50px !important;
-  max-width: 800px;
-  transform: translateY(-100px);
-}
-.info {
-  margin-bottom: 50px;
-  h3 {
-    color: #000;
+.contacts-us {
+  .page-title {
+    font-size: 32px;
+    line-height: 32px;
+    color: #363f4d;
     font-weight: 500;
-    font-size: 20px;
-    line-height: 30px;
+    margin-bottom: 20px;
   }
-  p {
-    font-size: 16px;
-    line-height: 26px;
-    color: #555;
-    font-weight: 400;
-    padding: 10px;
-    margin: 0;
-    &:last-child {
-      border-bottom: 1px solid #eee;
-      width: fit-content;
+
+  button.send {
+    background: #22559d;
+  }
+  .card {
+    padding: 50px !important;
+    max-width: 800px;
+    transform: translateY(-100px);
+  }
+  .info {
+    margin-bottom: 50px;
+    h3 {
+      color: #000;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 30px;
+    }
+    p {
+      font-size: 16px;
+      line-height: 26px;
+      color: #555;
+      font-weight: 400;
+      padding: 10px;
+      margin: 0;
+      &:last-child {
+        border-bottom: 1px solid #eee;
+        width: fit-content;
+      }
+    }
+    svg {
+      color: #0d6efd;
     }
   }
-  svg {
-    color: #0d6efd;
+}
+
+.is-rtl {
+  .contacts-us {
+    h2,
+    h6,
+    p,
+    label,
+    a {
+      text-align: start !important;
+    }
   }
 }
 </style>

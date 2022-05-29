@@ -176,6 +176,37 @@
                           </ul>
                         </div>
                       </li>
+                      <li class="has-submenu">
+                        <a href="#" role="button" data-submenu="off-single">
+                          {{ $t('nav.lang') }}
+                        </a>
+
+                        <div class="submenu js-scrollbar">
+                          <div
+                            class="submenu-header"
+                            data-submenu-close="off-single"
+                          >
+                            <a href="#">{{ $t('nav.lang') }}</a>
+                          </div>
+                          <ul>
+                            <li>
+                              <a role="button" @click="changeLocale('ar')">
+                                العربية
+                              </a>
+                            </li>
+                            <li>
+                              <a role="button" @click="changeLocale('en')">
+                                English
+                              </a>
+                            </li>
+                            <li>
+                              <a role="button" @click="changeLocale('fr')">
+                                France
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -232,6 +263,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 export default {
   data() {
     return {}
@@ -239,6 +271,13 @@ export default {
   methods: {
     closeGategoryMenu() {
       this.$emit('closeMenu')
+    },
+    changeLocale(lang) {
+      Cookies.set('locale', lang)
+
+      setTimeout(() => {
+        window.location.reload()
+      }, 300)
     },
   },
   mounted() {

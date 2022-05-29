@@ -8,11 +8,14 @@
     "shops": "Shop",
     "categories": "Categories",
     "faq": "FAQ",
+    "lang": "Languages",
     "login": "Login"
   },
   "buttons": {
     "Recover Password": "Recover Password",
     "Remember your password?": "Username or email",
+    "Send": "Send",
+    "Reset": "Reset",
     "Login": "Login"
   },
   "misc": {
@@ -24,6 +27,22 @@
     "Forgot Password?": "Forgot Password?",
     "New Account": "New Account",
     "New Publisher Account": "New Publisher Account",
-    "Email": "Email"
+    "Email": "Email",
+    "Frequently Asked Questions": "Frequently Asked Questions",
+    "Tell Us Your Message": "Tell Us Your Message",
+    "Social Media": "Social Media",
+    "Contact Information": "Contact Information",
+    "Contact description": "We will answer any questions you may have about our online sales, rights or partnership service right here.",
+    "Our Mission": "Our Mission",
+    "Our Vision": "Our Vision",
+    "Explore": "Explore",
+    "Customer Service": "Customer Service",
+    "Any questions": "Any questions",
+    "Powered by Technomasr": "Powered by Technomasr",
+    "All rights reserved": "©2022 ilaw. All rights reserved",
+    "loginRegister": "Sign in/Join",
+    "Browse categories": "Browse categories",
+    "All Categories": "All Categories",
+    "Call toll-free": "Call toll-free"
   }
 }
