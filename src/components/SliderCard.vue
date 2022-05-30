@@ -1,40 +1,30 @@
 <template>
   <div class="author col px-0">
     <div class="item">
-      <router-link to="/author" v-if="author">
+      <router-link :to="routerPath == 'partners' ? '' : `/${routerPath}/${id}`">
         <figure class="devLogo mx-auto">
-          <img :src="imgSrc" :class="styles" alt="" class="w-auto" />
-        </figure>
-      </router-link>
-      <router-link to="/publisher" v-if="publisher">
-        <figure class="devLogo mx-auto">
-          <img :src="imgSrc" :class="styles" alt="" class="w-auto" />
-        </figure>
-      </router-link>
-      <router-link to="/" v-if="partner">
-        <figure class="devLogo mx-auto">
-          <img :src="imgSrc" :class="styles" alt="" class="w-auto" />
+          <img
+            v-if="imgSrc"
+            :src="imgSrc"
+            :class="styles"
+            alt=""
+            class="w-auto"
+          />
         </figure>
       </router-link>
     </div>
     <div class="author__body text-center mb-2">
-      <h2 class="author__name h6 mb-0">{{ cardtitle }}</h2>
-      <div class="text-gray-700 font-size-2">{{ cardDesc }}</div>
+      <!-- <h2 class="author__name h6 mb-0">{{ cardtitle }}</h2> -->
+      <div v-if="routerPath == 'author'" class="text-gray-700 font-size-2">
+        {{ name }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: [
-    'styles',
-    'imgSrc',
-    'cardDesc',
-    'cardtitle',
-    'author',
-    'publisher',
-    'partner',
-  ],
+  props: ['styles', 'imgSrc', 'id', 'routerPath', 'name'],
 }
 </script>
 

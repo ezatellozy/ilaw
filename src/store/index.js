@@ -5,7 +5,7 @@ import Cookies from 'js-cookie'
 export default createStore({
   state: {
     status: '',
-    user: null,
+    user: JSON.parse(localStorage.getItem('user')) || null,
     loginMenu: false,
     publisher: null,
     token: Cookies.get('token') || null,

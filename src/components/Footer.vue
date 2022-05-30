@@ -176,7 +176,7 @@
               <h4 class="font-size-3 font-weight-medium mb-2 mb-xl-5 pb-xl-1">
                 {{ $t('nav.categories') }}
               </h4>
-              <ul class="list-unstyled mb-0">
+              <ul class="list-unstyled mb-0" v-if="categories">
                 <li
                   class="py-2"
                   v-for="category in categories"

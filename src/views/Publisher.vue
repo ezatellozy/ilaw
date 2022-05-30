@@ -1,26 +1,22 @@
 <template>
   <div class="container">
-    <div class="mt-5 pio d-flex align-items-center pt-5">
+    <div class="mt-5 pio pt-5">
       <div class="row">
-        <div class="col-lg-4 col-wd-3 d-flex">
+        <div class="col-lg-4 col-md-3 text-center">
           <img
+            v-if="publisher.image"
             class="img-fluid my-auto"
-            src="@/assets/technologo.png"
+            :src="publisher.image"
             alt="Image-Description"
           />
         </div>
-        <div class="col-lg-8 col-wd-9">
-          <div class="mb-8">
-            <h6 class="fs-4 primary-color ont-weight-medium mt-2 mb-3 pb-1">
-              Jessica Simpson
+        <div class="col-lg-8 col-md-9 px-4">
+          <div class="mb-8 w-100">
+            <h6 class="fs-4 primary-color mt-2 mb-3 pb-1">
+              {{ publisher.company_name }}
             </h6>
-            <p class="mb-0 font-size-2">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur.
+            <p class="mb-0">
+              {{ publisher.bio }}
             </p>
           </div>
         </div>
@@ -28,7 +24,7 @@
     </div>
     <div class="publisher">
       <h2 class="main-title">
-        Books
+        {{ $t('misc.Books') }}
       </h2>
 
       <div class="products-book border-top border-right">
@@ -55,6 +51,7 @@ export default {
 
   data() {
     return {
+      publisher: [],
       settingsBook: {
         autoplay: 5000,
         itemsToShow: 1,
@@ -76,6 +73,19 @@ export default {
         },
       },
     }
+  },
+  mounted() {
+    this.getPublisher()
+  },
+  methods: {
+    getPublisher() {
+      this.axios
+        .get(`/vendors/vendor/${this.$route.params.id}`)
+        .then((data) => {
+          this.publisher = data.data.data
+          console.log(this.publisher.company_name)
+        })
+    },
   },
 }
 </script>

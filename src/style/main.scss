@@ -16,6 +16,18 @@ body {
 
 .is-rtl {
   direction: rtl;
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  li,
+  span {
+    text-align: right;
+  }
 }
 
 ul,
@@ -32,6 +44,10 @@ li {
 
 .container {
   padding: 0 !important;
+}
+
+.carousel__track {
+  justify-content: center;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');

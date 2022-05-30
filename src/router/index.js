@@ -130,12 +130,12 @@ const routes = [
     component: Page,
   },
   {
-    path: '/author',
+    path: '/author/:id',
     name: 'author',
     component: Author,
   },
   {
-    path: '/publisher',
+    path: '/publisher/:id',
     name: 'publisher',
     component: Publisher,
   },

@@ -178,6 +178,7 @@
                     class="d-none d-lg-block h-100 custom-select pr-7 pl-4 rounded-0 shadow-none border-0 text-dark"
                     id="inputGroupSelect01"
                     style="cursor: pointer;"
+                    v-if="categories"
                   >
                     <option selected>{{ $t('misc.All Categories') }}</option>
 
@@ -227,7 +228,8 @@
               <!-- Cart Sidebar Toggle Button -->
               <button
                 @click="openCartMenu"
-                class="nav-link btn pr-0 text-white position-relative"
+                class="nav-link btn text-white position-relative"
+                :class="$i18n.locale == 'ar' ? 'pl-0' : 'pr-0'"
               >
                 <span
                   class="position-absolute bg-primary-yellow width-16 height-16 rounded-circle d-flex align-items-center justify-content-center text-dark font-size-n9 left-0"
@@ -396,6 +398,9 @@ export default {
   .nav-item {
     > a {
       color: #fff !important;
+      &:focus {
+        box-shadow: unset !important;
+      }
     }
   }
 }

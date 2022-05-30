@@ -3,17 +3,15 @@
     <div class="text-center pt-4">
       <h2 class="font-size-7 mb-2 main-title">{{ title }}</h2>
     </div>
-    <carousel v-bind="settings">
-      <slide v-for="n in 10" :key="n">
+    <carousel v-bind="settings" v-if="items">
+      <slide v-for="item in items" :key="item.id">
         <div class="w-100 list-unstyled slider-container">
           <slider-card
-            :imgSrc="imgSrc"
-            :cardtitle="cardtitle"
-            :cardDesc="cardDesc"
             :styles="cardStyles"
-            :publisher="publisher"
-            :partner="partner"
-            :author="author"
+            :imgSrc="item.image"
+            :id="item.id"
+            :name="item.name"
+            :routerPath="routerPath"
           />
         </div>
       </slide>
@@ -27,17 +25,7 @@ import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide } from 'vue3-carousel'
 export default {
   components: { SliderCard, Carousel, Slide },
-  props: [
-    'title',
-    'cardStyles',
-    'cardtitle',
-    'cardDesc',
-    'name',
-    'imgSrc',
-    'publisher',
-    'partner',
-    'author',
-  ],
+  props: ['title', 'cardStyles', 'name', 'imgSrc', 'items', 'routerPath'],
   data() {
     return {
       settings: {

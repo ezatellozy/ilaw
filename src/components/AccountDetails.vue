@@ -93,7 +93,7 @@
               name="country"
               id="country"
               required=""
-              class="form-select rounded-0 height-4 px-4"
+              class="form-select form-control rounded-0 height-4 px-4"
               v-model="defaultLanguage"
             >
               <!-- <option value="" disabled>{{ defaultLanguage }}</option> -->

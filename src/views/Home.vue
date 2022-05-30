@@ -4,23 +4,31 @@
     <slider
       title="Publisher"
       cardStyles="rounded-circle"
-      imgSrc="./publisher2.jpg"
-      publisher="true"
+      routerPath="publisher"
+      name="publisher"
+      v-if="publisher"
+      :items="publisher"
     />
   </div>
   <Content />
   <div class="auther mb-11">
     <slider
-      cardDesc="25 Published Books"
-      cardtitle="Barbara O'Neil"
+      v-if="authors"
       cardStyles="rounded-circle"
       title="Authers"
-      imgSrc="./img4.jpg"
-      author="true"
+      name="author"
+      routerPath="author"
+      :items="authors"
     />
   </div>
 
-  <slider title="partners" partner="true" imgSrc="./img3.png" />
+  <slider
+    v-if="partners"
+    title="partners"
+    name="partners"
+    routerPath="partners"
+    :items="partners"
+  />
   <attract-features />
 </template>
 
@@ -38,24 +46,30 @@ export default {
     return {
       authors: null,
       publisher: null,
+      partners: null,
     }
   },
   methods: {
     getAuthors() {
       this.axios.get('writer/writers').then((data) => {
-        console.log(data.data)
-        
+        this.authors = data.data.data
       })
     },
     getPublisher() {
       this.axios.get('vendors/vendors').then((data) => {
-        console.log(data.data)
+        this.publisher = data.data.data
+      })
+    },
+    getPartner() {
+      this.axios.get('partner/partners').then((data) => {
+        this.partners = data.data.data
       })
     },
   },
   mounted() {
     this.getAuthors()
     this.getPublisher()
+    this.getPartner()
   },
 }
 </script>

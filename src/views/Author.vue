@@ -3,33 +3,29 @@
     <div class="">
       <div class="container space-top-2 space-top-wd-3 px-3">
         <div class="row">
-          <div class="col-lg-4 col-wd-3 d-flex">
+          <div class="col-lg-4 col-md-3 text-center" v-if="author">
             <img
+              v-if="author.image"
               class="img-fluid mb-5 mb-lg-0 mt-auto"
-              src="@/assets/img5.png"
+              :src="author.image"
               alt="Image-Description"
             />
           </div>
-          <div class="col-lg-8 col-wd-9">
+          <div class="col-lg-8 col-md-9">
             <div class="mb-8">
-              <span class="text-gray-400 font-size-2">AUTHOR OF THE MONTH</span>
-              <h6 class="font-size-7 ont-weight-medium mt-2 mb-3 pb-1">
-                Jessica Simpson
+              <!-- <span class="text-gray-400 font-size-2">AUTHOR OF THE MONTH</span> -->
+              <h6 class="font-size-7 font-weight-medium mt-2 mb-3 pb-1">
+                {{ author.name }}
               </h6>
               <p class="mb-0">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur.
+                {{ author.bio }}
+                <!-- {{ author.bio }} -->
               </p>
             </div>
             <ul
               class="products list-unstyled row no-gutters row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-wd-4 my-0 mb-md-8 mb-wd-12"
             >
               <book-card v-for="n in 3" :key="n" />
-              <!-- <book-cart v-for="n in 3" :key="n" /> -->
             </ul>
           </div>
         </div>
@@ -40,7 +36,7 @@
     <div class="container">
       <header class="mb-2 d-md-flex justify-content-between align-items-center">
         <h2 class="font-size-7 mb-3 mb-md-0">
-          Author's Books
+          {{ $t("misc.Author's Books") }}
         </h2>
       </header>
 
@@ -93,10 +89,21 @@ export default {
           },
         },
       },
+      author: [],
     }
   },
-  methods: {},
-  mounted() {},
+  mounted() {
+    this.getAuthor()
+  },
+  methods: {
+    getAuthor() {
+      this.axios.get(`writer/writer/${this.$route.params.id}`).then((data) => {
+        this.author = data.data.data
+
+        console.log(this.author.bio)
+      })
+    },
+  },
 }
 </script>
 
