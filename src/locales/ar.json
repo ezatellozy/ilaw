@@ -11,6 +11,10 @@
     "lang": "اللغات",
     "login": "تسجيل الدخول"
   },
+  "inputs": {
+    "name": "Name",
+    "username": "Username"
+  },
   "buttons": {
     "Recover Password": "استعادة الباسور",
     "Remember your password?": "اسم المستخدم او الايميل",
@@ -18,6 +22,10 @@
     "Reset": "تفريغ",
     "Login": "تسجيل الدخول",
     "Login as a vendor": "Login as a vendor"
+  },
+  "placeholder": {
+    "Please enter your name": "Please enter your name.",
+    "Please enter your phone": "Please enter your phone."
   },
   "misc": {
     "SHOP BY CATEGORY": "تسوق حسب الفئات",
@@ -48,8 +56,14 @@
     "By Books": "البحث بالكتاب",
     "By Vendor / publisher": "بواسطه البائع او الناشر",
     "By Author": "بواسطه المؤلف",
+    "Account Details": "Account Details",
+    "Edit Account": "Edit Account",
     "Pages": "الصفحات",
     "Help": "المساعدة",
+    "address": "العنوان",
+    "Country": "الدولة",
+    "defaultLanguage": "اللغة الافتراضية",
+    "phone": "الهاتف",
     "Call toll-free": "Call toll-free"
   }
 }

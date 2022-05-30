@@ -67,29 +67,31 @@
         {{ $t('buttons.Login') }}
       </button>
     </div>
-    <div class="mb-4d75">
-      <button class="btn btn-block py-3 rounded-0 btn-dark">
-        {{ $t('buttons.Login as a vendor') }}
-      </button>
-    </div>
-
-    <div class="mb-4d75">
-      <button
-        class="js-animation-link btn btn-block py-3 rounded-0 btn-outline-dark font-weight-medium"
-        @click="setting('signUp')"
-      >
-        {{ $t('misc.New Account') }}
-      </button>
-    </div>
-    <div class="mb-4d75">
-      <button
-        class="js-animation-link btn btn-block py-3 rounded-0 btn-outline-dark font-weight-medium"
-        @click="setting('signUp')"
-      >
-        {{ $t('misc.New Publisher Account') }}
-      </button>
-    </div>
   </form>
+  <div class="mb-4d75">
+    <a
+      href="https://ilaw.technomasrsystems.com/vendor/login"
+      class="btn vendor btn-block py-3 rounded-0 btn-dark"
+    >
+      {{ $t('buttons.Login as a vendor') }}
+    </a>
+  </div>
+  <div class="mb-4d75">
+    <button
+      class="js-animation-link btn btn-block py-3 rounded-0 btn-outline-dark font-weight-medium"
+      @click="setting('signUpUser')"
+    >
+      {{ $t('misc.New Account') }}
+    </button>
+  </div>
+  <div class="mb-4d75">
+    <button
+      class="js-animation-link btn btn-block py-3 rounded-0 btn-outline-dark font-weight-medium"
+      @click="setting('signUpVendor')"
+    >
+      {{ $t('misc.New Publisher Account') }}
+    </button>
+  </div>
 </template>
 
 <script>
@@ -118,4 +120,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+a.vendor:hover {
+  color: #fff !important;
+}
+</style>

@@ -44,6 +44,7 @@ export default {
     getAuthors() {
       this.axios.get('writer/writers').then((data) => {
         console.log(data.data)
+        
       })
     },
     getPublisher() {

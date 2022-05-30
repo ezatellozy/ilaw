@@ -225,6 +225,7 @@ import { useStore } from 'vuex'
 // import { required, email } from '@vuelidate/validators'
 import axios from 'axios'
 export default {
+  props: ['urlRoute'],
   data() {
     return {
       countries: null,
@@ -258,7 +259,7 @@ export default {
       })
     },
   },
-  setup() {
+  setup(props) {
     const store = useStore()
     const form = reactive({
       name: '',
@@ -283,9 +284,11 @@ export default {
     // function fetchCuntries() {
 
     // }
-    console.log(store.getters.isLoggedIn)
+
+    console.log(props.urlRoute)
+
     function register() {
-      store.dispatch('register', form)
+      store.dispatch('register', [form, props.urlRoute])
     }
 
     return {

@@ -75,7 +75,12 @@
                 </a>
               </li>
               <li class="nav-item mx-0">
-                <a class="nav-link d-flex align-items-center px-0" href="#">
+                <a
+                  role="button"
+                  @click="logout"
+                  class="nav-link d-flex align-items-center px-0"
+                  href="#"
+                >
                   <span class="font-weight-normal text-gray-600">Logout</span>
                 </a>
               </li>
@@ -144,6 +149,9 @@ export default {
       this.downloads = false
       this.accountDetails = false
       this[tab] = true
+    },
+    logout() {
+      this.$store.dispatch('logout')
     },
   },
 }

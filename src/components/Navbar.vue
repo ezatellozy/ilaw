@@ -77,7 +77,6 @@
             class="d-none d-md-flex align-items-center mt-3 mt-md-0"
             :class="$i18n.locale == 'ar' ? 'me-md-auto' : 'ms-md-auto'"
           >
-            <!-- question -->
             <a
               :href="`mailto:${contactEmail}`"
               :class="$i18n.locale == 'ar' ? 'ml-4' : 'mr-4'"
@@ -98,9 +97,6 @@
                 </div>
               </div>
             </a>
-            <!-- End question -->
-
-            <!-- Customer care -->
             <a :href="`tel:${phone}`">
               <div
                 class="d-flex align-items-center text-dark font-size-2 text-lh-sm"
@@ -115,7 +111,6 @@
                 </div>
               </div>
             </a>
-            <!-- End Customer care -->
           </div>
         </div>
       </div>
@@ -291,7 +286,6 @@ export default {
   },
   mounted() {
     this.getSettings()
-    console.log(this.isLoggedIn)
   },
   computed: {
     userAccount() {

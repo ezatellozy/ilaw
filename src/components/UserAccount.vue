@@ -39,8 +39,19 @@
                   </div>
                 </transition>
                 <transition name="fade">
-                  <div id="signup" v-if="signUp">
-                    <NewAccount @setting="setting($event)" />
+                  <div id="signUpUser" v-if="signUpUser">
+                    <NewAccount
+                      urlRoute="/user/register"
+                      @setting="setting($event)"
+                    />
+                  </div>
+                </transition>
+                <transition name="fade">
+                  <div id="signUpVendor" v-if="signUpVendor">
+                    <NewAccount
+                      urlRoute="/vendor/register"
+                      @setting="setting($event)"
+                    />
                   </div>
                 </transition>
                 <transition name="fade">
@@ -67,7 +78,8 @@ export default {
   data() {
     return {
       signIn: true,
-      signUp: false,
+      signUpUser: false,
+      signUpVendor: false,
       forgotPassword: false,
     }
   },
@@ -76,9 +88,9 @@ export default {
       this.$emit('closeMenu')
     },
     setting(event) {
-      console.log(event)
       this.signIn = false
-      this.signUp = false
+      this.signUpUser = false
+      this.signUpVendor = false
       this.forgotPassword = false
       this[event] = true
     },
