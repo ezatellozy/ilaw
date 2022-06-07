@@ -16,18 +16,24 @@
               class="nav-link p-2 link-black-100 d-flex align-items-center"
             >
               <i class="glph-icon flaticon-sent mr-2 font-size-3"></i>
-              Track Your Order
+              {{ $t('misc.Track Your Order') }}
             </router-link>
           </li>
           <li class="nav-item">
             <b-dropdown
               id="currency"
               class="link-black-100 d-flex align-items-center"
-              text="USD"
+              v-model="currency"
+              :text="currency"
             >
-              <b-dropdown-item>EG</b-dropdown-item>
-              <b-dropdown-item>USD</b-dropdown-item>
-              <b-dropdown-item>EUR</b-dropdown-item>
+              <b-dropdown-item
+                v-for="currency in currencis"
+                :key="currency.value"
+                :value="currency.code"
+                @click="changeCurrency(currency.code)"
+              >
+                {{ currency.code }}
+              </b-dropdown-item>
             </b-dropdown>
           </li>
           <li class="nav-item">
@@ -53,6 +59,8 @@ import Cookies from 'js-cookie'
 export default {
   data() {
     return {
+      currencis: null,
+
       miniCart: false,
       // locale: this.$i18n.locale,
       langs: [
@@ -71,6 +79,9 @@ export default {
       ],
     }
   },
+  mounted() {
+    this.getCurrencis()
+  },
   methods: {
     changeLocale(lang) {
       Cookies.set('locale', lang)
@@ -78,6 +89,15 @@ export default {
       setTimeout(() => {
         window.location.reload()
       }, 300)
+    },
+    changeCurrency(c) {
+      Cookies.set('currency', c)
+      this.$store.commit('currency', c)
+    },
+    getCurrencis() {
+      this.axios.get('currency/currencies').then((data) => {
+        this.currencis = data.data.data
+      })
     },
   },
   computed: {
@@ -89,6 +109,9 @@ export default {
       } else {
         return 'France'
       }
+    },
+    currency() {
+      return this.$store.getters.currency
     },
   },
 }

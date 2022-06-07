@@ -2,7 +2,7 @@
   <intro />
   <div class="publisher">
     <slider
-      title="Publisher"
+      title="publishers"
       cardStyles="rounded-circle"
       routerPath="publisher"
       name="publisher"
@@ -37,7 +37,6 @@ import Intro from '@/components/Intro.vue'
 import Content from '@/components/Content.vue'
 import Slider from '@/components/Slider.vue'
 import AttractFeatures from '@/components/AttractFeatures.vue'
-// @ is an alias to /src
 
 export default {
   name: 'Home',
@@ -48,6 +47,11 @@ export default {
       publisher: null,
       partners: null,
     }
+  },
+  mounted() {
+    this.getAuthors()
+    this.getPublisher()
+    this.getPartner()
   },
   methods: {
     getAuthors() {
@@ -65,11 +69,6 @@ export default {
         this.partners = data.data.data
       })
     },
-  },
-  mounted() {
-    this.getAuthors()
-    this.getPublisher()
-    this.getPartner()
   },
 }
 </script>

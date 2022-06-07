@@ -1,34 +1,39 @@
 <template>
   <header class="border-bottom px-4 px-md-6 py-4">
     <h2 class="font-size-3 mb-0 d-flex align-items-center">
-      <i class="flaticon-resume mr-3 font-size-5"></i>
-      Create Account
+      <i
+        class="flaticon-resume font-size-5"
+        :class="$i18n.locale == 'ar' ? ' ml-3' : ' mr-3'"
+      ></i>
+      {{ $t('misc.New Account') }}
     </h2>
   </header>
   <!-- End Title -->
 
   <div class="p-4 p-md-6">
-    <form class="" @submit.prevent="register">
+    <form id="identicalForm" class="" @submit.prevent="register">
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="name">
-            Name
+            {{ $t('inputs.name') }}
           </label>
           <input
             type="text"
             class="form-control rounded-0 height-4 px-4"
             name="name"
             id="name"
-            placeholder="Your name"
+            :placeholder="$t('placeholder.Please enter your name')"
             v-model="form.name"
-            required=""
           />
+          <div v-for="error of v$.name.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="lastname">
-            User name
+            {{ $t('inputs.username') }}
           </label>
           <input
             type="text"
@@ -36,75 +41,82 @@
             name="name"
             id="lastname"
             v-model="form.user_name"
-            placeholder="User name"
-            required=""
+            :placeholder="$t('inputs.username')"
           />
+          <div v-for="error of v$.user_name.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="phone">
-            Phone
+            {{ $t('inputs.phone') }}
           </label>
           <input
             type="phone"
             class="form-control rounded-0 height-4 px-4"
             name="name"
             id="phone"
-            placeholder="Phone"
+            :placeholder="$t('placeholder.Please enter your phone')"
             v-model="form.phone"
-            required=""
           />
+          <div v-for="error of v$.phone.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label class="form-label" for="email">
-            Email Address
+            {{ $t('inputs.Email Address') }}
           </label>
           <input
             type="email"
             class="form-control rounded-0 height-4 px-4"
             name="email"
             id="email"
-            placeholder="Enter Your Email Address"
-            required=""
+            :placeholder="$t('placeholder.Enter Your Email Address')"
             v-model="form.email"
           />
+          <div v-for="error of v$.email.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
 
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="address">
-            Address
+            {{ $t('misc.address') }}
           </label>
           <input
             type="text"
             class="form-control rounded-0 height-4 px-4"
             name="address"
             id="address"
-            placeholder="Address"
+            :placeholder="$t('misc.address')"
             v-model="form.address"
-            required
           />
+          <div v-for="error of v$.address.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
 
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="country">
-            Country
+            {{ $t('misc.Country') }}
           </label>
           <select
             name="country"
             id="country"
-            required=""
             v-model="form.country_id"
             @change="getGovernment($event)"
             class="form-select rounded-0 height-4 px-4"
           >
-            <option value="" disabled>Select country</option>
+            <option value="" disabled>{{ $t('misc.Select country') }}</option>
             <option
               v-for="country in countries"
               :key="country.id"
@@ -113,21 +125,27 @@
               {{ country.name }}
             </option>
           </select>
+          <div v-for="error of v$.country_id.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
-      <div class="form-group mb-4" v-if="governments">
+      <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="governorate">
-            Governorate
+            {{ $t('misc.Governorate') }}
           </label>
           <select
             v-model="form.governorate_id"
             name="governorate"
             id="governorate"
-            required=""
+            :disabled="!governments"
+            @change="getCities($event)"
             class="form-select rounded-0 height-4 px-4"
           >
-            <option value="" disabled>Select government</option>
+            <option value="" disabled>
+              {{ $t('misc.Select government') }}
+            </option>
             <option
               v-for="government in governments"
               :key="government.id"
@@ -136,65 +154,67 @@
               {{ government.name }}
             </option>
           </select>
+          <div v-for="error of v$.governorate_id.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="city">
-            City
+            {{ $t('misc.City') }}
           </label>
           <select
             v-model="form.city_id"
             name="city"
             id="city"
-            required=""
+            :disabled="!cities"
             class="form-select rounded-0 height-4 px-4"
           >
-            <option value="" disabled>Select city</option>
+            <option value="" disabled>{{ $t('misc.Select city') }}</option>
             <option v-for="city in cities" :key="city.id" :value="city.id">
               {{ city.name }}
             </option>
           </select>
-          <!-- <input
-            type="text"
-            class="form-control"
-            name="city"
-            id="city"
-            placeholder="City"
-            required=""
-          /> -->
+          <div v-for="error of v$.city_id.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label class="form-label" for="Password">
-            Password *
+            {{ $t('misc.Password') }} *
           </label>
           <input
             type="password"
             class="form-control rounded-0 height-4 px-4"
             name="password"
             id="Password"
-            placeholder="Enter Your Password..."
-            required
+            :placeholder="$t('placeholder.Enter Your Password')"
             v-model="form.password"
           />
+          <div v-for="error of v$.password.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label class="form-label" for="cPassword">
-            Confirm Password *
+            {{ $t('misc.Confirm password') }} *
           </label>
           <input
             type="password"
             class="form-control rounded-0 height-4 px-4"
-            name="password"
-            id="cPassword"
-            placeholder="Confirm Password"
+            name="confirmPassword"
+            id="confirmPassword"
+            :placeholder="$t('misc.Confirm password')"
             v-model="form.cPassword"
-            required
           />
+          <div v-for="error of v$.cPassword.$errors" :key="error.$uid">
+            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
         </div>
       </div>
 
@@ -219,10 +239,10 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
-// import useVuelidate from '@vuelidate/core'
-// import { required, email } from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
+import { required, email, sameAs } from '@vuelidate/validators'
 import axios from 'axios'
 export default {
   props: ['urlRoute'],
@@ -235,8 +255,6 @@ export default {
   },
   mounted() {
     this.getCountries()
-    this.getCities()
-    // this.getGovernment()
   },
   methods: {
     setting(e) {
@@ -247,15 +265,17 @@ export default {
         this.countries = res.data.data
       })
     },
-    getCities() {
-      axios.get('cities/cities').then((res) => {
-        this.cities = res.data.data
+
+    getGovernment(e) {
+      this.governments = null
+      axios.get(`governorates/${e.target.value}`).then((res) => {
+        this.governments = res.data.data
       })
     },
-    getGovernment(e) {
-      console.log(e)
-      axios.get(`governorates/governorates/`).then((res) => {
-        this.governments = res.data.data
+    getCities(e) {
+      this.cities = null
+      axios.get(`cites/${e.target.value}`).then((res) => {
+        this.cities = res.data.data
       })
     },
   },
@@ -273,31 +293,42 @@ export default {
       password: '',
       cPassword: '',
     })
-    // let countries = null
-    // const rules = [
-    //   firstName: { required }, // Matches state.firstName
-    //   lastName: { required }, // Matches state.lastName
-    //   contact: {
-    //     email: { required, email } // Matches state.contact.email
-    // ]
+    const rules = computed(() => {
+      return {
+        name: { required },
+        user_name: { required },
+        email: { required, email },
+        phone: { required },
+        country_id: { required },
+        address: { required },
+        governorate_id: { required },
+        city_id: { required },
+        password: { required },
+        cPassword: {
+          required,
+          sameAsPassword: sameAs(form.password),
+        },
+      }
+    })
+    const v$ = useVuelidate(rules, form)
+    async function register() {
+      const isFormCorrect = await this.v$.$validate()
 
-    // function fetchCuntries() {
-
-    // }
-
-    console.log(props.urlRoute)
-
-    function register() {
-      store.dispatch('register', [form, props.urlRoute])
+      if (isFormCorrect) {
+        store.dispatch('register', [form, props.urlRoute])
+      }
     }
-
     return {
       form,
       register,
-      // countries,
+      v$,
     }
   },
 }
 </script>
 
-<style></style>
+<style>
+.error-msg {
+  color: red;
+}
+</style>

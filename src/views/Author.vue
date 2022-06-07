@@ -19,13 +19,16 @@
               </h6>
               <p class="mb-0">
                 {{ author.bio }}
-                <!-- {{ author.bio }} -->
               </p>
             </div>
             <ul
               class="products list-unstyled row no-gutters row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-wd-4 my-0 mb-md-8 mb-wd-12"
             >
-              <book-card v-for="n in 3" :key="n" />
+              <book-card
+                v-for="book in author.books"
+                :key="book.id"
+                :items="book"
+              />
             </ul>
           </div>
         </div>
@@ -36,18 +39,18 @@
     <div class="container">
       <header class="mb-2 d-md-flex justify-content-between align-items-center">
         <h2 class="font-size-7 mb-3 mb-md-0">
-          {{ $t("misc.Author's Books") }}
+          {{ $t('misc.Authors Books') }}
         </h2>
       </header>
 
       <div class="product">
         <carousel v-bind="settingsBook">
-          <slide v-for="n in 10" :key="n">
+          <slide v-for="book in author.books" :key="book.id">
             <div
               class="js-slick-carousel products no-gutters border-top border-left border-right"
             >
               <div class="product__inner overflow-hidden p-3 p-md-4d875">
-                <book-card />
+                <book-card :items="book" />
               </div>
             </div>
           </slide>
@@ -99,8 +102,7 @@ export default {
     getAuthor() {
       this.axios.get(`writer/writer/${this.$route.params.id}`).then((data) => {
         this.author = data.data.data
-
-        console.log(this.author.bio)
+        console.log(this.author)
       })
     },
   },
@@ -131,6 +133,13 @@ export default {
     .product__inner {
       padding: 0 !important;
     }
+  }
+}
+.is-rtl {
+  p,
+  h2,
+  h6 {
+    text-align: right;
   }
 }
 </style>

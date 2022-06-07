@@ -2,10 +2,10 @@
   <div class="site-content space-bottom-3 pt-11" id="content">
     <div class="container">
       <div class="row">
-        <div class="col-3">
+        <div class="col-md-4">
           <div id="secondary" class="sidebar widget-area" role="complementary">
             <b-accordion free>
-              <b-accordion-item title="Categories" visible>
+              <b-accordion-item :title="$t('nav.categories')" visible>
                 <ul class="product-categories">
                   <li class="cat-item cat-item-9 cat-parent">
                     <a href="/shop">Clothing</a>
@@ -25,7 +25,7 @@
                 </ul>
               </b-accordion-item>
 
-              <b-accordion-item title="Author">
+              <b-accordion-item :title="$t('misc.author')">
                 <form class="form-inline my-2 overflow-hidden">
                   <div class="input-group flex-nowrap w-100">
                     <div class="input-group-prepend">
@@ -68,7 +68,7 @@
                   </li>
                 </ul>
               </b-accordion-item>
-              <b-accordion-item title="language">
+              <b-accordion-item :title="$t('misc.language')">
                 <ul class="product-categories">
                   <li class="custom-control custom-checkbox mb-2 pb-2">
                     <input
@@ -122,7 +122,7 @@
                   </li>
                 </ul>
               </b-accordion-item>
-              <b-accordion-item title="format">
+              <b-accordion-item :title="$t('misc.format')">
                 <ul class="product-categories">
                   <li class="cat-item cat-item-9 cat-parent">
                     <a href="../shop/v3.html">Audio CD</a>
@@ -141,7 +141,7 @@
                   </li>
                 </ul>
               </b-accordion-item>
-              <b-accordion-item title="Filter by price">
+              <b-accordion-item :title="$t('misc.by price')">
                 <form
                   method="get"
                   action="https://themes.woocommerce.com/storefront/shop/"
@@ -198,7 +198,7 @@
                   </div>
                 </form>
               </b-accordion-item>
-              <b-accordion-item title="By review">
+              <b-accordion-item :title="$t('misc.By review')">
                 <div
                   class="form-group d-flex align-items-center justify-content-between font-size-1 text-lh-md text-secondary mb-2 pb-1"
                 >
@@ -308,14 +308,16 @@
             </b-accordion>
           </div>
         </div>
-        <div class="col-9">
+        <div class="col-md-8">
           <div id="primary" class="content-area">
             <div
               class="shop-control-bar d-lg-flex justify-content-between align-items-center mb-5 text-center text-md-left"
             >
-              <div class="shop-control-bar__left mb-4 m-lg-0">
+              <div class="shop-control-bar__left mb-2 mt-2 m-lg-0">
                 <p class="woocommerce-result-count m-0">
-                  Showing 1–12 of 126 results
+                  {{ $t('misc.Showing') }}
+                  <bdi>1–12 of 126</bdi>
+                  {{ $t('misc.results') }}
                 </p>
               </div>
               <div class="shop-control-bar__right d-md-flex align-items-center">
@@ -328,14 +330,20 @@
                     name="orderby"
                     aria-label="Default select example"
                   >
-                    <option value="popularity">Sort by popularity</option>
-                    <option value="default" selected>
-                      Default sorting
+                    <option value="popularity">
+                      {{ $t('misc.Sort by popularity') }}
                     </option>
-                    <option value="date">Sort by newness</option>
-                    <option value="price">Sort by price: low to high</option>
+                    <option value="default" selected>
+                      {{ $t('misc.Default sorting') }}
+                    </option>
+                    <option value="date">
+                      {{ $t('misc.Sort by newness') }}
+                    </option>
+                    <option value="price">
+                      {{ $t('misc.Sort by price: low to high ') }}
+                    </option>
                     <option value="price-desc">
-                      Sort by price: high to low
+                      {{ $t('misc.Sort by price: high to low') }}
                     </option>
                   </select>
                   <!-- Select -->
@@ -348,12 +356,15 @@
                   <select
                     class="form-select border-0 border-bottom shadow-none outline-none py-2"
                     name="orderby"
+                    v-model="perPage"
                   >
-                    <option value="show10">Show 10</option>
-                    <option value="show15">Show 15</option>
-                    <option value="show20" selected="selected">Show 20</option>
-                    <option value="show25">Show 25</option>
-                    <option value="show30">Show 30</option>
+                    <option value="10">{{ $t('misc.Show') }} 10</option>
+                    <option value="15">{{ $t('misc.Show') }} 15</option>
+                    <option value="20" selected="selected">
+                      {{ $t('misc.Show') }} 20
+                    </option>
+                    <option value="25">{{ $t('misc.Show') }} 25</option>
+                    <option value="30">{{ $t('misc.Show') }} 30</option>
                   </select>
                   <!-- Select -->
                 </form>
@@ -394,17 +405,27 @@
                   id=""
                   class="products list-unstyled row no-gutters row-cols-2 row-cols-lg-3 row-cols-wd-4 border-top border-left mb-6"
                 >
-                  <book-card v-for="n in 10" :key="n" />
+                  <book-card
+                    v-for="book in books"
+                    :key="book.id"
+                    :items="book"
+                  />
                 </ul>
-
-                <b-pagination
-                  class="justify-content-center"
-                  v-model="currentPage"
-                  pills
-                  :total-rows="rows"
-                  size="sm"
-                  area-controll="pills-one-example1"
-                ></b-pagination>
+                <div class="container">
+                  <!-- :margin-pages="2" -->
+                  <paginate
+                    v-model="page"
+                    :page-count="pageCount"
+                    :click-handler="onChangePage"
+                    :prev-text="$t('misc.prev')"
+                    :next-text="$t('misc.next')"
+                    :page-range="3"
+                    :margin-pages="0"
+                    :container-class="'pagination'"
+                    :page-class="'page-item'"
+                    :break-view-class="'break-view'"
+                  ></paginate>
+                </div>
               </div>
             </div>
           </div>
@@ -417,14 +438,29 @@
 <script>
 import BookCard from '@/components/BookCard.vue'
 import BookCardList from '@/components/BookCardList.vue'
+import Books from '@/books.json'
+import Paginate from 'vuejs-paginate-next'
 export default {
-  components: { BookCardList, BookCard },
+  components: { BookCardList, BookCard, Paginate },
   data() {
     return {
+      books: Books,
       list: false,
-      currentPage: '1',
-      rows: 10,
+      perPage: 10,
+      page: 1,
+      pageOfItems: [],
     }
+  },
+  methods: {
+    onChangePage(e) {
+      console.log(e)
+      // this.pageOfItems = pageOfItems
+    },
+  },
+  computed: {
+    pageCount() {
+      return this.books.length / this.perPage
+    },
   },
 }
 </script>
@@ -492,5 +528,12 @@ select {
       }
     }
   }
+}
+.page-link {
+  border-radius: 50px !important;
+  cursor: pointer;
+}
+.pagination {
+  justify-content: center;
 }
 </style>

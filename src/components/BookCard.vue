@@ -1,13 +1,14 @@
 <template>
+  <BookTypeModal v-if="BookTypeModal" @closemodal="addToCart" :book="items" />
   <li class="product col bg-hover-white">
-    <div class="product__inner overflow-hidden p-3 p-md-4d875">
+    <div class="product__inner overflow-hidden p-3 p-md-4d875" v-if="items">
       <div
         class="woocommerce-LoopProduct-link woocommerce-loop-product__link d-block position-relative"
       >
         <div class="woocommerce-loop-product__thumbnail">
-          <router-link to="/book">
+          <router-link :to="`/book/${items.id}`">
             <img
-              src="@/assets/img9.jpg"
+              :src="items.main_media"
               class="img-fluid d-block mx-auto attachment-shop_catalog size-shop_catalog wp-post-image img-fluid"
               alt="image-description"
             />
@@ -18,19 +19,19 @@
         >
           <div class="text-uppercase font-size-1 mb-1 text-truncate">
             <router-link to="/book" class="text-gray-700">
-              Paperback
+              {{ items.category }}
             </router-link>
           </div>
           <h2
             class="woocommerce-loop-product__title product__title h6 text-lh-md mb-1 text-height-2 crop-text-2 h-dark"
           >
             <router-link to="/book" class="text-gray-700">
-              Man's Search for Meaning
+              {{ items.name }}
             </router-link>
           </h2>
           <div class="font-size-2 mb-1 text-truncate">
             <router-link to="/authers" class="text-gray-700">
-              Jay Shetty
+              {{ items.author }}
             </router-link>
           </div>
           <div
@@ -38,9 +39,9 @@
           >
             <span class="woocommerce-Price-amount amount">
               <span class="woocommerce-Price-currencySymbol">
-                $
+                {{ items.pdf_price }} - {{ items.hardcopy_price }}
               </span>
-              29
+              {{ currency }}
             </span>
           </div>
           <div
@@ -53,28 +54,31 @@
               <small class="far fa-star"></small>
               <small class="far fa-star"></small>
             </div>
-            <div class="">(3,714)</div>
+            <div class="">{{ items.rate }}</div>
           </div>
         </div>
         <div class="product__hover d-flex align-items-center">
-          <router-link
-            to="/book"
+          <a
+            role="button"
+            @click="addToCart"
             class="text-uppercase text-dark h-dark font-weight-medium mr-auto"
           >
-            <span class="product__add-to-cart">ADD TO CART</span>
+            <span class="product__add-to-cart">
+              {{ $t('misc.ADD TO CART') }}
+            </span>
             <span class="product__add-to-cart-icon font-size-4">
               <i class="flaticon-icon-126515"></i>
             </span>
-          </router-link>
-
-          <router-link
-            to="/book"
+          </a>
+          <a
+            role="button"
+            @click="addToWashList(items)"
             class="text-uppercase text-dark h-dark font-weight-medium"
           >
             <span class="product__add-to-cart-icon font-size-4">
               <i class="flaticon-heart"></i>
             </span>
-          </router-link>
+          </a>
         </div>
       </div>
     </div>
@@ -82,7 +86,45 @@
 </template>
 
 <script>
-export default {}
+import { inject } from 'vue'
+import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
+import BookTypeModal from './BookTypeModal.vue'
+
+export default {
+  props: ['items'],
+  components: { BookTypeModal },
+  data() {
+    return {
+      BookTypeModal: false,
+    }
+  },
+
+  methods: {
+    addToCart() {
+      this.BookTypeModal = !this.BookTypeModal
+    },
+    addToWashlist() {
+      this.BookTypeModal = !this.BookTypeModal
+    },
+  },
+  computed: {
+    currency() {
+      return this.$store.getters.currency
+    },
+  },
+  setup() {
+    const store = useStore()
+    const toast = inject('toast')
+    const { t } = useI18n()
+
+    function addToWashList(item) {
+      store.commit('addToWashlist', item)
+      toast.success(t('misc.addSuccess'))
+    }
+    return { addToWashList }
+  },
+}
 </script>
 
 <style>

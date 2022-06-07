@@ -16,6 +16,7 @@ import Publisher from '../views/Publisher.vue'
 import Authers from '../views/Authers.vue'
 import OrderRecived from '../views/OrderRecived.vue'
 import Book from '@/components/BookInfo.vue'
+import PageNotFound from '@/components/NotFound.vue'
 import createStore from '@/store'
 import Cookies from 'js-cookie'
 const store = createStore
@@ -27,7 +28,7 @@ const routes = [
     component: Home,
   },
   {
-    path: '/book',
+    path: '/book/:id',
     name: 'book',
     component: Book,
   },
@@ -87,41 +88,11 @@ const routes = [
     component: Checkout,
   },
   {
-    path: '/account',
+    path: '/account/:slug',
     name: 'account',
     meta: {
       auth: true,
     },
-    children: [
-      {
-        path: 'wishlist',
-        component: () => import('@/components/Wishlist.vue'),
-        meta: {
-          auth: true,
-        },
-      },
-      {
-        path: 'addresses',
-        component: () => import('@/components/Addresses.vue'),
-        meta: {
-          auth: true,
-        },
-      },
-      {
-        path: 'account-details',
-        component: () => import('@/components/AccountDetails.vue'),
-        meta: {
-          auth: true,
-        },
-      },
-      {
-        path: 'dashboard',
-        component: () => import('@/components/Dashboard.vue'),
-        meta: {
-          auth: true,
-        },
-      },
-    ],
     component: Account,
   },
   {
@@ -139,6 +110,7 @@ const routes = [
     name: 'publisher',
     component: Publisher,
   },
+  { path: '/:pathMatch(.*)*', component: PageNotFound },
 ]
 
 const router = createRouter({

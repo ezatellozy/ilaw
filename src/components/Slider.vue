@@ -1,7 +1,7 @@
 <template>
   <div class="container" :class="name">
     <div class="text-center pt-4">
-      <h2 class="font-size-7 mb-2 main-title">{{ title }}</h2>
+      <h2 class="font-size-7 mb-2 main-title">{{ $t(`misc.${title}`) }}</h2>
     </div>
     <carousel v-bind="settings" v-if="items">
       <slide v-for="item in items" :key="item.id">

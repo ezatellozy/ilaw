@@ -30,10 +30,10 @@
       <div class="products-book border-top border-right">
         <ul
           class="list-unstyled products border-left border-bottom mb-0"
-          v-for="n in 8"
-          :key="n"
+          v-for="book in publisher.books"
+          :key="book.id"
         >
-          <book-card />
+          <book-card :items="book" />
         </ul>
       </div>
       <div class="text-center">
@@ -83,7 +83,6 @@ export default {
         .get(`/vendors/vendor/${this.$route.params.id}`)
         .then((data) => {
           this.publisher = data.data.data
-          console.log(this.publisher.company_name)
         })
     },
   },
@@ -116,6 +115,13 @@ export default {
   .products-book {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+.is-rtl {
+  p,
+  h2,
+  h6 {
+    text-align: right;
   }
 }
 </style>

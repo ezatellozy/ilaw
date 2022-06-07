@@ -26,6 +26,9 @@ export default {
       faqs: null,
     }
   },
+  mounted() {
+    this.getFaqs()
+  },
   methods: {
     getFaqs() {
       this.axios.get('FAQ/faqs').then((data) => {
@@ -33,9 +36,6 @@ export default {
         console.log(this.faqs)
       })
     },
-  },
-  mounted() {
-    this.getFaqs()
   },
 }
 </script>

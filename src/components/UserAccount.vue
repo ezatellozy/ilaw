@@ -11,9 +11,17 @@
           <div class="u-header-sidebar__footer-offset">
             <!-- Toggle Button -->
             <div
-              class="d-flex align-items-center position-absolute top-0 right-0 z-index-2 mt-5 mr-md-6 mr-4"
+              class="d-flex align-items-center justify-content-between border-bottom px-4 px-md-6 py-4"
             >
-              <button type="button" class="close ml-auto" @click="openUserMenu">
+              <div id="login">
+                <header class="">
+                  <h2 class="font-size-3 mb-0 d-flex align-items-center">
+                    <i class="flaticon-user mr-3 font-size-5"></i>
+                    {{ $t('misc.Account') }}
+                  </h2>
+                </header>
+              </div>
+              <button type="button" class="close" @click="openUserMenu">
                 <span aria-hidden="true">
                   Close
                   <i class="fas fa-times ml-2"></i>
@@ -25,14 +33,6 @@
             <!-- Content -->
             <div class="js-scrollbar u-sidebar__body">
               <div class="u-sidebar__content u-header-sidebar__content">
-                <div id="login">
-                  <header class="border-bottom px-4 px-md-6 py-4">
-                    <h2 class="font-size-3 mb-0 d-flex align-items-center">
-                      <i class="flaticon-user mr-3 font-size-5"></i>
-                      Account
-                    </h2>
-                  </header>
-                </div>
                 <transition name="fade">
                   <div class="p-4 p-md-6" v-if="signIn">
                     <Login @setting="setting($event)" />

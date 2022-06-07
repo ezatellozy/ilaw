@@ -1,10 +1,9 @@
 @import './flaticon/font/flaticon.css';
 @import './animate.css/animate.css';
 @import './all.min.css';
-
-// @import '@/assets/bootstrap-select/dist/css/bootstrap-select.css';
 @import '@/assets/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css';
-// @import './theme.scss';
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&display=swap');
+
 body {
   font-size: 1rem;
   font-weight: 400;
@@ -16,17 +15,25 @@ body {
 
 .is-rtl {
   direction: rtl;
-  p,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  a,
-  li,
-  span {
-    text-align: right;
+  font-family: 'Cairo', sans-serif !important;
+  // p,
+  // h1,
+  // h2,
+  // h3,
+  // h4,
+  // h5,
+  // h6,
+  // a,
+  // tr,
+  // th,
+  // div,
+  // li {
+  //   text-align: right;
+  //   direction: rtl;
+  // }
+  .u-sidebar--left {
+    left: unset !important;
+    right: 0;
   }
 }
 
@@ -42,13 +49,9 @@ li {
   list-style: none !important;
 }
 
-.container {
-  padding: 0 !important;
-}
-
-.carousel__track {
-  justify-content: center;
-}
+// .container {
+//   padding: 0 !important;
+// }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 /*------------------------------------------------------------------
@@ -27021,17 +27024,22 @@ footer .widget select.custom-select,
   top: 0;
   right: 0;
   z-index: 1002;
-  width: 18.75rem;
+  width: 90%;
   height: 100%;
   background-color: #fff;
   box-shadow: -13px 0 20px rgba(124, 110, 101, 0.08);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 500px) {
   .u-sidebar__md {
     width: 25rem;
   }
 }
+// @media (min-width: 768px) {
+//   .u-sidebar__md {
+//     width: 25rem;
+//   }
+// }
 
 .u-sidebar-bg-overlay {
   position: fixed;

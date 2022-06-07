@@ -12,10 +12,8 @@
             <!-- Content -->
             <div class="js-scrollbar u-sidebar__body">
               <div class="u-sidebar__content u-header-sidebar__content">
-                <form class="">
-                  <!-- Login -->
-                  <div id="login">
-                    <!-- Title -->
+                <form class="" @submit.prevent="addNewAddress">
+                  <div>
                     <header class="border-bottom px-4 px-md-6 py-4">
                       <div>
                         <button
@@ -24,7 +22,7 @@
                           @click="openFrmNew"
                         >
                           <span aria-hidden="true">
-                            Close
+                            {{ $t('misc.Close') }}
                             <i class="fas fa-times ml-2"></i>
                           </span>
                         </button>
@@ -35,12 +33,10 @@
                           size="lg"
                           :icon="['fas', 'location-dot']"
                         />
-                        New address
+                        {{ $t('misc.New address') }}
                       </h2>
                     </header>
-                    <!-- End Title -->
                   </div>
-
                   <div id="new-address">
                     <div class="p-4 p-md-6">
                       <div class="form-group mb-4">
@@ -50,44 +46,118 @@
                             class="form-label"
                             for="country"
                           >
-                            Country
+                            {{ $t('misc.Country') }}
                           </label>
-                          <input
-                            type="text"
-                            class="form-control rounded-0 height-4 px-4"
+                          <select
                             name="country"
                             id="country"
-                            placeholder="Country"
                             required=""
-                          />
+                            v-model="form.country_id"
+                            @change="getGovernment($event)"
+                            class="form-select rounded-0 height-4 px-4"
+                          >
+                            <option value="" disabled>
+                              {{ $t('misc.Select country') }}
+                            </option>
+                            <option
+                              v-for="country in countries"
+                              :key="country.id"
+                              :value="country.id"
+                            >
+                              {{ country.name }}
+                            </option>
+                          </select>
                         </div>
                       </div>
                       <div class="form-group mb-4">
                         <div class="js-form-message js-focus-state">
-                          <label class="form-label" for="governorate">
-                            Governorate
+                          <label
+                            id="signinEmailLabel"
+                            class="form-label"
+                            for="governorate"
+                          >
+                            {{ $t('misc.Governorate') }}
+                          </label>
+                          <select
+                            v-model="form.governorate_id"
+                            name="governorate"
+                            id="governorate"
+                            :disabled="!governments"
+                            required=""
+                            @change="getCities($event)"
+                            class="form-select rounded-0 height-4 px-4"
+                          >
+                            <option value="" disabled>
+                              {{ $t('misc.Select government') }}
+                            </option>
+                            <option
+                              v-for="government in governments"
+                              :key="government.id"
+                              :value="government.id"
+                            >
+                              {{ government.name }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group mb-4">
+                        <div class="js-form-message js-focus-state">
+                          <label
+                            id="signinEmailLabel"
+                            class="form-label"
+                            for="city"
+                          >
+                            {{ $t('misc.City') }}
+                          </label>
+                          <select
+                            v-model="form.city_id"
+                            name="city"
+                            id="city"
+                            required=""
+                            :disabled="!cities"
+                            class="form-select rounded-0 height-4 px-4"
+                          >
+                            <option value="" disabled>
+                              {{ $t('misc.Select city') }}
+                            </option>
+                            <option
+                              v-for="city in cities"
+                              :key="city.id"
+                              :value="city.id"
+                            >
+                              {{ city.name }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group mb-4">
+                        <div class="js-form-message js-focus-state">
+                          <label class="form-label" for="address">
+                            {{ $t('misc.address') }}
                           </label>
                           <input
                             type="text"
                             class="form-control rounded-0 height-4 px-4"
-                            name="governorate"
-                            id="governorate"
-                            placeholder="Governorate"
+                            name="address"
+                            id="address"
+                            :placeholder="$t('placeholder.Enter Your Address')"
                             required=""
+                            v-model="form.address"
                           />
                         </div>
                       </div>
                       <div class="form-group mb-4">
                         <div class="js-form-message js-focus-state">
                           <label class="form-label" for="city">
-                            Phone
+                            {{ $t('inputs.phone') }}
                           </label>
                           <input
-                            type="text"
+                            type="phone"
                             class="form-control rounded-0 height-4 px-4"
-                            name="city"
-                            id="city"
-                            placeholder="City"
+                            :placeholder="
+                              $t('placeholder.Please enter your phone')
+                            "
+                            v-model="form.phone_number"
                             required=""
                           />
                         </div>
@@ -95,45 +165,16 @@
                       <div class="form-group mb-4">
                         <div class="js-form-message js-focus-state">
                           <label class="form-label" for="postalcode">
-                            Postal code
+                            {{ $t('inputs.Postal code') }}
                           </label>
                           <input
                             type="text"
                             class="form-control rounded-0 height-4 px-4"
                             name="postal code"
                             id="postalcode"
-                            placeholder="Postal code"
+                            :placeholder="$t('inputs.Postal code')"
                             required=""
-                          />
-                        </div>
-                      </div>
-                      <div class="form-group mb-4">
-                        <div class="js-form-message js-focus-state">
-                          <label class="form-label" for="address">
-                            Address
-                          </label>
-                          <input
-                            type="text"
-                            class="form-control rounded-0 height-4 px-4"
-                            name="address"
-                            id="address"
-                            placeholder="Address"
-                            required=""
-                          />
-                        </div>
-                      </div>
-                      <div class="form-group mb-4">
-                        <div class="js-form-message js-focus-state">
-                          <label class="form-label" for="phonenumber">
-                            Phone number
-                          </label>
-                          <input
-                            type="text"
-                            class="form-control rounded-0 height-4 px-4"
-                            name="phonenumber"
-                            id="phonenumber"
-                            placeholder="Phone number"
-                            required=""
+                            v-model="form.postal_code"
                           />
                         </div>
                       </div>
@@ -143,7 +184,7 @@
                           type="submit"
                           class="btn btn-block py-3 rounded-0 btn-dark"
                         >
-                          Add New Account
+                          {{ $t('buttons.Add New Address') }}
                         </button>
                       </div>
                     </div>
@@ -159,13 +200,23 @@
 </template>
 
 <script>
+import axios from 'axios'
+// import { useStore } from 'vuex'
+import { inject } from 'vue'
+import { reactive } from 'vue'
 export default {
   data() {
     return {
       signIn: true,
       signUp: false,
       forgotPassword: false,
+      countries: null,
+      governments: null,
+      cities: null,
     }
+  },
+  mounted() {
+    this.getCountries()
   },
   methods: {
     openFrmNew() {
@@ -177,6 +228,56 @@ export default {
       this.forgotPassword = false
       this[event] = true
     },
+    getCountries() {
+      axios.get('countries/countries').then((res) => {
+        this.countries = res.data.data
+      })
+    },
+
+    getGovernment(e) {
+      this.governments = null
+      axios.get(`governorates/${e.target.value}`).then((res) => {
+        this.governments = res.data.data
+      })
+    },
+    getCities(e) {
+      this.cities = null
+      axios.get(`cites/${e.target.value}`).then((res) => {
+        this.cities = res.data.data
+      })
+    },
+  },
+  setup() {
+    // const store = useStore()
+    const toast = inject('toast')
+    const form = reactive({
+      postal_code: '',
+      phone_number: '',
+      country_id: '',
+      address: '',
+      governorate_id: '',
+      city_id: '',
+    })
+    function addNewAddress() {
+      axios
+        .post('shippingAddress/shippingAddress', form)
+        .then((data) => {
+          toast.success(data.data.message)
+          setTimeout(() => {
+            window.location.reload()
+          }, 300)
+        })
+        .catch((err) => {
+          console.log('Error', err)
+          toast.error(err.message)
+        })
+    }
+
+    return {
+      form,
+      addNewAddress,
+      // countries,
+    }
   },
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div id="primary" class="content-area">
     <main id="main" class="site-main">
-      <div class="product">
-        <div class="container">
+      <div class="product" v-if="book">
+        <div class="container overflow-hidden">
           <div class="row">
             <div
               class="col-md-5 woocommerce-product-gallery woocommerce-product-gallery--with-images images"
@@ -13,12 +13,12 @@
                   data-pagi-classes="text-center u-slick__pagination my-4"
                 >
                   <carousel v-bind="settings">
-                    <slide v-for="n in 5" :key="n">
-                      <div class="js-slide">
+                    <slide v-for="item in book.media" :key="item.id">
+                      <div class="js-slide w-100">
                         <img
-                          src="@/assets/book.jpg"
+                          :src="item.path"
                           alt="Image Description"
-                          class="mx-auto img-fluid"
+                          class="mx-auto w-100"
                         />
                       </div>
                     </slide>
@@ -32,53 +32,76 @@
             <div class="col-md-7 pl-0 summary entry-summary border-left">
               <div class="space-top-2 px-4 px-xl-7 border-bottom pb-5">
                 <h1 class="product_title entry-title font-size-7 mb-3">
-                  Where the Crawdads Sing
+                  {{ book.title }}
                 </h1>
                 <div class="font-size-2 mb-4">
                   <span class="text-yellow-darker">
-                    <span class="fas fa-star"></span>
-                    <span class="fas fa-star"></span>
-                    <span class="fas fa-star"></span>
-                    <span class="fas fa-star"></span>
-                    <span class="fas fa-star"></span>
+                    <span
+                      :class="book.rate > 1 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
+                    <span
+                      :class="book.rate > 1 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
+                    <span
+                      :class="book.rate > 2 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
+                    <span
+                      :class="book.rate > 3 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
+                    <span
+                      :class="book.rate > 4 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
                   </span>
-                  <span class="ml-3">(3,714)</span>
+                  <span class="ml-3">({{ book.rate }})</span>
                   <router-link to="/author">
                     <span class="ml-3 font-weight-medium text-black">
-                      By(Author)
+                      <bdi>{{ $t('misc.By') }}</bdi>
+                      ({{ $t('misc.author') }})
                     </span>
-
-                    <span class="ml-2 text-gray-600">Anna Banks</span>
+                    <span class="ml-2 text-gray-600">
+                      {{ book.author }}
+                    </span>
                   </router-link>
                   <router-link to="/publisher">
                     <span class="ml-3 font-weight-medium text-black">
-                      Seller(Publisher)
+                      <bdi>{{ $t('misc.seller') }}</bdi>
+                      ({{ $t('misc.publisher') }})
                     </span>
-                    <span class="ml-2 text-gray-600">Anna Banks</span>
+                    <span class="ml-2 text-gray-600">
+                      {{ book.publisher }}
+                    </span>
                   </router-link>
                 </div>
                 <p class="price font-size-22 font-weight-medium mb-3">
                   <span class="woocommerce-Price-amount amount">
-                    <span class="woocommerce-Price-currencySymbol">$</span>
-                    29.95
-                  </span>
-                  –
-                  <span class="woocommerce-Price-amount amount">
-                    <span class="woocommerce-Price-currencySymbol">$</span>
-                    59.95
+                    <span class="woocommerce-Price-currencySymbol">
+                      {{ currency }}
+                    </span>
+                    {{ book.hardcopy_price }} - {{ book.pdf_price }}
                   </span>
                 </p>
                 <div class="mb-2 font-size-2">
-                  <span class="font-weight-medium">Book Format:</span>
-                  <span class="ml-2 text-gray-600">Choose an option</span>
+                  <span class="font-weight-medium">
+                    {{ $t('misc.Book Format') }}:
+                  </span>
+                  <span class="ml-2 text-gray-600">
+                    {{ $t('misc.Choose an option') }}
+                  </span>
                 </div>
-                <!-- Radio Checkbox Group -->
+
                 <div class="row mx-gutters-2 mb-4">
-                  <div class="col-6 col-md-3 mb-3 mb-md-0">
+                  <div class="col col-md-3 mb-3 mb-md-0">
                     <div class="">
                       <input
                         id="typeOfListingRadio1"
                         type="radio"
+                        v-model="item.bookType"
+                        value="hardcopy"
                         name="typeOfListingRadio1"
                         class="custom-control-input checkbox-outline__input"
                       />
@@ -86,52 +109,62 @@
                         class="border-bottom d-block checkbox-outline__label py-3 px-1 mb-0"
                         for="typeOfListingRadio1"
                       >
-                        <span class="d-block">Hardcopy</span>
-                        <span class="">$9.59</span>
+                        <span class="d-block text-center">
+                          {{ $t('misc.Hardcopy') }}
+                        </span>
+                        <span class="d-block text-center fw-bold">
+                          {{ book.hardcopy_price }} {{ currency }}
+                        </span>
                       </label>
                     </div>
                   </div>
-                  <div class="col-6 col-md-3 mb-3 mb-md-0">
+                  <div class="col col-md-3 mb-3 mb-md-0">
                     <div class="">
                       <input
                         id="typeOfListingRadio2"
                         type="radio"
+                        value="pdf"
                         name="typeOfListingRadio1"
+                        v-model="item.bookType"
                         class="custom-control-input checkbox-outline__input"
-                        checked
                       />
                       <label
                         class="border-bottom d-block checkbox-outline__label py-3 px-1 mb-0"
                         for="typeOfListingRadio2"
                       >
-                        <span class="d-block">PDF</span>
-                        <span class="">$9.59</span>
+                        <span
+                          class="d-block text-uppercase text-center d-block text-center"
+                        >
+                          PDF
+                        </span>
+                        <span class="d-block text-center fw-bold">
+                          {{ book.pdf_price }} {{ currency }}
+                        </span>
                       </label>
                     </div>
                   </div>
                 </div>
-                <!-- End Radio Checkbox Group -->
 
                 <div
                   class="woocommerce-product-details__short-description font-size-2 mb-5"
                 >
                   <p class="">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Excepteur sint occaecat.
+                    {{ book.description }}
                   </p>
                 </div>
 
-                <form @click.prevent class="cart d-md-flex align-items-center">
-                  <div class="quantity mb-4 mb-md-0 d-flex align-items-center">
-                    <!-- Quantity -->
+                <form
+                  @click.prevent
+                  class="cart d-md-flex justify-content-center justify-content-md-start align-items-center"
+                >
+                  <div
+                    class="quantity mb-4 mb-md-0 d-flex justify-content-center align-items-center"
+                  >
                     <div class="border px-3 width-120">
                       <div class="js-quantity">
                         <div class="d-flex align-items-center">
                           <label class="screen-reader-text sr-only">
-                            Quantity
+                            {{ $t('misc.Quantity') }}
                           </label>
                           <button class="js-minus text-dark" @click="qtyMinus">
                             <svg
@@ -154,7 +187,7 @@
                             min="1"
                             max="100"
                             name="quantity"
-                            v-model="quantity"
+                            v-model="item.qty"
                             title="Qty"
                           />
                           <button class="js-plus text-dark" @click="qtyPlus">
@@ -174,31 +207,36 @@
                         </div>
                       </div>
                     </div>
-                    <!-- End Quantity -->
                   </div>
-
-                  <button
-                    type="submit"
-                    name="add-to-cart"
-                    value="7145"
-                    class="btn btn-dark border-0 rounded-0 p-3 min-width-250 ml-md-4 single_add_to_cart_button button alt"
-                  >
-                    Add to cart
-                  </button>
+                  <div class="text-center">
+                    <button
+                      @click="addToCart"
+                      name="add-to-cart"
+                      :class="$i18n.locale == 'ar' ? 'mr-md-4' : 'ml-md-4'"
+                      class="btn btn-dark border-0 rounded-0 p-3 min-width-250 single_add_to_cart_button button alt"
+                    >
+                      {{ $t('misc.Add to cart') }}
+                    </button>
+                  </div>
                 </form>
               </div>
               <div class="px-4 px-xl-7 py-5 d-flex align-items-center">
                 <ul class="list-unstyled nav">
                   <li class="mr-6 mb-4 mb-md-0">
-                    <a href="#" class="h-primary">
+                    <a
+                      href="#"
+                      role="button"
+                      @click="addToWashList"
+                      class="h-primary"
+                    >
                       <i class="flaticon-heart mr-2"></i>
-                      Add to Wishlist
+                      {{ $t('misc.Add to Wishlist') }}
                     </a>
                   </li>
                   <li class="mr-6">
                     <a href="#" class="h-primary">
                       <i class="flaticon-share mr-2"></i>
-                      Share
+                      {{ $t('misc.share') }}
                     </a>
                   </li>
                 </ul>
@@ -219,7 +257,7 @@
                   :class="tabs.description ? 'active' : ''"
                   @click="activeTab('description')"
                 >
-                  Description
+                  {{ $t('misc.Description') }}
                 </a>
               </li>
 
@@ -229,7 +267,7 @@
                   :class="tabs.index ? 'active' : ''"
                   @click="activeTab('index')"
                 >
-                  index
+                  {{ $t('misc.index') }}
                 </a>
               </li>
               <li class="flex-shrink-0 flex-md-shrink-1 nav-item">
@@ -238,7 +276,7 @@
                   :class="tabs.aboutAuthor ? 'active' : ''"
                   @click="activeTab('aboutAuthor')"
                 >
-                  About author
+                  {{ $t('misc.About author') }}
                 </a>
               </li>
               <li class="flex-shrink-0 flex-md-shrink-1 nav-item">
@@ -247,7 +285,7 @@
                   :class="tabs.aboutPublisher ? 'active' : ''"
                   @click="activeTab('aboutPublisher')"
                 >
-                  About publisher
+                  {{ $t('misc.About publisher') }}
                 </a>
               </li>
               <li class="flex-shrink-0 flex-md-shrink-1 nav-item">
@@ -256,7 +294,7 @@
                   :class="tabs.review ? 'active' : ''"
                   @click="activeTab('review')"
                 >
-                  Reviews (0)
+                  {{ $t('misc.Reviews') }} (0)
                 </a>
               </li>
             </ul>
@@ -266,100 +304,103 @@
           <transition name="fade">
             <div
               v-if="tabs.description"
-              class="tab-content font-size-2 container"
+              class="tab-content font-size-2 overflow-hidden"
             >
-              <div class="row">
-                <div class="col-xl-8 offset-xl-2">
-                  <div
-                    class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab pt-9"
-                  >
-                    <!-- Mockup Block -->
-                    <p class="mb-0">
-                      We aim to show you accurate product information.
-                      Manufacturers, suppliers and others provide what you see
-                      here, and we have not verified it. See our disclaimer
-                    </p>
-                    <p class="mb-0">#1 New York Times Bestseller</p>
-                    <p class="mb-0">
-                      A Reese Witherspoon x Hello Sunshine Book Club Pick
-                    </p>
-                    <p class="mb-4">
-                      "I can't even express how much I love this book! I didn't
-                      want this story to end!"--Reese Witherspoon
-                    </p>
-                    <p class="mb-4">
-                      "Painfully beautiful."--The New York Times Book Review
-                    </p>
-                    <p>"Perfect for fans of Barbara Kingsolver."--Bustle</p>
-                    <p class="mb-4">
-                      For years, rumors of the "Marsh Girl" have haunted Barkley
-                      Cove, a quiet town on the North Carolina coast. So in late
-                      1969, when handsome Chase Andrews is found dead, the
-                      locals immediately suspect Kya Clark, the so-called Marsh
-                      Girl. But Kya is not what they say. Sensitive and
-                      intelligent, she has survived for years alone in the marsh
-                      that she calls home, finding friends in the gulls and
-                      lessons in the sand. Then the time comes when she yearns
-                      to be touched and loved. When two young men from town
-                      become intrigued by her wild beauty, Kya opens herself to
-                      a new life--until the unthinkable happens.
-                    </p>
-                    <p class="mb-4">
-                      Perfect for fans of Barbara Kingsolver and Karen Russell,
-                      Where the Crawdads Sing is at once an exquisite ode to the
-                      natural world, a heartbreaking coming-of-age story, and a
-                      surprising tale of possible murder. Owens reminds us that
-                      we are forever shaped by the children we once were, and
-                      that we are all subject to the beautiful and violent
-                      secrets that nature keeps
-                    </p>
-                    <p>WHERE THE CRAWDADS LP</p>
-                    <!-- End Mockup Block -->
-                  </div>
-                </div>
+              <div class="container">
                 <div class="row">
                   <div class="col-xl-8 offset-xl-2">
                     <div
-                      class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab pt-9"
+                      class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab pt-9 px-4"
                     >
                       <!-- Mockup Block -->
-                      <div class="table-responsive mb-4">
-                        <table class="table table-hover table-borderless">
-                          <tbody>
-                            <tr>
-                              <th class="px-4 px-xl-5">Format:</th>
-                              <td class="">Paperback | 384 pages</td>
-                            </tr>
-                            <tr>
-                              <th class="px-4 px-xl-5">Dimensions</th>
-                              <td>9126 x 194 x 28mm | 301g</td>
-                            </tr>
-                            <tr>
-                              <th class="px-4 px-xl-5">Publication date:</th>
-                              <td>20 Dec 2020</td>
-                            </tr>
-                            <tr>
-                              <th class="px-4 px-xl-5">Publisher:</th>
-                              <td>Little, Brown Book Group</td>
-                            </tr>
-                            <tr>
-                              <th class="px-4 px-xl-5">Imprint:</th>
-                              <td>Corsair</td>
-                            </tr>
-                            <tr>
-                              <th class="px-4 px-xl-5">
-                                Publication City/Country:
-                              </th>
-                              <td>London, United Kingdom</td>
-                            </tr>
-                            <tr>
-                              <th class="px-4 px-xl-5">Language:</th>
-                              <td>English</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                      <p class="mb-0">
+                        We aim to show you accurate product information.
+                        Manufacturers, suppliers and others provide what you see
+                        here, and we have not verified it. See our disclaimer
+                      </p>
+                      <p class="mb-0">#1 New York Times Bestseller</p>
+                      <p class="mb-0">
+                        A Reese Witherspoon x Hello Sunshine Book Club Pick
+                      </p>
+                      <p class="mb-4">
+                        "I can't even express how much I love this book! I
+                        didn't want this story to end!"--Reese Witherspoon
+                      </p>
+                      <p class="mb-4">
+                        "Painfully beautiful."--The New York Times Book Review
+                      </p>
+                      <p>"Perfect for fans of Barbara Kingsolver."--Bustle</p>
+                      <p class="mb-4">
+                        For years, rumors of the "Marsh Girl" have haunted
+                        Barkley Cove, a quiet town on the North Carolina coast.
+                        So in late 1969, when handsome Chase Andrews is found
+                        dead, the locals immediately suspect Kya Clark, the
+                        so-called Marsh Girl. But Kya is not what they say.
+                        Sensitive and intelligent, she has survived for years
+                        alone in the marsh that she calls home, finding friends
+                        in the gulls and lessons in the sand. Then the time
+                        comes when she yearns to be touched and loved. When two
+                        young men from town become intrigued by her wild beauty,
+                        Kya opens herself to a new life--until the unthinkable
+                        happens.
+                      </p>
+                      <p class="mb-4">
+                        Perfect for fans of Barbara Kingsolver and Karen
+                        Russell, Where the Crawdads Sing is at once an exquisite
+                        ode to the natural world, a heartbreaking coming-of-age
+                        story, and a surprising tale of possible murder. Owens
+                        reminds us that we are forever shaped by the children we
+                        once were, and that we are all subject to the beautiful
+                        and violent secrets that nature keeps
+                      </p>
+                      <p>WHERE THE CRAWDADS LP</p>
                       <!-- End Mockup Block -->
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xl-8 offset-xl-2">
+                      <div
+                        class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab pt-9"
+                      >
+                        <!-- Mockup Block -->
+                        <div class="table-responsive mb-4">
+                          <table class="table table-hover table-borderless">
+                            <tbody>
+                              <tr>
+                                <th class="px-4 px-xl-5">Format:</th>
+                                <td class="">Paperback | 384 pages</td>
+                              </tr>
+                              <tr>
+                                <th class="px-4 px-xl-5">Dimensions</th>
+                                <td>9126 x 194 x 28mm | 301g</td>
+                              </tr>
+                              <tr>
+                                <th class="px-4 px-xl-5">Publication date:</th>
+                                <td>20 Dec 2020</td>
+                              </tr>
+                              <tr>
+                                <th class="px-4 px-xl-5">Publisher:</th>
+                                <td>Little, Brown Book Group</td>
+                              </tr>
+                              <tr>
+                                <th class="px-4 px-xl-5">Imprint:</th>
+                                <td>Corsair</td>
+                              </tr>
+                              <tr>
+                                <th class="px-4 px-xl-5">
+                                  Publication City/Country:
+                                </th>
+                                <td>London, United Kingdom</td>
+                              </tr>
+                              <tr>
+                                <th class="px-4 px-xl-5">Language:</th>
+                                <td>English</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <!-- End Mockup Block -->
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -533,7 +574,10 @@
                           </button>
                           <button
                             type="button"
-                            class="btn btn-dark ml-md-3 rounded-0 px-5"
+                            class="btn btn-dark rounded-0 px-5"
+                            :class="
+                              $i18n.locale == 'ar' ? ' mr-md-3' : 'ml-md-3 '
+                            "
                           >
                             Write a review
                           </button>
@@ -894,7 +938,7 @@
                         for="inputCompanyName"
                         class="form-label text-dark h6 mb-3"
                       >
-                        Add a title
+                        {{ $t('misc.Add a title') }}
                       </label>
                       <input
                         id="inputCompanyName"
@@ -910,7 +954,7 @@
                         type="submit"
                         class="btn btn-dark btn-wide rounded-0 transition-3d-hover"
                       >
-                        Submit Review
+                        {{ $t('misc.Send review') }}
                       </button>
                     </div>
                     <!-- End Mockup Block -->
@@ -927,16 +971,16 @@
               class="d-md-flex mb-3 primary-color justify-content-between align-items-center"
             >
               <h2 class="fs-4">
-                Customers Also Considered
+                {{ $t('misc.Customers Also Considered') }}
               </h2>
             </header>
 
             <div class="product">
               <carousel v-bind="settingsBook">
-                <slide v-for="n in 10" :key="n">
+                <slide v-for="book in books" :key="book.id">
                   <div class="js-slick-carousel products no-gutters">
                     <div class="overflow-hidden p-3 p-md-4d875">
-                      <book-card />
+                      <book-card :items="book" />
                     </div>
                   </div>
                 </slide>
@@ -956,11 +1000,19 @@
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import BookCard from '@/components/BookCard.vue'
-import { ref } from 'vue'
+import { reactive } from 'vue'
+import Books from '@/books.json'
+import { inject } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
+
 export default {
   components: { Carousel, Slide, Pagination, BookCard },
   data() {
     return {
+      // book: [],
+      // books: Books,
       tabs: {
         description: true,
         review: false,
@@ -971,11 +1023,14 @@ export default {
       settings: {
         autoplay: 5000,
         itemsToShow: 1,
+        wrapAround: true,
+        dir: 'rtl',
         snapAlign: 'center',
       },
       settingsBook: {
         autoplay: 5000,
         itemsToShow: 1,
+        wrapAround: true,
         snapAlign: 'center',
         breakpoints: {
           576: {
@@ -994,6 +1049,7 @@ export default {
       },
     }
   },
+  mounted() {},
   methods: {
     activeTab(tab) {
       this.tabs.description = false
@@ -1004,17 +1060,63 @@ export default {
       this.tabs[tab] = true
     },
   },
-
+  computed: {
+    cartQuantity() {
+      return this.$store.getters.totalQuantity
+    },
+    currency() {
+      return this.$store.getters.currency
+    },
+  },
   setup() {
-    const quantity = ref(1)
+    const route = useRoute()
+    const store = useStore()
+    const toast = inject('toast')
+    const { t } = useI18n()
+    const books = Books
+    let book = reactive({})
+
+    function getBook() {
+      let obj = Books.filter((el) => el.id == route.params.id)
+
+      book = obj[0]
+    }
+
+    getBook()
+
+    const item = reactive({
+      // id: route.params.id,
+      qty: 1,
+      bookType: 'pdf',
+      price: 0,
+      totalPrice: 0,
+      ...book,
+    })
+
     function qtyPlus() {
-      quantity.value++
+      item.qty++
     }
     function qtyMinus() {
-      if (quantity.value > 1) quantity.value--
+      if (item.qty > 1) item.qty--
     }
 
-    return { quantity, qtyPlus, qtyMinus }
+    function addToCart() {
+      if (item.bookType == 'pdf') {
+        item.price = item.pdf_price
+      } else {
+        item.price = item.hardcopy_price
+      }
+
+      item.totalPrice = item.price * item.qty
+
+      store.commit('addToCart', item)
+      toast.success(t('misc.addSuccess'))
+    }
+    function addToWashList() {
+      store.commit('addToWashlist', item)
+      toast.success(t('misc.addSuccess'))
+    }
+    return { item, qtyPlus, qtyMinus, addToCart, books, book, addToWashList }
   },
 }
 </script>
@@ -1053,6 +1155,15 @@ a {
     .product:not(.product__card):not(.product__list):not(.product__space) {
     flex: 0 0 100%;
     max-width: 100%;
+  }
+}
+.is-rtl {
+  p,
+  h1,
+  div,
+  h2,
+  h6 {
+    text-align: right;
   }
 }
 </style>

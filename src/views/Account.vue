@@ -2,7 +2,10 @@
   <main id="content">
     <div class="container">
       <div class="row">
-        <div class="col-md-3 border-right">
+        <div
+          class="col-md-3"
+          :class="$i18n.locale == 'ar' ? 'border-left' : 'border-right'"
+        >
           <h6 class="font-weight-medium font-size-7 pt-5 pt-lg-8 mb-5 mb-lg-7">
             {{ $t('misc.My account') }}
           </h6>
@@ -13,70 +16,64 @@
               id="pills-tab"
             >
               <li class="nav-item mx-0">
-                <a
+                <router-link
+                  to="/account/dashboard"
                   class="nav-link d-flex align-items-center px-0 active"
-                  role="button"
-                  @click="openTab('dashboard')"
                 >
                   <span class="font-weight-normal text-gray-600">
                     {{ $t('misc.Dashboard') }}
                   </span>
-                </a>
+                </router-link>
               </li>
               <li class="nav-item mx-0">
-                <a
+                <router-link
+                  to="/account/orders"
                   class="nav-link d-flex align-items-center px-0"
-                  role="button"
-                  @click="openTab('orders')"
                 >
                   <span class="font-weight-normal text-gray-600">
                     {{ $t('misc.Orders') }}
                   </span>
-                </a>
+                </router-link>
               </li>
               <li class="nav-item mx-0">
-                <a
+                <router-link
+                  to="/account/downloads"
                   class="nav-link d-flex align-items-center px-0"
-                  role="button"
-                  @click="openTab('downloads')"
                 >
                   <span class="font-weight-normal text-gray-600">
                     {{ $t('misc.Downloads') }}
                   </span>
-                </a>
+                </router-link>
               </li>
               <li class="nav-item mx-0">
-                <a
+                <router-link
+                  to="/account/addresses"
                   class="nav-link d-flex align-items-center px-0"
-                  role="button"
-                  @click="openTab('addresses')"
                 >
                   <span class="font-weight-normal text-gray-600">
                     {{ $t('misc.Addresses') }}
                   </span>
-                </a>
+                </router-link>
               </li>
               <li class="nav-item mx-0">
-                <a
+                <router-link
+                  to="/account/accountDetails"
                   class="nav-link d-flex align-items-center px-0"
-                  role="button"
-                  @click="openTab('accountDetails')"
                 >
                   <span class="font-weight-normal text-gray-600">
                     {{ $t('misc.Account details') }}
                   </span>
-                </a>
+                </router-link>
               </li>
               <li class="nav-item mx-0">
-                <a
+                <router-link
+                  to="/account/wishlist"
                   class="nav-link d-flex align-items-center px-0"
-                  role="button"
-                  @click="openTab('wishlist')"
                 >
                   <span class="font-weight-normal text-gray-600">
                     {{ $t('misc.Wishlist') }}
                   </span>
-                </a>
+                </router-link>
               </li>
               <li class="nav-item mx-0">
                 <a
@@ -146,6 +143,20 @@ export default {
       downloads: false,
     }
   },
+  mounted() {
+    this.openTab(this.tabOpen)
+  },
+  computed: {
+    tabOpen() {
+      return this.$route.params.slug
+    },
+  },
+  watch: {
+    $route() {
+      console.log(this.$route.params)
+      this.openTab(this.$route.params.slug)
+    },
+  },
   methods: {
     openTab(tab) {
       this.dashboard = false
@@ -175,5 +186,22 @@ export default {
 .tabs-enter-to,
 .tabs-leave-from {
   opacity: 1;
+}
+.is-rtl {
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  tr,
+  th,
+  div,
+  li {
+    text-align: right;
+    direction: rtl;
+  }
 }
 </style>

@@ -42,7 +42,7 @@
         <div class="col-md-12 mb-4">
           <div class="js-form-message">
             <label for="exampleFormControlInput3">
-              {{ $t('misc.Email') }}
+              {{ $t('misc.Email Address') }}
             </label>
             <input
               type="email"
@@ -57,12 +57,13 @@
         <div class="col-md-12 mb-4">
           <div class="js-form-message">
             <label for="exampleFormControlInput3">
-              {{ $t('misc.address') }}
+              {{ $t('inputs.address') }}
             </label>
             <input
               type="text"
               class="form-control rounded-0"
               name="address"
+              :placeholder="$t('placeholder.Enter Your Address')"
               required=""
               v-model="address"
             />
@@ -72,7 +73,7 @@
         <div class="col-md-12 mb-4">
           <div class="js-form-message">
             <label for="exampleFormControlInput4">
-              {{ $t('misc.phone') }}
+              {{ $t('inputs.phone') }}
             </label>
             <input
               type="phone"
@@ -108,58 +109,48 @@
   </div>
   <div class="pl-md-5 pl-lg-9 space-bottom-2 space-bottom-lg-3">
     <div class="font-weight-medium font-size-22 mb-4 pb-xl-1">
-      Password Change
+      {{ $t('misc.changePassword') }}
     </div>
     <div class="row">
       <div class="col-md-12 mb-4">
         <div class="js-form-message">
           <label for="exampleFormControlInput5">
-            Current Password
+            {{ $t('misc.Current password') }}
           </label>
           <input
             type="password"
             class="form-control rounded-0"
             name="name"
-            id="exampleFormControlInput5"
-            aria-label="Jack Wayley"
+            :placeholder="$t('misc.Current password')"
             required=""
-            data-error-class="u-has-error"
-            data-msg="Please enter your name."
-            data-success-class="u-has-success"
           />
         </div>
       </div>
       <div class="col-md-12 mb-4">
         <div class="js-form-message">
-          <label for="exampleFormControlInput6">New Password</label>
+          <label for="exampleFormControlInput6">
+            {{ $t('misc.New Password') }}
+          </label>
           <input
             type="password"
             class="form-control rounded-0"
             name="name"
-            id="exampleFormControlInput6"
-            aria-label="Jack Wayley"
             required=""
-            data-error-class="u-has-error"
-            data-msg="Please enter your name."
-            data-success-class="u-has-success"
+            :placeholder="$t('misc.New Password')"
           />
         </div>
       </div>
       <div class="col-md-12 mb-5">
         <div class="js-form-message">
           <label for="exampleFormControlInput7">
-            Confirm new password
+            {{ $t('misc.Confirm new password') }}
           </label>
           <input
             type="password"
             class="form-control rounded-0"
             name="name"
-            id="exampleFormControlInput7"
-            aria-label="Jack Wayley"
+            :placeholder="$t('misc.Confirm new password')"
             required=""
-            data-error-class="u-has-error"
-            data-msg="Please enter your name."
-            data-success-class="u-has-success"
           />
         </div>
       </div>
@@ -168,7 +159,7 @@
           type="submit"
           class="btn btn-wide btn-dark text-white rounded-0 transition-3d-hover height-60 width-390"
         >
-          Save Changes
+          {{ $t('buttons.Save Changes') }}
         </button>
       </div>
     </div>
@@ -193,4 +184,22 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.is-rtl {
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  tr,
+  th,
+  div,
+  li {
+    text-align: right;
+    direction: rtl;
+  }
+}
+</style>

@@ -2,13 +2,15 @@
   <div class="masthead">
     <div class="bg-white">
       <div class="container px-0 py-3 py-md-4">
-        <div class="d-flex align-items-center position-relative flex-wrap">
+        <div
+          class="d-flex align-items-center justify-content-between position-relative flex-wrap"
+        >
           <div class="site-branding pe-4 mx-auto mx-md-0">
             <a href="/" class="d-block">
               <img class="img-fluid" src="@/assets/logo.png" alt="ilaw-logo" />
             </a>
           </div>
-          <div class="site-navigation mr-auto d-none d-xl-block">
+          <div class="site-navigation ms-auto d-none d-xl-block">
             <ul class="nav">
               <li class="nav-item">
                 <router-link class="font-weight-medium link-black-100" to="/">
@@ -73,10 +75,7 @@
               </li>
             </ul>
           </div>
-          <div
-            class="d-none d-md-flex align-items-center mt-3 mt-md-0"
-            :class="$i18n.locale == 'ar' ? 'me-md-auto' : 'ms-md-auto'"
-          >
+          <div class="d-none d-md-flex align-items-center mt-3 mt-md-0">
             <a
               :href="`mailto:${contactEmail}`"
               :class="$i18n.locale == 'ar' ? 'ml-4' : 'mr-4'"
@@ -120,42 +119,92 @@
       <div class="container my-1">
         <div class="d-md-flex align-items-center position-relative py-1">
           <div
-            class="offcanvas-toggler px-2 px-sm-0 mr-md-8 d-flex d-md-block align-items-center"
+            class="offcanvas-toggler px-2 px-sm-0 d-flex d-md-block justify-content-between align-items-center"
+            :class="$i18n.locale == 'ar' ? 'ml-md-2' : 'mr-md-2'"
           >
             <a
               @click="openGategoryMenu"
               role="button"
               class="cat-menu text-white"
             >
-              <svg width="20px" height="18px">
+              <svg width="20px" height="18px" data-v-41458b80="">
                 <path
                   fill-rule="evenodd"
                   fill="rgb(255, 255, 255)"
                   d="M-0.000,-0.000 L20.000,-0.000 L20.000,2.000 L-0.000,2.000 L-0.000,-0.000 Z"
-                />
+                  data-v-41458b80=""
+                ></path>
                 <path
                   fill-rule="evenodd"
                   fill="rgb(255, 255, 255)"
-                  d="M-0.000,8.000 L15.000,8.000 L15.000,10.000 L-0.000,10.000 L-0.000,8.000 Z"
-                />
+                  d="M-0.000,8.000 L20.000,8.000 L20.000,10.000 L-0.000,10.000 L-0.000,8.000 Z"
+                  data-v-41458b80=""
+                ></path>
                 <path
                   fill-rule="evenodd"
                   fill="rgb(255, 255, 255)"
                   d="M-0.000,16.000 L20.000,16.000 L20.000,18.000 L-0.000,18.000 L-0.000,16.000 Z"
-                />
+                  data-v-41458b80=""
+                ></path>
               </svg>
-              <span class="ml-3">
+
+              <span :class="$i18n.locale == 'ar' ? 'mr-3' : 'ml-3'">
                 {{ $t('misc.Browse categories') }}
               </span>
             </a>
-
-            <ul class="nav d-md-none ml-auto">
+            <ul class="nav d-md-none site-user">
+              <li class="nav-item">
+                <a
+                  role="button"
+                  @click="goWashList('wishlist')"
+                  href="#"
+                  class="nav-link text-white"
+                >
+                  <i class="glph-icon flaticon-heart font-size-4"></i>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  role="button"
+                  @click="goWashList('accountDetails')"
+                  class="nav-link btn text-white"
+                  v-if="isLoggedIn"
+                >
+                  <i class="glph-icon flaticon-user font-size-4"></i>
+                </a>
+                <button
+                  class="nav-link btn text-white"
+                  @click="openUserMenu"
+                  v-else
+                >
+                  <i class="glph-icon flaticon-user font-size-4"></i>
+                </button>
+              </li>
+              <li class="nav-item">
+                <button
+                  @click="openCartMenu"
+                  class="nav-link btn text-white position-relative"
+                  :class="$i18n.locale == 'ar' ? 'pl-0' : 'pr-0'"
+                >
+                  <span
+                    class="position-absolute bg-primary-yellow width-16 height-16 rounded-circle d-flex align-items-center justify-content-center text-dark font-size-n9 left-0"
+                  >
+                    {{ totalQuantity }}
+                  </span>
+                  <i class="glph-icon flaticon-icon-126515 font-size-4"></i>
+                  <span class="d-none d-xl-inline h6 mb-0 ml-1">
+                    {{ totalPrice }}
+                  </span>
+                </button>
+              </li>
+            </ul>
+            <!-- <ul class="nav d-md-none ml-auto">
               <li class="nav-item">
                 <button class="nav-link btn text-white" @click="openUserMenu">
                   <i class="glph-icon flaticon-user font-size-4"></i>
                 </button>
               </li>
-            </ul>
+            </ul> -->
           </div>
           <div
             class="site-search ml-xl-0 px-2 px-sm-0 ml-md-auto w-r-100 flex-grow-1 mr-md-5 mt-2 mt-md-0 py-2 py-md-0"
@@ -170,8 +219,7 @@
                       ? 'border-left rounded-right-1'
                       : 'border-right'
                   "
-                  placeholder="Search for books by keyword"
-                  aria-label="Amount (to the nearest dollar)"
+                  :placeholder="$t('misc.Search for books by keyword')"
                 />
                 <div class="input-group-append ml-0">
                   <select
@@ -202,14 +250,13 @@
           </div>
           <ul class="nav d-none site-user d-md-flex">
             <li class="nav-item">
-              <a href="#" class="nav-link text-white">
+              <router-link to="/account/wishlist" class="nav-link text-white">
                 <i class="glph-icon flaticon-heart font-size-4"></i>
-              </a>
+              </router-link>
             </li>
             <li class="nav-item">
-              <!-- Account Sidebar Toggle Button -->
               <router-link
-                to="/account"
+                to="/account/accountDetails"
                 class="nav-link btn text-white"
                 v-if="isLoggedIn"
               >
@@ -222,10 +269,8 @@
               >
                 <i class="glph-icon flaticon-user font-size-4"></i>
               </button>
-              <!-- End Account Sidebar Toggle Button -->
             </li>
             <li class="nav-item">
-              <!-- Cart Sidebar Toggle Button -->
               <button
                 @click="openCartMenu"
                 class="nav-link btn text-white position-relative"
@@ -234,12 +279,13 @@
                 <span
                   class="position-absolute bg-primary-yellow width-16 height-16 rounded-circle d-flex align-items-center justify-content-center text-dark font-size-n9 left-0"
                 >
-                  3
+                  {{ totalQuantity }}
                 </span>
                 <i class="glph-icon flaticon-icon-126515 font-size-4"></i>
-                <span class="d-none d-xl-inline h6 mb-0 ml-1">$40.93</span>
+                <span class="d-none d-xl-inline h6 mb-0 ml-1">
+                  {{ totalPrice }}
+                </span>
               </button>
-              <!-- End Cart Sidebar Toggle Button -->
             </li>
           </ul>
         </div>
@@ -276,7 +322,6 @@ export default {
       contactEmail: '',
       navShow: null,
       categoriesSideMenu: false,
-      // userAccount: false,
       miniCart: false,
       cartMenu: false,
       lang: this.$store.state.locale,
@@ -295,6 +340,12 @@ export default {
     },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn
+    },
+    totalQuantity() {
+      return this.$store.getters.totalQuantity
+    },
+    totalPrice() {
+      return this.$store.getters.totalPrice
     },
   },
   methods: {
@@ -328,7 +379,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .navigation {
   background-color: #22559d;
 }
@@ -427,13 +478,20 @@ button.btn:focus {
 }
 .is-rtl {
   .offcanvas-toggler {
-    direction: ltr !important;
+    direction: rtl !important;
   }
   .input-group:not(.has-validation)
     > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu),
   .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n + 3) {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
+  }
+
+  div {
+    text-align: right;
+  }
+  .is-rtl .btn-group:hover .dropdown-menu {
+    inset: 0px 0px auto auto !important;
   }
 }
 </style>

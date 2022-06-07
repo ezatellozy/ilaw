@@ -103,33 +103,41 @@
           @reset="onReset"
         >
           <div class="col-md-6">
-            <b-form-group label="Your Name:" label-for="name">
+            <b-form-group :label="$t('inputs.name')" label-for="name">
               <b-form-input
                 id="name"
                 v-model="name"
-                placeholder="Name"
+                :placeholder="$t('inputs.name')"
                 required
               ></b-form-input>
             </b-form-group>
           </div>
           <div class="col-md-6">
-            <b-form-group id="email" label="Email address:" label-for="input-1">
+            <b-form-group
+              id="email"
+              :label="$t('inputs.Email Address')"
+              label-for="input-1"
+            >
               <b-form-input
                 id="email"
                 v-model="email"
                 type="email"
-                placeholder="Email"
+                :placeholder="$t('inputs.Email Address')"
                 required
               ></b-form-input>
             </b-form-group>
           </div>
           <div>
-            <b-form-group id="subject" label="Subject:" label-for="subject">
+            <b-form-group
+              id="subject"
+              :label="$t('inputs.Subject')"
+              label-for="subject"
+            >
               <b-form-input
                 id="subject"
                 v-model="subject"
                 type="text"
-                placeholder="Subject"
+                :placeholder="$t('inputs.Subject')"
                 required
               ></b-form-input>
             </b-form-group>
@@ -137,13 +145,13 @@
           <div>
             <b-form-group
               id="input-group-4"
-              label="your message:"
+              :label="$t('inputs.your message')"
               label-for="textarea"
             >
               <b-form-textarea
                 id="textarea"
                 v-model="message"
-                placeholder="Enter something..."
+                :placeholder="$t('inputs.Enter something')"
                 rows="3"
                 max-rows="6"
               ></b-form-textarea>
@@ -171,6 +179,7 @@
 <script>
 import Loading from '../components/Loading.vue'
 export default {
+  components: { Loading },
   data() {
     return {
       email: '',
@@ -233,7 +242,6 @@ export default {
       })
     },
   },
-  components: { Loading },
 }
 </script>
 
@@ -297,6 +305,12 @@ export default {
     a {
       text-align: start !important;
     }
+  }
+  [type='tel'],
+  [type='url'],
+  [type='email'],
+  [type='number'] {
+    direction: rtl !important;
   }
 }
 </style>

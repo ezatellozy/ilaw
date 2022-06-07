@@ -1,6 +1,6 @@
 <template>
   <div class="page-title text-center py-2">
-    <h2 class="main-title">About us</h2>
+    <h2 class="main-title">{{ $t('nav.aboutUs') }}</h2>
   </div>
   <div class="w-100">
     <img class="img-fluid" src="@/assets/img1.jpg" alt="" />

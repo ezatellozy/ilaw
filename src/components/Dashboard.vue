@@ -41,7 +41,9 @@
           >
             <span class="flaticon-order font-size-10 btn-icon__inner"></span>
           </a>
-          <div class="font-size-3 mb-xl-1">{{ $t('misc.Orders') }}</div>
+          <div class="font-size-3 mb-xl-1 text-center">
+            {{ $t('misc.Orders') }}
+          </div>
         </div>
       </div>
       <div class="col">
@@ -55,7 +57,9 @@
               class="flaticon-cloud-computing font-size-10 btn-icon__inner text-primary"
             ></span>
           </a>
-          <div class="font-size-3 mb-xl-1">{{ $t('misc.Downloads') }}</div>
+          <div class="font-size-3 mb-xl-1 text-center">
+            {{ $t('misc.Downloads') }}
+          </div>
         </div>
       </div>
       <div class="col">
@@ -69,7 +73,9 @@
               class="flaticon-place font-size-10 btn-icon__inner text-primary"
             ></span>
           </a>
-          <div class="font-size-3 mb-xl-1">{{ $t('misc.Addresses') }}</div>
+          <div class="font-size-3 mb-xl-1 text-center">
+            {{ $t('misc.Addresses') }}
+          </div>
         </div>
       </div>
       <div class="col">
@@ -83,7 +89,7 @@
               class="flaticon-user-1 font-size-10 btn-icon__inner text-primary"
             ></span>
           </a>
-          <div class="font-size-3 mb-xl-1">
+          <div class="font-size-3 mb-xl-1 text-center">
             {{ $t('misc.Account details') }}
           </div>
         </div>
@@ -99,7 +105,9 @@
               class="flaticon-heart font-size-10 btn-icon__inner text-primary"
             ></span>
           </a>
-          <div class="font-size-3 mb-xl-1">{{ $t('misc.Wishlist') }}</div>
+          <div class="font-size-3 mb-xl-1 text-center">
+            {{ $t('misc.Wishlist') }}
+          </div>
         </div>
       </div>
     </div>

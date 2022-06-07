@@ -25,7 +25,7 @@
           to="/book"
           class="hero__btn fw-bold fs-5 rounded py-2 px-4 btn text-white btn-wide"
         >
-          Explore Books
+          {{ $t('misc.Explore Books') }}
         </router-link>
       </div>
     </div>

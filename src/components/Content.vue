@@ -2,7 +2,9 @@
   <div class="bg-gray-200 pt-5">
     <section class="space-bottom-2 space-bottom-lg-3">
       <header class="mb-4">
-        <h2 class="font-size-7 text-center main-title">Bestselling Books</h2>
+        <h2 class="font-size-7 text-center main-title">
+          {{ $t('misc.Bestselling Books') }}
+        </h2>
       </header>
       <div>
         <ul
@@ -48,7 +50,7 @@
             <ul
               class="products list-unstyled m-0 row no-gutters row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 border-top border-left my-0"
             >
-              <book-card v-for="n in 10" :key="n" />
+              <book-card :items="book" v-for="book in books" :key="book.id" />
             </ul>
           </div>
         </div>
@@ -59,8 +61,29 @@
 
 <script>
 import BookCard from '@/components/BookCard.vue'
+// import Books from '@/books.json'
 export default {
   components: { BookCard },
+  data() {
+    return {
+      books: null,
+    }
+  },
+  mounted() {
+    this.getBooks()
+  },
+  methods: {
+    getBooks() {
+      this.axios
+        .get('book/books')
+        .then((data) => {
+          this.books = data.data.data
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+  },
 }
 </script>
 

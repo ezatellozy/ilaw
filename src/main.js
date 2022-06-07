@@ -11,24 +11,28 @@ import './style/main.scss'
 import BootstrapVue3 from 'bootstrap-vue-3'
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/css/bootstrap.rtl.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-// import '@/assets/bootstrap-select/dist/js/bootstrap-select.min.js'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import i18n from './i18n'
-
+import Paginate from 'vuejs-paginate-next'
+import Cookies from 'js-cookie'
+import mitt from 'mitt'
+const emitter = mitt()
 import Toaster from '@meforma/vue-toaster'
+import i18n from './i18n'
 
 axios.defaults.baseURL = `https://ilaw.technomasrsystems.com/api/`
 axios.defaults.headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   lang: i18n.global.locale,
+  user_id: store.getters.userId,
+  currency: Cookies.get('currency'),
 }
 
 library.add(fas)
@@ -37,16 +41,19 @@ library.add(far)
 
 const app = createApp(App).use(i18n)
 app.component('FontAwesomeIcon', FontAwesomeIcon)
-
 app.component('BaseCard', BaseCard)
 
 app.use(BootstrapVue3)
 app.use(VueAxios, axios)
 app.use(store)
-app.use(Toaster, {
-  duration: 4000,
-  position: 'bottom',
-})
+app.use(Paginate)
+app.config.globalProperties.emitter = emitter
+app
+  .use(Toaster, {
+    duration: 4000,
+    position: 'bottom',
+  })
+  .provide('toast', app.config.globalProperties.$toast)
 
 app.use(router)
 app.mount('#app')

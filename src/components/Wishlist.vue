@@ -10,112 +10,111 @@
             scope="col"
             class="py-3 border-bottom-0 font-weight-medium pl-3 pl-md-5"
           >
-            Prouct
+            {{ $t('misc.Product') }}
           </th>
           <th scope="col" class="py-3 border-bottom-0 font-weight-medium">
-            Price
+            {{ $t('misc.Price') }}
           </th>
           <th scope="col" class="py-3 border-bottom-0 font-weight-medium">
-            Stock Staus
+            {{ $t('misc.Status') }}
           </th>
           <th scope="col" class="py-3 border-bottom-0 font-weight-medium">
-            Actions
+            {{ $t('misc.Actions') }}
           </th>
         </tr>
       </thead>
 
       <tbody>
-        <tr class="border">
+        <tr class="border" v-for="item in washList" :key="item.id">
           <th class="pl-3 pl-md-5 font-weight-normal align-middle py-6">
-            <div class="d-flex align-items-center">
-              <a class="d-block" href="#">
+            <div
+              class="d-flex flex-wrap justify-content-center align-items-center"
+            >
+              <a class="d-block" :href="`/book/${item.id}`">
                 <img
                   class="img-fluid"
-                  src="https://placehold.it/80x120"
+                  :src="item.main_media"
                   alt="Image-Description"
                 />
               </a>
               <div class="ml-xl-4">
                 <div class="font-weight-normal">
-                  <a href="#">The Overdue Life of Amy Byler</a>
+                  <a :href="`/book/${item.id}`">{{ item.title }}</a>
                 </div>
                 <div class="font-size-2">
                   <a href="#" class="text-gray-700" tabindex="0">
-                    Jay Shetty
+                    {{ item.author }}
                   </a>
                 </div>
               </div>
             </div>
           </th>
-          <td class="align-middle py-5">$37</td>
-          <td class="align-middle py-5">In Stock</td>
           <td class="align-middle py-5">
-            <span class="product__add-to-cart">ADD TO CART</span>
+            {{ item.pdf_price }} - {{ item.hardcopy_price }} {{ currency }}
           </td>
-        </tr>
-        <tr class="border">
-          <th class="pl-3 pl-md-5 font-weight-normal align-middle py-6">
-            <div class="d-flex align-items-center">
-              <a class="d-block" href="#">
-                <img
-                  class="img-fluid"
-                  src="https://placehold.it/80x120"
-                  alt="Image-Description"
-                />
-              </a>
-              <div class="ml-xl-4">
-                <div class="font-weight-normal">
-                  <a href="#">The Overdue Life of Amy Byler</a>
-                </div>
-                <div class="font-size-2">
-                  <a href="#" class="text-gray-700" tabindex="0">
-                    Jay Shetty
-                  </a>
-                </div>
-              </div>
-            </div>
-          </th>
-          <td class="align-middle py-5">$37</td>
-          <td class="align-middle py-5">In Stock</td>
           <td class="align-middle py-5">
-            <span class="product__add-to-cart">ADD TO CART</span>
+            {{
+              item.stock > 0
+                ? `${$t('misc.In Stock')}`
+                : `${$t('misc.unavailable')}`
+            }}
           </td>
-        </tr>
-        <tr class="border">
-          <th class="pl-5 font-weight-normal align-middle py-6">
-            <div class="d-flex align-items-center">
-              <a class="d-block" href="#">
-                <img
-                  class="img-fluid"
-                  src="https://placehold.it/80x120"
-                  alt="Image-Description"
-                />
-              </a>
-              <div class="ml-xl-4">
-                <div class="font-weight-normal">
-                  <a href="#">The Overdue Life of Amy Byler</a>
-                </div>
-                <div class="font-size-2">
-                  <a href="#" class="text-gray-700" tabindex="0">
-                    Jay Shetty
-                  </a>
-                </div>
-              </div>
-            </div>
-          </th>
-          <td class="align-middle py-5">$37</td>
-          <td class="align-middle py-5">In Stock</td>
-          <td class="align-middle py-5">
-            <span class="product__add-to-cart">ADD TO CART</span>
+          <td class="align-middle py-5 text-center">
+            <span class="add-to-cart btn text-primary" @click="addToCard">
+              {{ $t('misc.ADD TO CART') }}
+            </span>
+            <span>
+              <i
+                class="fas fa-times ml-2 mt-2 add-to-cart"
+                @click="removefromCard"
+              ></i>
+            </span>
           </td>
         </tr>
       </tbody>
     </table>
+    <div v-if="!washList.length" class="text-center fs-5 mt-4">
+      {{ $t('misc.washlist is empty') }}
+    </div>
   </div>
 </template>
 
 <script>
-export default {}
+import { inject } from 'vue'
+import { useStore } from 'vuex'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+export default {
+  computed: {
+    // washList() {
+    //   return this.$store.getters.washlist
+    // },
+    currency() {
+      return this.$store.getters.currency
+    },
+  },
+  methods: {},
+  setup() {
+    const store = useStore()
+    const toast = inject('toast')
+    const { t } = useI18n()
+
+    const washList = computed(() => store.getters.washlist)
+
+    function addToCard() {
+      store.commit('addToCart', washList.value[0])
+      toast.success(t('misc.addSuccess'))
+    }
+    function removefromCard() {
+      store.commit('removeItemWashlist', washList.value[0])
+    }
+    return { addToCard, washList, removefromCard }
+  },
+}
 </script>
 
-<style></style>
+<style>
+.add-to-cart {
+  cursor: pointer;
+}
+</style>
