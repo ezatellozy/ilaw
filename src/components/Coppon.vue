@@ -7,13 +7,13 @@
           class="input-text px-4 py-2 mr-1 w-100 col-sm-8"
           name="coupon_code"
           value=""
-          placeholder="Coupon code"
+          :placeholder="$t('misc.Coupon code')"
           type="text"
         />
         <button
           class="update-cart bg-transparent border-0 text-white rounded px-4 py-2 mt-2 mt-sm-0 col-sm-4"
         >
-          Apply coupon
+          {{ $t('buttons.Apply coupon') }}
         </button>
       </div>
       <div class="col-md-2">
@@ -21,7 +21,7 @@
           v-if="withUpdate"
           class="update-cart mt-2 mt-md-0 bg-transparent border-0 text-white rounded px-4 py-2"
         >
-          Update
+          {{ $t('buttons.Update') }}
         </button>
       </div>
     </div>

@@ -978,7 +978,7 @@
             <div class="product">
               <carousel v-bind="settingsBook">
                 <slide v-for="book in books" :key="book.id">
-                  <div class="js-slick-carousel products no-gutters">
+                  <div class="js-slick-carousel w-100 products no-gutters">
                     <div class="overflow-hidden p-3 p-md-4d875">
                       <book-card :items="book" />
                     </div>

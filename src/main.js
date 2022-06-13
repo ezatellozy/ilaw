@@ -26,12 +26,20 @@ const emitter = mitt()
 import Toaster from '@meforma/vue-toaster'
 import i18n from './i18n'
 
-axios.defaults.baseURL = `https://ilaw.technomasrsystems.com/api/`
+// api link
+axios.defaults.baseURL = `https://ilawfairv2.technomasrsystems.com/api`
+
+// reset password global
+
+const ResetPasswordLink =
+  'https://ilawfairv2.technomasrsystems.com/password/reset'
+
 axios.defaults.headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   lang: i18n.global.locale,
-  user_id: store.getters.userId,
+  user: store.getters.userId,
+  'Accept-Language': Cookies.get('locale'),
   currency: Cookies.get('currency'),
 }
 
@@ -40,9 +48,11 @@ library.add(fab)
 library.add(far)
 
 const app = createApp(App).use(i18n)
+
+app.config.globalProperties.globalResetPassword = ResetPasswordLink
+
 app.component('FontAwesomeIcon', FontAwesomeIcon)
 app.component('BaseCard', BaseCard)
-
 app.use(BootstrapVue3)
 app.use(VueAxios, axios)
 app.use(store)

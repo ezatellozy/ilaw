@@ -11,7 +11,7 @@
             :key="faq.id"
             :title="faq.question"
           >
-            {{ faq.answer }}
+            <div v-html="faq.answer"></div>
           </b-accordion-item>
         </b-accordion>
       </div>
@@ -31,10 +31,15 @@ export default {
   },
   methods: {
     getFaqs() {
-      this.axios.get('FAQ/faqs').then((data) => {
-        this.faqs = data.data.data
-        console.log(this.faqs)
-      })
+      this.axios
+        .get('faqs', {
+          headers: {
+            count: 'all',
+          },
+        })
+        .then((data) => {
+          this.faqs = data.data.data
+        })
     },
   },
 }

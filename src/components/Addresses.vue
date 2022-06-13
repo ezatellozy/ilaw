@@ -38,7 +38,7 @@
             </button>
           </div>
           <div class="col">
-            <Deleter :id="address.id" />
+            <Deleter :id="address.id" name="user/address" />
           </div>
 
           <FrmEditAddress
@@ -97,7 +97,7 @@ export default {
     },
 
     getAddresses() {
-      this.axios.get('shippingAddress/shippingAddresses').then((data) => {
+      this.axios.get('user/address').then((data) => {
         this.addresses = data.data.data
       })
     },

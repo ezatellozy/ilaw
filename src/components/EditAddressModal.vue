@@ -211,12 +211,13 @@ export default {
       signUp: false,
       forgotPassword: false,
       countries: null,
+
       governments: null,
       cities: null,
     }
   },
   mounted() {
-    this.getCountries()
+    // this.getCountries()
     console.log(this.item)
   },
   methods: {
@@ -227,21 +228,23 @@ export default {
       this[event] = true
     },
     getCountries() {
-      axios.get('countries/countries').then((res) => {
+      axios.get('countries', { headers: { value: 'id' } }).then((res) => {
         this.countries = res.data.data
       })
     },
     getGovernment(e) {
-      this.governments = null
-      axios.get(`governorates/${e.target.value}`).then((res) => {
-        this.governments = res.data.data
-      })
+      console.log(e)
+      // this.governments = null
+      // axios.get(`governorates/${e.target.value}`).then((res) => {
+      //   this.governments = res.data.data
+      // })
     },
     getCities(e) {
-      this.cities = null
-      axios.get(`cites/${e.target.value}`).then((res) => {
-        this.cities = res.data.data
-      })
+      console.log(e)
+      // this.cities = null
+      // axios.get(`cites/${e.target.value}`).then((res) => {
+      //   this.cities = res.data.data
+      // })
     },
     close() {
       this.$emit('close')

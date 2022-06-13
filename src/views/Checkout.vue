@@ -8,39 +8,241 @@
             class="post-6 page type-page status-publish hentry"
           >
             <header class="entry-header space-top-2 space-bottom-1 mb-2">
-              <h4 class="entry-title font-size-7 text-center">Checkout</h4>
+              <h4 class="entry-title font-size-7 text-center">
+                {{ $t('misc.Checkout') }}
+              </h4>
             </header>
             <!-- .entry-header -->
             <div class="entry-content">
-              <div class="woocommerce">
+              <div class="woocommerce d-block">
                 <div class="woocommerce-info p-4 bg-white border">
-                  Have a coupon?
+                  {{ $t('misc.Have a coupon?') }}
                   <a
                     class="showcoupon fw-bold"
                     @click="haveCoppon = !haveCoppon"
                     role="button"
                   >
-                    Click here to enter your code
+                    {{ $t('misc.Click here to enter your code') }}
                   </a>
                 </div>
                 <transition name="coppon">
                   <coppon v-if="haveCoppon" />
                 </transition>
 
-                <form
-                  name="checkout"
-                  @submit.prevent
-                  class="checkout woocommerce-checkout row mt-8"
-                >
-                  <div
-                    class="col2-set col-md-6 col-lg-7 col-xl-8 mb-6 mb-md-0"
-                    id="customer_details"
+                <div>
+                  <form
+                    name="checkout"
+                    @submit.prevent="addNewAddress"
+                    class="checkout woocommerce-checkout row mt-8"
                   >
-                    <div class="px-4 pt-5 bg-white border">
-                      <div class="woocommerce-billing-fields">
-                        <h3 class="mb-4 font-size-3">Billing details</h3>
+                    <div
+                      class="col2-set col-md-6 col-lg-7 col-xl-8 mb-6 mb-md-0"
+                      id="customer_details"
+                    >
+                      <div
+                        class="addresses px-4 py-3 bg-white border"
+                        v-if="addresses"
+                      >
+                        <h2 class="fs-4 mb-3">
+                          {{ $t('misc.shipping addresses') }}
+                        </h2>
+                        <form>
+                          <div
+                            class="radio-check alert mb-2 alert-info"
+                            v-for="address in addresses"
+                            :key="address.id"
+                          >
+                            <input
+                              type="radio"
+                              name="flexRadioDefault"
+                              id="flexRadioDefault1"
+                              :value="address.id"
+                              v-model="selectedAddress"
+                            />
+                            <label
+                              class="form-check-label d-block"
+                              for="flexRadioDefault1"
+                            >
+                              <bdi>{{ address.address }}</bdi>
+                              -
+                              <bdi>{{ $t('misc.phonenumber') }} :</bdi>
+                              <bdi>{{ address.phone }}</bdi>
+                            </label>
+                          </div>
+                        </form>
 
+                        <button
+                          type="button"
+                          class="d-block btn"
+                          @click="newAddress = !newAddress"
+                        >
+                          <font-awesome-icon :icon="['fas', 'plus']" />
+                          <bdi class="mx-2">{{ $t('misc.New Address') }}</bdi>
+                        </button>
+                      </div>
+                      <transition name="fade">
                         <div
+                          class="px-4 pt-5 bg-white border"
+                          v-if="!addresses || newAddress"
+                        >
+                          <div class="woocommerce-billing-fields">
+                            <h3 class="mb-4 font-size-3">
+                              {{ $t('misc.Billing details') }}
+                            </h3>
+                            <div class="form-group mb-4">
+                              <div class="js-form-message js-focus-state">
+                                <label
+                                  id="signinEmailLabel"
+                                  class="form-label d-block"
+                                  for="country"
+                                >
+                                  {{ $t('misc.Country') }}
+                                </label>
+                                <select
+                                  name="country"
+                                  id="country"
+                                  required=""
+                                  v-model="form.country"
+                                  @change="getGovernment($event)"
+                                  class="form-select form-control rounded-0 height-4 px-4"
+                                >
+                                  <option value="" disabled>
+                                    {{ $t('misc.Select country') }}
+                                  </option>
+                                  <option
+                                    v-for="country in countries"
+                                    :key="country.id"
+                                    :value="country.id"
+                                  >
+                                    {{ country.name }}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="form-group mb-4">
+                              <div class="js-form-message js-focus-state">
+                                <label
+                                  id="signinEmailLabel"
+                                  class="form-label d-block"
+                                  for="governorate"
+                                >
+                                  {{ $t('misc.Governorate') }}
+                                </label>
+                                <select
+                                  v-model="form.governorate"
+                                  name="governorate"
+                                  id="governorate"
+                                  :disabled="!governments"
+                                  required=""
+                                  @change="getCities($event)"
+                                  class="form-select form-control rounded-0 height-4 px-4"
+                                >
+                                  <option value="" disabled>
+                                    {{ $t('misc.Select government') }}
+                                  </option>
+                                  <option
+                                    v-for="government in governments"
+                                    :key="government.id"
+                                    :value="government.id"
+                                  >
+                                    {{ government.name }}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="form-group mb-4">
+                              <div class="js-form-message js-focus-state">
+                                <label
+                                  id="signinEmailLabel"
+                                  class="form-label d-block"
+                                  for="city"
+                                >
+                                  {{ $t('misc.City') }}
+                                </label>
+                                <select
+                                  v-model="form.city"
+                                  name="city"
+                                  id="city"
+                                  required=""
+                                  :disabled="!cities"
+                                  class="form-select form-control rounded-0 height-4 px-4"
+                                >
+                                  <option value="" disabled>
+                                    {{ $t('misc.Select city') }}
+                                  </option>
+                                  <option
+                                    v-for="city in cities"
+                                    :key="city.id"
+                                    :value="city.id"
+                                  >
+                                    {{ city.name }}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="form-group mb-4">
+                              <div class="js-form-message js-focus-state">
+                                <label class="form-label d-block" for="address">
+                                  {{ $t('misc.address') }}
+                                </label>
+                                <input
+                                  type="text"
+                                  class="form-control rounded-0 height-4 px-4"
+                                  name="address"
+                                  id="address"
+                                  :placeholder="
+                                    $t('placeholder.Enter Your Address')
+                                  "
+                                  required=""
+                                  v-model="form.address"
+                                />
+                              </div>
+                            </div>
+                            <div class="form-group mb-4">
+                              <div class="js-form-message js-focus-state">
+                                <label class="form-label d-block" for="city">
+                                  {{ $t('inputs.phone') }}
+                                </label>
+                                <input
+                                  type="phone"
+                                  class="form-control rounded-0 height-4 px-4"
+                                  :placeholder="
+                                    $t('placeholder.Please enter your phone')
+                                  "
+                                  v-model="form.phone"
+                                  required=""
+                                />
+                              </div>
+                            </div>
+                            <div class="form-group mb-4">
+                              <div class="js-form-message js-focus-state">
+                                <label
+                                  class="form-label d-block"
+                                  for="postalcode"
+                                >
+                                  {{ $t('inputs.Postal code') }}
+                                </label>
+                                <input
+                                  type="text"
+                                  class="form-control rounded-0 height-4 px-4"
+                                  name="postal code"
+                                  id="postalcode"
+                                  :placeholder="$t('inputs.Postal code')"
+                                  required=""
+                                  v-model="form.postal_code"
+                                />
+                              </div>
+                            </div>
+
+                            <div class="mb-4d75">
+                              <button
+                                type="submit"
+                                class="btn btn-block py-3 rounded-0 btn-dark"
+                              >
+                                {{ $t('buttons.Add New Address') }}
+                              </button>
+                            </div>
+                            <!-- <div
                           class="woocommerce-billing-fields__field-wrapper row"
                         >
                           <p
@@ -542,11 +744,12 @@
                               autocomplete="email"
                             />
                           </p>
+                        </div> -->
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      </transition>
 
-                    <div
+                      <!-- <div
                       class="px-4 pt-5 bg-white border border-top-0 mt-n-one"
                     >
                       <div class="woocommerce-additional-fields">
@@ -573,355 +776,435 @@
                           </p>
                         </div>
                       </div>
+                    </div> -->
                     </div>
-                  </div>
 
-                  <h3 id="order_review_heading" class="d-none">Your order</h3>
+                    <h3 id="order_review_heading" class="d-none">
+                      {{ $t('misc.Order') }}
+                    </h3>
 
-                  <div
-                    id="order_review"
-                    class="col-md-6 col-lg-5 col-xl-4 woocommerce-checkout-review-order"
-                  >
-                    <b-accordion>
-                      <b-accordion-item title="Your order" visible>
-                        <table
-                          class="shop_table woocommerce-checkout-review-order-table"
+                    <div
+                      id="order_review"
+                      class="col-md-6 col-lg-5 col-xl-4 woocommerce-checkout-review-order"
+                    >
+                      <b-accordion>
+                        <b-accordion-item
+                          :title="$t(`misc.Your order`)"
+                          visible
                         >
-                          <thead class="d-none">
-                            <tr>
-                              <th class="product-name">Product</th>
-                              <th class="product-total">Total</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr class="cart_item">
-                              <td class="product-name">
-                                Touchscreen MP3 Player&nbsp;
-                                <strong class="product-quantity">× 1</strong>
-                              </td>
-                              <td class="product-total">
-                                <span class="woocommerce-Price-amount amount">
-                                  <span
-                                    class="woocommerce-Price-currencySymbol"
-                                  >
-                                    £
-                                  </span>
-                                  79.99
-                                </span>
-                              </td>
-                            </tr>
-
-                            <tr class="cart_item">
-                              <td class="product-name">
-                                Happy Ninja&nbsp;
-                                <strong class="product-quantity">× 1</strong>
-                              </td>
-                              <td class="product-total">
-                                <span class="woocommerce-Price-amount amount">
-                                  <span
-                                    class="woocommerce-Price-currencySymbol"
-                                  >
-                                    £
-                                  </span>
-                                  18.00
-                                </span>
-                              </td>
-                            </tr>
-                          </tbody>
-                          <tfoot class="d-none">
-                            <tr class="cart-subtotal">
-                              <th>Subtotal</th>
-                              <td>
-                                <span class="woocommerce-Price-amount amount">
-                                  <span
-                                    class="woocommerce-Price-currencySymbol"
-                                  >
-                                    £
-                                  </span>
-                                  97.99
-                                </span>
-                              </td>
-                            </tr>
-
-                            <tr class="order-total">
-                              <th>Total</th>
-                              <td>
-                                <strong>
-                                  <span class="woocommerce-Price-amount amount">
-                                    <span
-                                      class="woocommerce-Price-currencySymbol"
-                                    >
-                                      £
-                                    </span>
-                                    97.99
-                                  </span>
-                                </strong>
-                              </td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </b-accordion-item>
-                      <b-accordion-item title="Cart Totals">
-                        <table class="shop_table shop_table_responsive">
-                          <tbody>
-                            <tr class="checkout-subtotal">
-                              <th>Subtotal</th>
-                              <td data-title="Subtotal">
-                                <span class="woocommerce-Price-amount amount">
-                                  <span
-                                    class="woocommerce-Price-currencySymbol"
-                                  >
-                                    £
-                                  </span>
-                                  79.99
-                                </span>
-                              </td>
-                            </tr>
-
-                            <tr class="order-shipping">
-                              <th>Shipping</th>
-                              <td data-title="Shipping">Free Shipping</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </b-accordion-item>
-                      <b-accordion-item title="Shipping">
-                        <ul id="shipping_method">
-                          <li>
-                            <input
-                              type="radio"
-                              name="shipping_method[0]"
-                              data-index="0"
-                              id="shipping_method_0_flat_rate1"
-                              value="flat_rate:1"
-                              class="shipping_method"
-                            />
-                            <label for="shipping_method_0_flat_rate1">
-                              Free shipping
-                            </label>
-                          </li>
-
-                          <li>
-                            <input
-                              type="radio"
-                              name="shipping_method[0]"
-                              data-index="0"
-                              id="shipping_method_0_flat_rate2"
-                              value="flat_rate:2"
-                              class="shipping_method"
-                              checked="checked"
-                            />
-                            <label for="shipping_method_0_flat_rate2">
-                              Flat rate:
-                              <span class="woocommerce-Price-amount amount">
-                                <span class="woocommerce-Price-currencySymbol">
-                                  $
-                                </span>
-                                15
-                              </span>
-                            </label>
-                          </li>
-
-                          <li>
-                            <input
-                              type="radio"
-                              name="shipping_method[0]"
-                              data-index="0"
-                              id="shipping_method_0_flat_rate3"
-                              value="flat_rate:2"
-                              class="shipping_method"
-                              checked="checked"
-                            />
-                            <label for="shipping_method_0_flat_rate3">
-                              Local pickup::
-                              <span class="woocommerce-Price-amount amount">
-                                <span class="woocommerce-Price-currencySymbol">
-                                  $
-                                </span>
-                                8
-                              </span>
-                            </label>
-                          </li>
-                        </ul>
-                        <!-- End Checkboxes -->
-                        <span class="font-size-2">Shipping to Turkey.</span>
-                        <a
-                          href="#"
-                          class="font-weight-medium h-primary ml-3 font-size-2"
-                        >
-                          Change Address
-                        </a>
-                      </b-accordion-item>
-                      <b-accordion-item title="Coupon">
-                        <div class="coupon">
-                          <label for="coupon_code">Coupon:</label>
-                          <input
-                            type="text"
-                            name="coupon_code"
-                            class="input-text"
-                            id="coupon_code"
-                            value=""
-                            placeholder="Coupon code"
-                            autocomplete="off"
-                          />
-                          <input
-                            type="submit"
-                            class="button"
-                            name="apply_coupon"
-                            value="Apply coupon"
-                          />
-                        </div>
-                      </b-accordion-item>
-                      <div class="p-4d875 border">
-                        <table class="shop_table shop_table_responsive">
-                          <tbody>
-                            <tr class="order-total">
-                              <th>Total</th>
-                              <td data-title="Total">
-                                <strong>
-                                  <span class="woocommerce-Price-amount amount">
-                                    <span
-                                      class="woocommerce-Price-currencySymbol"
-                                    >
-                                      £
-                                    </span>
-                                    97.99
-                                  </span>
-                                </strong>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <b-accordion-item title="Payment">
-                        <div id="payment" class="woocommerce-checkout-payment">
-                          <ul
-                            class="wc_payment_methods payment_methods methods"
+                          <table
+                            class="shop_table woocommerce-checkout-review-order-table"
                           >
-                            <li class="wc_payment_method payment_method_bacs">
-                              <input
-                                id="payment_method_bacs"
-                                type="radio"
-                                class="input-radio"
-                                name="payment_method"
-                                value="bacs"
-                                data-order_button_text=""
-                              />
-
-                              <label for="payment_method_bacs">
-                                Direct bank transfer
-                              </label>
-                              <div
-                                class="payment_box payment_method_bacs"
-                                style="display: block;"
+                            <thead>
+                              <tr class="d-none">
+                                <th class="product-name">
+                                  {{ $t('misc.Product') }}
+                                </th>
+                                <th class="product-total">
+                                  {{ $t('misc.total') }}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr
+                                class="cart_item"
+                                v-for="item in cart"
+                                :key="item.id"
                               >
-                                <p>
-                                  Make your payment directly into our bank
-                                  account. Please use your Order ID as the
-                                  payment reference. Your order won’t be shipped
-                                  until the funds have cleared in our account.
-                                </p>
-                              </div>
+                                <td class="product-name">
+                                  {{ item.title }}&nbsp;
+                                  <strong class="product-quantity">
+                                    × {{ item.qty }}
+                                  </strong>
+                                </td>
+                                <td class="product-total">
+                                  <span class="woocommerce-Price-amount amount">
+                                    <span
+                                      class="woocommerce-Price-currencySymbol"
+                                    >
+                                      {{ item.totalPrice }}
+                                    </span>
+                                    {{ currency }}
+                                  </span>
+                                </td>
+                              </tr>
+                            </tbody>
+                            <tfoot class="d-none">
+                              <tr class="cart-subtotal">
+                                <th>{{ $t('misc.Subtotal') }}</th>
+                                <td>
+                                  <span class="woocommerce-Price-amount amount">
+                                    <span
+                                      class="woocommerce-Price-currencySymbol"
+                                    >
+                                      £
+                                    </span>
+                                    97.99
+                                  </span>
+                                </td>
+                              </tr>
+
+                              <tr class="order-total">
+                                <th>{{ $t('misc.total') }}</th>
+                                <td>
+                                  <strong>
+                                    <span
+                                      class="woocommerce-Price-amount amount"
+                                    >
+                                      <span
+                                        class="woocommerce-Price-currencySymbol"
+                                      >
+                                        £
+                                      </span>
+                                      97.99
+                                    </span>
+                                  </strong>
+                                </td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </b-accordion-item>
+                        <b-accordion-item :title="$t('misc.total')">
+                          <table class="shop_table shop_table_responsive">
+                            <tbody>
+                              <tr class="checkout-subtotal">
+                                <th>{{ $t('misc.Subtotal') }}</th>
+                                <td>
+                                  <span class="woocommerce-Price-amount amount">
+                                    <span
+                                      class="woocommerce-Price-currencySymbol"
+                                    >
+                                      {{ totalPrice }}
+                                    </span>
+                                    {{ currency }}
+                                  </span>
+                                </td>
+                              </tr>
+
+                              <tr class="order-shipping">
+                                <th>{{ $t('misc.Shipping') }}</th>
+                                <td data-title="Shipping">Free Shipping</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </b-accordion-item>
+                        <b-accordion-item :title="$t('misc.Shipping')">
+                          <ul id="shipping_method">
+                            <li>
+                              <input
+                                type="radio"
+                                name="shipping_method[0]"
+                                data-index="0"
+                                id="shipping_method_0_flat_rate1"
+                                value="flat_rate:1"
+                                class="shipping_method"
+                              />
+                              <label for="shipping_method_0_flat_rate1">
+                                Free shipping
+                              </label>
                             </li>
 
-                            <li class="wc_payment_method payment_method_cheque">
+                            <li>
                               <input
-                                id="payment_method_cheque"
                                 type="radio"
-                                class="input-radio"
-                                name="payment_method"
-                                value="cheque"
-                                data-order_button_text=""
-                              />
-
-                              <label for="payment_method_cheque">
-                                Check payments
-                              </label>
-                              <div
-                                class="payment_box payment_method_cheque"
-                                style="display: block;"
-                              >
-                                <p>
-                                  Please send a check to Store Name, Store
-                                  Street, Store Town, Store State / County,
-                                  Store Postcode.
-                                </p>
-                              </div>
-                            </li>
-
-                            <li class="wc_payment_method payment_method_cod">
-                              <input
-                                id="payment_method_cod"
-                                type="radio"
-                                class="input-radio"
-                                name="payment_method"
-                                value="cod"
+                                name="shipping_method[0]"
+                                data-index="0"
+                                id="shipping_method_0_flat_rate2"
+                                value="flat_rate:2"
+                                class="shipping_method"
                                 checked="checked"
-                                data-order_button_text=""
                               />
-
-                              <label for="payment_method_cod">
-                                Cash on delivery
+                              <label for="shipping_method_0_flat_rate2">
+                                Flat rate:
+                                <span class="woocommerce-Price-amount amount">
+                                  <span
+                                    class="woocommerce-Price-currencySymbol"
+                                  >
+                                    $
+                                  </span>
+                                  15
+                                </span>
                               </label>
-                              <div
-                                class="payment_box payment_method_cod"
-                                style="display: block;"
-                              >
-                                <p>Pay with cash upon delivery.</p>
-                              </div>
+                            </li>
+
+                            <li>
+                              <input
+                                type="radio"
+                                name="shipping_method[0]"
+                                data-index="0"
+                                id="shipping_method_0_flat_rate3"
+                                value="flat_rate:2"
+                                class="shipping_method"
+                                checked="checked"
+                              />
+                              <label for="shipping_method_0_flat_rate3">
+                                Local pickup::
+                                <span class="woocommerce-Price-amount amount">
+                                  <span
+                                    class="woocommerce-Price-currencySymbol"
+                                  >
+                                    $
+                                  </span>
+                                  8
+                                </span>
+                              </label>
                             </li>
                           </ul>
+                          <!-- End Checkboxes -->
+                          <span class="font-size-2">Shipping to Turkey.</span>
+                          <a
+                            href="#"
+                            class="font-weight-medium h-primary ml-3 font-size-2"
+                          >
+                            Change Address
+                          </a>
+                        </b-accordion-item>
+                        <b-accordion-item :title="$t('misc.Coupon')">
+                          <div class="coupon d-flex justify-content-between">
+                            <label for="coupon_code">
+                              {{ $t('misc.Coupon') }}
+                            </label>
+                            <input
+                              type="text"
+                              name="coupon_code"
+                              class="form-control border px-2"
+                              id="coupon_code"
+                              value=""
+                              :placeholder="$t('misc.Coupon code')"
+                              autocomplete="off"
+                            />
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              name="apply_coupon"
+                            >
+                              {{ $t('buttons.Apply coupon') }}
+                            </button>
+                          </div>
+                        </b-accordion-item>
+                        <div class="p-4d875 border">
+                          <table class="shop_table shop_table_responsive">
+                            <tbody>
+                              <tr class="order-total">
+                                <th>Total</th>
+                                <td data-title="Total">
+                                  <strong>
+                                    <span
+                                      class="woocommerce-Price-amount amount"
+                                    >
+                                      <span
+                                        class="woocommerce-Price-currencySymbol"
+                                      >
+                                        £
+                                      </span>
+                                      97.99
+                                    </span>
+                                  </strong>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
-                      </b-accordion-item>
-                    </b-accordion>
+                        <b-accordion-item :title="$t('misc.Payment')">
+                          <div
+                            id="payment"
+                            class="woocommerce-checkout-payment"
+                          >
+                            <ul
+                              class="wc_payment_methods payment_methods methods"
+                            >
+                              <li class="wc_payment_method payment_method_bacs">
+                                <input
+                                  id="payment_method_bacs"
+                                  type="radio"
+                                  class="input-radio"
+                                  name="payment_method"
+                                  value="bacs"
+                                  data-order_button_text=""
+                                />
 
-                    <div class="form-row place-order">
-                      <input
-                        type="submit"
-                        class="button alt btn btn-dark btn-block rounded-0 py-4"
-                        name="woocommerce_checkout_place_order"
-                        id="place_order"
-                        value="Place order"
-                        data-value="Place order"
-                      />
+                                <label for="payment_method_bacs">
+                                  Direct bank transfer
+                                </label>
+                                <div
+                                  class="payment_box payment_method_bacs"
+                                  style="display: block;"
+                                >
+                                  <p>
+                                    Make your payment directly into our bank
+                                    account. Please use your Order ID as the
+                                    payment reference. Your order won’t be
+                                    shipped until the funds have cleared in our
+                                    account.
+                                  </p>
+                                </div>
+                              </li>
 
-                      <input
-                        type="hidden"
-                        id="_wpnonce"
-                        name="_wpnonce"
-                        value="926470d564"
-                      />
-                      <input
-                        type="hidden"
-                        name="_wp_http_referer"
-                        value="/storefront/?wc-ajax=update_order_review"
-                      />
+                              <li
+                                class="wc_payment_method payment_method_cheque"
+                              >
+                                <input
+                                  id="payment_method_cheque"
+                                  type="radio"
+                                  class="input-radio"
+                                  name="payment_method"
+                                  value="cheque"
+                                  data-order_button_text=""
+                                />
+
+                                <label for="payment_method_cheque">
+                                  Check payments
+                                </label>
+                                <div
+                                  class="payment_box payment_method_cheque"
+                                  style="display: block;"
+                                >
+                                  <p>
+                                    Please send a check to Store Name, Store
+                                    Street, Store Town, Store State / County,
+                                    Store Postcode.
+                                  </p>
+                                </div>
+                              </li>
+
+                              <li class="wc_payment_method payment_method_cod">
+                                <input
+                                  id="payment_method_cod"
+                                  type="radio"
+                                  class="input-radio"
+                                  name="payment_method"
+                                  value="cod"
+                                  checked="checked"
+                                  data-order_button_text=""
+                                />
+
+                                <label for="payment_method_cod">
+                                  Cash on delivery
+                                </label>
+                                <div
+                                  class="payment_box payment_method_cod"
+                                  style="display: block;"
+                                >
+                                  <p>Pay with cash upon delivery.</p>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </b-accordion-item>
+                      </b-accordion>
+
+                      <div class="form-row place-order">
+                        <button
+                          name="woocommerce_checkout_place_order"
+                          class="button alt btn btn-dark btn-block rounded-0 py-4"
+                        >
+                          {{ $t('buttons.Place order') }}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </form>
+                  </form>
+                </div>
               </div>
             </div>
-            <!-- .entry-content -->
           </article>
-          <!-- #post-## -->
         </main>
-        <!-- #main -->
       </div>
-      <!-- #primary -->
     </div>
-    <!-- .col-full -->
   </div>
 </template>
 
 <script>
 import Coppon from '@/components/Coppon.vue'
+import axios from 'axios'
 
 export default {
   components: { Coppon },
   data() {
     return {
+      form: {
+        country: '',
+        governorate: '',
+        city: '',
+        postal_code: '',
+        phone: '',
+        address: '',
+      },
       haveCoppon: false,
+      countries: null,
+      governments: null,
+      cities: null,
+      paymentMethods: null,
+      addresses: null,
+      selectedAddress: '',
+      newAddress: false,
     }
+  },
+  computed: {
+    cart() {
+      return this.$store.getters.cart
+    },
+    currency() {
+      return this.$store.getters.currency
+    },
+    totalPrice() {
+      return this.$store.getters.totalPrice
+    },
+  },
+  mounted() {
+    this.getCountries()
+    this.getAddresses()
+    this.getPayments()
+  },
+  methods: {
+    getCountries() {
+      axios.get('countries', { headers: { value: 'id' } }).then((res) => {
+        this.countries = res.data.data
+      })
+    },
+    getGovernment(e) {
+      this.governments = null
+      axios.get(`countries/${e.target.value}/governorates`).then((res) => {
+        this.governments = res.data.data
+      })
+    },
+    getCities(e) {
+      this.cities = null
+      axios
+        .get(
+          `countries/${this.countryId}/governorates/${e.target.value}/cities`,
+        )
+        .then((res) => {
+          this.cities = res.data.data
+        })
+    },
+    addNewAddress() {
+      axios
+        .post('user/address/create', this.form)
+        .then((data) => {
+          if (data.data.status == 'faild') {
+            this.$toast.error(data.data.message)
+            return
+          }
+          this.$toast.success(data.data.message)
+          setTimeout(() => {
+            window.location.reload()
+          }, 300)
+        })
+        .catch((err) => {
+          console.log('Error', err)
+          this.$toast.error(err.message)
+        })
+    },
+    getAddresses() {
+      this.axios.get('user/address').then((data) => {
+        this.addresses = data.data.data
+      })
+    },
+    getPayments() {
+      this.axios.get('/user/paymentMethods').then((data) => {
+        this.paymentMethods = data.data.data
+      })
+    },
   },
 }
 </script>
@@ -944,5 +1227,25 @@ export default {
 
 .showcoupon {
   color: #f75454;
+}
+
+.radio-check {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.is-rtl {
+  label,
+  h2,
+  h3 {
+    text-align: right;
+  }
+  .radio-check {
+    flex-direction: row-reverse;
+  }
+  .woocommerce-info {
+    text-align: right;
+  }
 }
 </style>

@@ -77,7 +77,7 @@
           </div>
           <div class="d-none d-md-flex align-items-center mt-3 mt-md-0">
             <a
-              :href="`mailto:${contactEmail}`"
+              :href="`mailto:${contact_data.email}`"
               :class="$i18n.locale == 'ar' ? 'ml-4' : 'mr-4'"
               class="mb-4 mb-md-0"
             >
@@ -88,7 +88,7 @@
                 <i class="flaticon-question font-size-5 mt-2 mr-1"></i>
                 <div class="ml-2">
                   <span class="text-secondary-gray-1090 font-size-1">
-                    {{ contactEmail }}
+                    {{ contact_data.email }}
                   </span>
                   <div class="h6 mb-0">
                     {{ $t('misc.Any questions') }}
@@ -96,7 +96,7 @@
                 </div>
               </div>
             </a>
-            <a :href="`tel:${phone}`">
+            <a :href="`tel:${contact_data.phone}`">
               <div
                 class="d-flex align-items-center text-dark font-size-2 text-lh-sm"
                 :class="$i18n.locale == 'ar' ? 'text-end' : ''"
@@ -104,7 +104,7 @@
                 <i class="flaticon-phone font-size-5 mt-2 mr-1"></i>
                 <div class="ml-2">
                   <span class="text-secondary-gray-1090 font-size-1">
-                    {{ phone }}
+                    {{ contact_data.phone }}
                   </span>
                   <div class="h6 mb-0">{{ $t('misc.Call toll-free') }}</div>
                 </div>
@@ -318,8 +318,7 @@ export default {
   components: { SidebarCategories, UserAccount, CartMenu },
   data() {
     return {
-      phone: '',
-      contactEmail: '',
+      contact_data: [],
       navShow: null,
       categoriesSideMenu: false,
       miniCart: false,
@@ -364,15 +363,8 @@ export default {
       this.cartMenu = !this.cartMenu
     },
     getSettings() {
-      this.axios.get('Settings/settings').then((data) => {
-        let resault = data.data.setting
-        for (let i = 0; i < resault.length; i += 1) {
-          if (resault[i].key == 'email') {
-            this.contactEmail = resault[i].value
-          } else if (resault[i].key == 'phone') {
-            this.phone = resault[i].value
-          }
-        }
+      this.axios.get('settings').then((data) => {
+        this.contact_data = data.data.data.contact_data
       })
     },
   },

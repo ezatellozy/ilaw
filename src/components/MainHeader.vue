@@ -5,14 +5,14 @@
         class="topbar__nav d-md-flex justify-content-between align-items-center font-size-2"
       >
         <ul class="topbar__nav--left nav mb-0">
-          <li class="nav-item">
+          <li class="nav-item" v-if="false">
             <span class="link-black-100">Free Shipping on Orders Over $99</span>
           </li>
         </ul>
         <ul class="topbar__nav--right nav mb-0">
           <li class="nav-item">
             <router-link
-              to="/account"
+              to="/"
               class="nav-link p-2 link-black-100 d-flex align-items-center"
             >
               <i class="glph-icon flaticon-sent mr-2 font-size-3"></i>
@@ -95,9 +95,10 @@ export default {
       this.$store.commit('currency', c)
     },
     getCurrencis() {
-      this.axios.get('currency/currencies').then((data) => {
-        this.currencis = data.data.data
-      })
+      // this.axios.get('countries').then((data) => {
+      //   this.currencis = data.data.data
+      //   console.log(this.currencis)
+      // })
     },
   },
   computed: {

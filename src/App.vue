@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     getMainGategories() {
-      this.axios.get('sections/sections').then((data) => {
+      this.axios.get('/sections').then((data) => {
         this.categories = data.data.data
       })
     },

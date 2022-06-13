@@ -34,13 +34,12 @@
     <div class="row no-gutters row-cols-1 row-cols-md-2 row-cols-lg-3">
       <div class="col">
         <div class="border py-6 text-center">
-          <a
-            role="button"
-            @click="openTab('orders')"
+          <router-link
+            to="/account/orders"
             class="btn btn-primary rounded-circle px-4 mb-2"
           >
             <span class="flaticon-order font-size-10 btn-icon__inner"></span>
-          </a>
+          </router-link>
           <div class="font-size-3 mb-xl-1 text-center">
             {{ $t('misc.Orders') }}
           </div>
@@ -48,15 +47,14 @@
       </div>
       <div class="col">
         <div class="border border-left-0 py-6 text-center">
-          <a
-            role="button"
-            @click="openTab('downloads')"
+          <router-link
+            to="/account/downloads"
             class="btn bg-gray-200 rounded-circle px-4 mb-2"
           >
             <span
               class="flaticon-cloud-computing font-size-10 btn-icon__inner text-primary"
             ></span>
-          </a>
+          </router-link>
           <div class="font-size-3 mb-xl-1 text-center">
             {{ $t('misc.Downloads') }}
           </div>
@@ -64,15 +62,14 @@
       </div>
       <div class="col">
         <div class="border border-left-0 py-6 text-center">
-          <a
-            role="button"
-            @click="openTab('addresses')"
+          <router-link
+            to="/account/addresses"
             class="btn bg-gray-200 rounded-circle px-4 mb-2"
           >
             <span
               class="flaticon-place font-size-10 btn-icon__inner text-primary"
             ></span>
-          </a>
+          </router-link>
           <div class="font-size-3 mb-xl-1 text-center">
             {{ $t('misc.Addresses') }}
           </div>
@@ -80,15 +77,14 @@
       </div>
       <div class="col">
         <div class="border py-6 text-center">
-          <a
-            role="button"
-            @click="openTab('accountDetails')"
+          <router-link
+            to="/account/accountDetails"
             class="btn bg-gray-200 rounded-circle px-4 mb-2"
           >
             <span
               class="flaticon-user-1 font-size-10 btn-icon__inner text-primary"
             ></span>
-          </a>
+          </router-link>
           <div class="font-size-3 mb-xl-1 text-center">
             {{ $t('misc.Account details') }}
           </div>
@@ -96,15 +92,14 @@
       </div>
       <div class="col">
         <div class="border border-left-0 py-6 text-center">
-          <a
-            role="button"
-            @click="openTab('wishlist')"
+          <router-link
+            to="/account/wishlist"
             class="btn bg-gray-200 rounded-circle px-4 mb-2"
           >
             <span
               class="flaticon-heart font-size-10 btn-icon__inner text-primary"
             ></span>
-          </a>
+          </router-link>
           <div class="font-size-3 mb-xl-1 text-center">
             {{ $t('misc.Wishlist') }}
           </div>
@@ -126,7 +121,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.state.user[0].name
+      return this.$store.state.user.name
     },
   },
 }

@@ -23,7 +23,7 @@
               </div>
               <button type="button" class="close" @click="openUserMenu">
                 <span aria-hidden="true">
-                  Close
+                  {{ $t('misc.Close') }}
                   <i class="fas fa-times ml-2"></i>
                 </span>
               </button>
@@ -41,7 +41,7 @@
                 <transition name="fade">
                   <div id="signUpUser" v-if="signUpUser">
                     <NewAccount
-                      urlRoute="/user/register"
+                      urlRoute="user/register"
                       @setting="setting($event)"
                     />
                   </div>

@@ -8,7 +8,7 @@
         <div class="w-100 list-unstyled slider-container">
           <slider-card
             :styles="cardStyles"
-            :imgSrc="item.image"
+            :imgSrc="item.photo"
             :id="item.id"
             :name="item.name"
             :routerPath="routerPath"

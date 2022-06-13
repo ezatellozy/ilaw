@@ -76,6 +76,16 @@
                 </router-link>
               </li>
               <li class="nav-item mx-0">
+                <router-link
+                  to="/account/payment"
+                  class="nav-link d-flex align-items-center px-0"
+                >
+                  <span class="font-weight-normal text-gray-600">
+                    {{ $t('misc.Paymentmethods') }}
+                  </span>
+                </router-link>
+              </li>
+              <li class="nav-item mx-0">
                 <a
                   role="button"
                   @click="logout"
@@ -108,6 +118,9 @@
               <wishlist v-if="wishlist" />
             </transition>
             <transition name="tabs">
+              <payment-methods v-if="payment" />
+            </transition>
+            <transition name="tabs">
               <account-details v-if="accountDetails" />
             </transition>
           </div>
@@ -123,6 +136,7 @@ import Others from '@/components/Others.vue'
 import Downloads from '@/components/Downloads.vue'
 import Addresses from '@/components/Addresses.vue'
 import Wishlist from '@/components/Wishlist.vue'
+import PaymentMethods from '@/components/PaymentMethods.vue'
 import AccountDetails from '@/components/AccountDetails.vue'
 export default {
   components: {
@@ -132,6 +146,7 @@ export default {
     Downloads,
     Addresses,
     Wishlist,
+    PaymentMethods,
   },
   data() {
     return {
@@ -140,6 +155,7 @@ export default {
       addresses: false,
       wishlist: false,
       accountDetails: false,
+      payment: false,
       downloads: false,
     }
   },
@@ -153,7 +169,6 @@ export default {
   },
   watch: {
     $route() {
-      console.log(this.$route.params)
       this.openTab(this.$route.params.slug)
     },
   },
@@ -164,6 +179,7 @@ export default {
       this.addresses = false
       this.wishlist = false
       this.downloads = false
+      this.payment = false
       this.accountDetails = false
       this[tab] = true
     },

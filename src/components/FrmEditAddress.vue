@@ -52,8 +52,8 @@
                             name="country"
                             id="country"
                             required=""
-                            v-model="form.country_id"
-                            @change="updateGovernment(form.country_id)"
+                            v-model="form.country"
+                            @change="updateGovernment(form.country)"
                             class="form-select rounded-0 height-4 px-4"
                           >
                             <option value="" disabled>
@@ -79,11 +79,11 @@
                             {{ $t('misc.Governorate') }}
                           </label>
                           <select
-                            v-model="form.governorate_id"
+                            v-model="form.governorate"
                             name="governorate"
                             id="governorate"
                             required=""
-                            @change="getCities(form.governorate_id)"
+                            @change="getCities(form.governorate)"
                             class="form-select rounded-0 height-4 px-4"
                           >
                             <option value="" disabled>
@@ -109,7 +109,7 @@
                             {{ $t('misc.City') }}
                           </label>
                           <select
-                            v-model="form.city_id"
+                            v-model="form.city"
                             name="city"
                             id="city"
                             required=""
@@ -155,7 +155,7 @@
                             :placeholder="
                               $t('placeholder.Please enter your phone')
                             "
-                            v-model="form.phone_number"
+                            v-model="form.phone"
                             required=""
                           />
                         </div>
@@ -206,11 +206,11 @@ export default {
     return {
       form: {
         postal_code: '',
-        phone_number: '',
-        country_id: '',
+        phone: '',
+        country: '',
         address: '',
-        governorate_id: '',
-        city_id: '',
+        governorate: '',
+        city: '',
       },
       signIn: true,
       signUp: false,
@@ -223,49 +223,51 @@ export default {
   mounted() {
     this.getAddress()
     this.getCountries()
-    this.getGovernment()
-    this.getCities()
+    // this.getGovernment()
+    // this.getCities()
   },
   methods: {
     getAddress() {
       axios
-        .get(`shippingAddress/shippingAddress/${this.id}`)
+        .get(`/user/address/${this.id}/details`)
         .then(({ data }) => {
+          console.log(data.data)
           let reasult = data.data
           this.form.address = reasult.address
           this.form.postal_code = reasult.postal_code
-          this.form.phone_number = reasult.phone_number
-          this.form.governorate_id = reasult.governorate.id
-          this.form.city_id = reasult.city.id
-          this.form.country_id = reasult.country.id
+          this.form.phone = reasult.phone
+          this.form.governorate = reasult.governorate
+          this.form.city = reasult.city
+          this.form.country = reasult.country
+          console.log(this.form.country)
         })
         .finally(() => {
-          this.getGovernment(this.form.country_id)
-          this.getCities(this.form.governorate_id)
+          this.getGovernment(this.form.country)
+          this.getCities(this.form.governorate)
         })
     },
     getCountries() {
-      axios.get('countries/countries').then((res) => {
+      axios.get('countries', { headers: { value: 'id' } }).then((res) => {
         this.countries = res.data.data
       })
     },
     getGovernment(id) {
-      axios.get(`governorates/${id}`).then((res) => {
+      axios.get(`countries/${id}/governorates`).then((res) => {
         this.governments = res.data.data
       })
     },
     updateGovernment(id) {
       this.governments = null
       this.cities = null
-      this.form.governorate_id = ''
-      this.form.city_id = ''
-      axios.get(`governorates/${id}`).then((res) => {
+      this.form.governorate = ''
+      this.form.city = ''
+      axios.get(`countries/${id}/governorates`).then((res) => {
         this.governments = res.data.data
       })
     },
     getCities(id) {
       this.cities = ''
-      axios.get(`cites/${id}`).then((res) => {
+      axios.get(`countries/63/governorates/${id}/cities`).then((res) => {
         this.cities = res.data.data
       })
     },
@@ -274,7 +276,7 @@ export default {
     },
     updateAddress() {
       this.axios
-        .post(`shippingAddress/shippingAddresses/${this.id}`, this.form)
+        .post(`/user/address/${this.id}/update`, this.form)
         .then((data) => {
           this.$toast.success(data.data.message)
           setTimeout(() => {

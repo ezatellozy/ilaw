@@ -201,12 +201,17 @@
           >
             <!-- Copyright -->
             <p class="mb-3 mb-lg-0 font-size-2">
-              {{ $t('misc.All rights reserved') }}
+              <bdi>{{ $t('misc.All rights reserved') }}</bdi>
+              <bdi>ilaw ©{{ year }}</bdi>
             </p>
             <!-- End Copyright -->
-            <p class="mb-3 mb-lg-0 font-size-2">
+            <a
+              target="_blank"
+              href="https://technomasr.com/"
+              class="mb-3 mb-lg-0 text-black font-size-2"
+            >
               {{ $t('misc.Powered by Technomasr') }}
-            </p>
+            </a>
           </div>
         </div>
       </div>
@@ -233,31 +238,25 @@ export default {
   },
   methods: {
     getSettings() {
-      this.axios.get('Settings/settings').then((data) => {
-        let resault = data.data.setting
-        for (let i = 0; i < resault.length; i += 1) {
-          if (resault[i].key == 'address') {
-            this.address = resault[i].value
-          } else if (resault[i].key == 'email') {
-            this.contactEmail = resault[i].value
-          } else if (resault[i].key == 'phone') {
-            this.phone = resault[i].value
-          } else if (resault[i].key == 'instgram') {
-            this.instgram = resault[i].value
-          } else if (resault[i].key == 'facebook') {
-            this.facebook = resault[i].value
-          } else if (resault[i].key == 'youtube') {
-            this.youtube = resault[i].value
-          } else if (resault[i].key == 'twitter') {
-            this.twitter = resault[i].value
-          } else if (resault[i].key == 'map_addess_link') {
-            this.mapAddessLink = resault[i].value
-          }
-        }
+      this.axios.get('settings').then((data) => {
+        let result = data.data.data
+        this.contactEmail = result.contact_data.email
+        this.phone = result.contact_data.phone
+        this.instgram = result.social.instagram
+        this.mapAddessLink =
+          'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13675.833764016936!2d31.3732275!3d31.0274075!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x859ee8ea1a8da4ae!2sTechnomasr%20for%20web%20solutions!5e0!3m2!1sen!2seg!4v1596684538546!5m2!1sen!2seg'
+        this.facebook = result.social.facebook
+        this.youtube = result.social.youtube
+        this.twitter = result.social.twitter
       })
     },
     openUserMenu() {
       this.$store.commit('login_Menu')
+    },
+  },
+  computed: {
+    year() {
+      return new Date().getFullYear()
     },
   },
 }

@@ -10,19 +10,19 @@
             scope="col"
             class="py-3 border-bottom-0 font-weight-medium pl-3 pl-md-5"
           >
-            Order
+            {{ $t('misc.Order') }}
           </th>
           <th scope="col" class="py-3 border-bottom-0 font-weight-medium">
-            Date
+            {{ $t('misc.Date') }}
           </th>
           <th scope="col" class="py-3 border-bottom-0 font-weight-medium">
-            Staus
+            {{ $t('misc.Status') }}
           </th>
           <th scope="col" class="py-3 border-bottom-0 font-weight-medium">
-            Total
+            {{ $t('misc.total') }}
           </th>
           <th scope="col" class="py-3 border-bottom-0 font-weight-medium">
-            Actions
+            {{ $t('misc.Actions') }}
           </th>
         </tr>
       </thead>

@@ -4,19 +4,19 @@
       <div class="row">
         <div class="col-lg-4 col-md-3 text-center">
           <img
-            v-if="publisher.image"
+            v-if="publisher.photo"
             class="img-fluid my-auto"
-            :src="publisher.image"
+            :src="publisher.photo"
             alt="Image-Description"
           />
         </div>
         <div class="col-lg-8 col-md-9 px-4">
           <div class="mb-8 w-100">
             <h6 class="fs-4 primary-color mt-2 mb-3 pb-1">
-              {{ publisher.company_name }}
+              {{ publisher.name }}
             </h6>
             <p class="mb-0">
-              {{ publisher.bio }}
+              {{ publisher.about }}
             </p>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default {
   methods: {
     getPublisher() {
       this.axios
-        .get(`/vendors/vendor/${this.$route.params.id}`)
+        .get(`publishers/${this.$route.params.id}/details`)
         .then((data) => {
           this.publisher = data.data.data
         })

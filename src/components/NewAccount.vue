@@ -40,11 +40,14 @@
             class="form-control rounded-0 height-4 px-4"
             name="name"
             id="lastname"
-            v-model="form.user_name"
+            v-model="form.userName"
             :placeholder="$t('inputs.username')"
           />
-          <div v-for="error of v$.user_name.$errors" :key="error.$uid">
+          <div v-for="error of v$.userName.$errors" :key="error.$uid">
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
+          <div>
+            <div class="error-msg">{{ usernamestatus }}</div>
           </div>
         </div>
       </div>
@@ -64,6 +67,9 @@
           <div v-for="error of v$.phone.$errors" :key="error.$uid">
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
           </div>
+          <div>
+            <div class="error-msg">{{ phoneStatus }}</div>
+          </div>
         </div>
       </div>
       <div class="form-group mb-4">
@@ -81,6 +87,9 @@
           />
           <div v-for="error of v$.email.$errors" :key="error.$uid">
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
+          </div>
+          <div>
+            <div class="error-msg">{{ emailstatus }}</div>
           </div>
         </div>
       </div>
@@ -112,7 +121,7 @@
           <select
             name="country"
             id="country"
-            v-model="form.country_id"
+            v-model="form.country"
             @change="getGovernment($event)"
             class="form-select rounded-0 height-4 px-4"
           >
@@ -125,7 +134,7 @@
               {{ country.name }}
             </option>
           </select>
-          <div v-for="error of v$.country_id.$errors" :key="error.$uid">
+          <div v-for="error of v$.country.$errors" :key="error.$uid">
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
           </div>
         </div>
@@ -136,7 +145,7 @@
             {{ $t('misc.Governorate') }}
           </label>
           <select
-            v-model="form.governorate_id"
+            v-model="form.governorate"
             name="governorate"
             id="governorate"
             :disabled="!governments"
@@ -154,7 +163,7 @@
               {{ government.name }}
             </option>
           </select>
-          <div v-for="error of v$.governorate_id.$errors" :key="error.$uid">
+          <div v-for="error of v$.governorate.$errors" :key="error.$uid">
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
           </div>
         </div>
@@ -165,7 +174,7 @@
             {{ $t('misc.City') }}
           </label>
           <select
-            v-model="form.city_id"
+            v-model="form.city"
             name="city"
             id="city"
             :disabled="!cities"
@@ -176,7 +185,7 @@
               {{ city.name }}
             </option>
           </select>
-          <div v-for="error of v$.city_id.$errors" :key="error.$uid">
+          <div v-for="error of v$.city.$errors" :key="error.$uid">
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
           </div>
         </div>
@@ -218,19 +227,20 @@
         </div>
       </div>
 
+      <div class="error-msg mb-4">{{ registerErr }}</div>
       <div class="mb-4d75">
         <button type="submit" class="btn btn-block py-3 rounded-0 btn-dark">
-          Create Account
+          {{ $t('misc.Create Account') }}
         </button>
         <div class="text-center mb-4">
           <span class="small text-muted">
-            Already have an account?
+            {{ $t('misc.Already have an account?') }}
           </span>
           <button
             class="js-animation-link small btn"
             @click="setting('signIn')"
           >
-            Login
+            {{ $t('buttons.Login') }}
           </button>
         </div>
       </div>
@@ -242,7 +252,13 @@
 import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import useVuelidate from '@vuelidate/core'
-import { required, email, sameAs } from '@vuelidate/validators'
+import {
+  required,
+  email,
+  sameAs,
+  numeric,
+  minLength,
+} from '@vuelidate/validators'
 import axios from 'axios'
 export default {
   props: ['urlRoute'],
@@ -251,6 +267,7 @@ export default {
       countries: null,
       governments: null,
       cities: null,
+      countryId: '',
     }
   },
   mounted() {
@@ -261,48 +278,70 @@ export default {
       this.$emit('setting', e)
     },
     getCountries() {
-      axios.get('countries/countries').then((res) => {
+      axios.get('countries', { headers: { value: 'id' } }).then((res) => {
         this.countries = res.data.data
       })
     },
-
     getGovernment(e) {
+      this.countryId = e.target.value
       this.governments = null
-      axios.get(`governorates/${e.target.value}`).then((res) => {
+      axios.get(`countries/${e.target.value}/governorates`).then((res) => {
         this.governments = res.data.data
       })
     },
     getCities(e) {
       this.cities = null
-      axios.get(`cites/${e.target.value}`).then((res) => {
-        this.cities = res.data.data
-      })
+      axios
+        .get(
+          `countries/${this.countryId}/governorates/${e.target.value}/cities`,
+        )
+        .then((res) => {
+          this.cities = res.data.data
+        })
+    },
+  },
+  computed: {
+    registerErr() {
+      return this.$store.getters.status
+    },
+    usernamestatus() {
+      return this.$store.getters.usernamestatus
+    },
+    emailstatus() {
+      return this.$store.getters.emailstatus
+    },
+    phoneStatus() {
+      return this.$store.getters.phoneStatus
     },
   },
   setup(props) {
     const store = useStore()
     const form = reactive({
       name: '',
-      user_name: '',
+      userName: '',
       phone: '',
       email: '',
-      country_id: '',
+      country: '',
       address: '',
-      governorate_id: '',
-      city_id: '',
+      governorate: '',
+      city: '',
       password: '',
       cPassword: '',
     })
     const rules = computed(() => {
       return {
-        name: { required },
-        user_name: { required },
+        name: { required, minLength: minLength(3) },
+        userName: { required },
         email: { required, email },
-        phone: { required },
-        country_id: { required },
+        phone: {
+          required,
+          numeric,
+          minLength: minLength(9),
+        },
+        country: { required },
         address: { required },
-        governorate_id: { required },
-        city_id: { required },
+        governorate: { required },
+        city: { required },
         password: { required },
         cPassword: {
           required,
@@ -310,6 +349,7 @@ export default {
         },
       }
     })
+
     const v$ = useVuelidate(rules, form)
     async function register() {
       const isFormCorrect = await this.v$.$validate()
@@ -329,6 +369,8 @@ export default {
 
 <style>
 .error-msg {
+  font-size: 14px;
+  text-align: center;
   color: red;
 }
 </style>

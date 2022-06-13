@@ -1,13 +1,6 @@
 <template>
   <div class="map w-100">
-    <iframe
-      :src="mapAddessLink"
-      style="width: 100%; height: 300px; border: 0;"
-      frameborder="0"
-      allowfullscreen=""
-      aria-hidden="false"
-      tabindex="0"
-    ></iframe>
+    <div v-html="mapAddessLink" class="iframe"></div>
   </div>
   <div class="container contacts-us row mx-auto">
     <div class="card mx-auto mb-2 tra">
@@ -39,7 +32,7 @@
               </address>
               <div>
                 <a
-                  href="mailto:sale@bookworm.com"
+                  :href="`mailto:${contactEmail}`"
                   class="font-size-2 mb-2 d-block link-black-100 mb-1"
                 >
                   <font-awesome-icon size="lg" :icon="['fas', 'envelope']" />
@@ -49,12 +42,21 @@
                 </a>
 
                 <a
-                  href="tel:+1246-345-0695"
+                  :href="`tel:${phone}`"
                   class="font-size-2 d-block link-black-100"
                 >
                   <font-awesome-icon size="lg" :icon="['fas', 'phone']" />
                   <span :class="$i18n.locale == 'ar' ? 'mr-2' : 'ml-2'">
                     {{ phone }}
+                  </span>
+                </a>
+                <a
+                  :href="`tel:${mobile}`"
+                  class="font-size-2 d-block link-black-100"
+                >
+                  <font-awesome-icon size="lg" :icon="['fas', 'phone']" />
+                  <span :class="$i18n.locale == 'ar' ? 'mr-2' : 'ml-2'">
+                    {{ mobile }}
                   </span>
                 </a>
               </div>
@@ -106,7 +108,7 @@
             <b-form-group :label="$t('inputs.name')" label-for="name">
               <b-form-input
                 id="name"
-                v-model="name"
+                v-model="contact.name"
                 :placeholder="$t('inputs.name')"
                 required
               ></b-form-input>
@@ -120,10 +122,86 @@
             >
               <b-form-input
                 id="email"
-                v-model="email"
+                v-model="contact.email"
                 type="email"
                 :placeholder="$t('inputs.Email Address')"
                 required
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-md-6">
+            <b-form-group
+              id="companyname"
+              :label="$t('inputs.company name')"
+              label-for="input-1"
+            >
+              <b-form-input
+                id="companyname"
+                v-model="contact.company"
+                type="text"
+                :placeholder="$t('inputs.company name')"
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group mb-4">
+              <div class="js-form-message js-focus-state">
+                <label
+                  id="signinEmailLabel"
+                  class="form-label d-block"
+                  for="country"
+                >
+                  {{ $t('misc.Country') }}
+                </label>
+                <select
+                  name="country"
+                  id="country"
+                  v-model="contact.country"
+                  required
+                  class="form-select form-control rounded-0 height-4 px-4"
+                >
+                  <option value="" disabled>
+                    {{ $t('misc.Select country') }}
+                  </option>
+                  <option
+                    v-for="country in countries"
+                    :key="country.id"
+                    :value="country.id"
+                  >
+                    {{ country.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <b-form-group
+              id="subject"
+              :label="$t('inputs.phone')"
+              label-for="phone"
+            >
+              <b-form-input
+                id="phone"
+                v-model="contact.phone"
+                type="phone"
+                :placeholder="$t('placeholder.Please enter your phone')"
+                required
+              ></b-form-input>
+            </b-form-group>
+          </div>
+
+          <div>
+            <b-form-group
+              id="subject"
+              :label="$t('inputs.title')"
+              label-for="title"
+            >
+              <b-form-input
+                id="title"
+                v-model="contact.title"
+                type="text"
+                :placeholder="$t('inputs.title')"
               ></b-form-input>
             </b-form-group>
           </div>
@@ -135,10 +213,9 @@
             >
               <b-form-input
                 id="subject"
-                v-model="subject"
+                v-model="contact.subject"
                 type="text"
                 :placeholder="$t('inputs.Subject')"
-                required
               ></b-form-input>
             </b-form-group>
           </div>
@@ -150,10 +227,11 @@
             >
               <b-form-textarea
                 id="textarea"
-                v-model="message"
+                v-model="contact.content"
                 :placeholder="$t('inputs.Enter something')"
                 rows="3"
                 max-rows="6"
+                required
               ></b-form-textarea>
             </b-form-group>
           </div>
@@ -177,68 +255,87 @@
 </template>
 
 <script>
+import Cookie from 'js-cookie'
 import Loading from '../components/Loading.vue'
 export default {
   components: { Loading },
   data() {
     return {
-      email: '',
-      name: '',
-      message: '',
-      subject: '',
+      contact: {
+        email: '',
+        name: '',
+        country: '',
+        phone: '',
+        title: '',
+        company: '',
+        content: '',
+        subject: '',
+      },
       address: '',
       contactEmail: '',
       phone: '',
+      mobile: '',
       instgram: '',
       facebook: '',
       youtube: '',
       twitter: '',
       mapAddessLink: '',
       loading: false,
+      countries: null,
     }
   },
   mounted() {
     this.getSettings()
+    this.getCountries()
   },
   methods: {
     onSubmit() {
       this.loading = true
       const frmData = new FormData()
-      frmData.append('email', this.email)
-      frmData.append('name', this.name)
-      frmData.append('message', this.message)
-      frmData.append('subject', this.subject)
-      this.axios.post('Contact/Contacts', frmData).then((data) => {
-        this.$toast.success(data.data.message)
-        this.loading = false
-        this.email = ''
-        this.name = ''
-        this.message = ''
-        this.subject = ''
-      })
+      frmData.append('email', this.contact.email)
+      frmData.append('name', this.contact.name)
+      frmData.append('content', this.contact.content)
+      frmData.append('subject', this.contact.subject)
+      frmData.append('company', this.contact.company)
+      frmData.append('title', this.contact.title)
+      frmData.append('phone', this.contact.phone)
+      frmData.append('country', this.contact.country)
+      this.axios
+        .post('sendContactMessage', frmData, {
+          Headers: {
+            'Accept-Language': Cookie.get('locale'),
+          },
+        })
+        .then((data) => {
+          this.$toast.success(data.data.message)
+          this.loading = false
+          this.contact.email = ''
+          this.contact.name = ''
+          this.contact.content = ''
+          this.contact.subject = ''
+          this.contact.company = ''
+          this.contact.title = ''
+          this.contact.phone = ''
+          this.contact.country = ''
+        })
     },
     getSettings() {
-      this.axios.get('Settings/settings').then((data) => {
-        let resault = data.data.setting
-        for (let i = 0; i < resault.length; i += 1) {
-          if (resault[i].key == 'address') {
-            this.address = resault[i].value
-          } else if (resault[i].key == 'email') {
-            this.contactEmail = resault[i].value
-          } else if (resault[i].key == 'phone') {
-            this.phone = resault[i].value
-          } else if (resault[i].key == 'instgram') {
-            this.instgram = resault[i].value
-          } else if (resault[i].key == 'facebook') {
-            this.facebook = resault[i].value
-          } else if (resault[i].key == 'youtube') {
-            this.youtube = resault[i].value
-          } else if (resault[i].key == 'twitter') {
-            this.twitter = resault[i].value
-          } else if (resault[i].key == 'map_addess_link') {
-            this.mapAddessLink = resault[i].value
-          }
-        }
+      this.axios.get('settings').then((data) => {
+        let result = data.data.data
+        this.contactEmail = result.contact_data.email
+        this.address = result.contact_data.address
+        this.phone = result.contact_data.phone
+        this.mobile = result.contact_data.mobile
+        this.instgram = result.social.instgram
+        this.facebook = result.social.facebook
+        this.youtube = result.social.youtube
+        this.twitter = result.social.twitter
+        this.mapAddessLink = result.contact_data.map
+      })
+    },
+    getCountries() {
+      this.axios.get('countries', { headers: { value: 'id' } }).then((res) => {
+        this.countries = res.data.data
       })
     },
   },
@@ -295,7 +392,13 @@ export default {
     }
   }
 }
-
+.iframe {
+  height: 300px;
+  border: 0;
+  iframe {
+    width: 100%;
+  }
+}
 .is-rtl {
   .contacts-us {
     h2,

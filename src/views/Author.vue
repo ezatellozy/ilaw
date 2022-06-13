@@ -5,21 +5,20 @@
         <div class="row">
           <div class="col-lg-4 col-md-3 text-center" v-if="author">
             <img
-              v-if="author.image"
-              class="img-fluid mb-5 mb-lg-0 mt-auto"
-              :src="author.image"
+              v-if="author.photo"
+              class="w-100 mb-5 mb-lg-0 mt-auto"
+              :src="author.photo"
               alt="Image-Description"
             />
           </div>
           <div class="col-lg-8 col-md-9">
             <div class="mb-8">
               <!-- <span class="text-gray-400 font-size-2">AUTHOR OF THE MONTH</span> -->
-              <h6 class="font-size-7 font-weight-medium mt-2 mb-3 pb-1">
+              <h4 class="font-weight-medium mt-2 mb-3 pb-1">
                 {{ author.name }}
-              </h6>
-              <p class="mb-0">
-                {{ author.bio }}
-              </p>
+              </h4>
+
+              <div class="mb-0" v-html="author.bio"></div>
             </div>
             <ul
               class="products list-unstyled row no-gutters row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-wd-4 my-0 mb-md-8 mb-wd-12"
@@ -100,10 +99,12 @@ export default {
   },
   methods: {
     getAuthor() {
-      this.axios.get(`writer/writer/${this.$route.params.id}`).then((data) => {
-        this.author = data.data.data
-        console.log(this.author)
-      })
+      this.axios
+        .get(`writers/${this.$route.params.id}/details`)
+        .then((data) => {
+          this.author = data.data.data
+          console.log(this.author)
+        })
     },
   },
 }
@@ -137,8 +138,9 @@ export default {
 }
 .is-rtl {
   p,
+  div,
   h2,
-  h6 {
+  h4 {
     text-align: right;
   }
 }

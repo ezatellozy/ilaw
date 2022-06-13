@@ -19,14 +19,14 @@
               “ {{ welcomeSubject }} ”
             </p>
           </div>
-          <div class="mb-4 pb-xl-1 ml-xl-4">
+          <!-- <div class="mb-4 pb-xl-1 ml-xl-4">
             <h6 class="font-weight-medium font-size-4 mb-4">
               {{ contentQuestion }}
             </h6>
             <p class="font-size-2">
               {{ contentAnswer }}
             </p>
-          </div>
+          </div> -->
           <div class="ml-xl-4">
             <div class="row">
               <div class="col-md-6">
@@ -81,23 +81,14 @@ export default {
   },
   methods: {
     getSettings() {
-      this.axios.get('Settings/settings').then((data) => {
-        let resault = data.data.setting
-        for (let i = 0; i < resault.length; i += 1) {
-          if (resault[i].key == 'welcome title') {
-            this.welcomeTitle = resault[i].value
-          } else if (resault[i].key == 'welcome subject') {
-            this.welcomeSubject = resault[i].value
-          } else if (resault[i].key == 'content question') {
-            this.contentQuestion = resault[i].value
-          } else if (resault[i].key == 'content answer') {
-            this.contentAnswer = resault[i].value
-          } else if (resault[i].key == 'our vision') {
-            this.ourVision = resault[i].value
-          } else if (resault[i].key == 'our mission') {
-            this.ourMission = resault[i].value
-          }
-        }
+      this.axios.get('settings').then((data) => {
+        let result = data.data.data
+        this.welcomeTitle = result.title
+        this.welcomeSubject = result.description
+        // this.contentQuestion = result.value
+        // this.contentAnswer = result.value
+        this.ourVision = result.vision
+        this.ourMission = result.mission
       })
     },
   },

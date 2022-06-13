@@ -11,7 +11,10 @@
             >
               <i class="glyph-icon flaticon-delivery"></i>
             </div>
-            <div class="media-body ml-4">
+            <div
+              class="media-body"
+              :class="$i18n.locale == 'ar' ? ' mr-4' : ' ml-4'"
+            >
               <h4 class="feature__title font-size-3">Free Delivery</h4>
               <p class="feature__subtitle m-0">Orders over $100</p>
             </div>
@@ -29,7 +32,10 @@
             >
               <i class="glyph-icon flaticon-credit"></i>
             </div>
-            <div class="media-body ml-4">
+            <div
+              class="media-body"
+              :class="$i18n.locale == 'ar' ? ' mr-4' : ' ml-4'"
+            >
               <h4 class="feature__title font-size-3">Secure Payment</h4>
               <p class="feature__subtitle m-0">100% Secure Payment</p>
             </div>
@@ -47,7 +53,10 @@
             >
               <i class="glyph-icon flaticon-warranty"></i>
             </div>
-            <div class="media-body ml-4">
+            <div
+              class="media-body"
+              :class="$i18n.locale == 'ar' ? ' mr-4' : ' ml-4'"
+            >
               <h4 class="feature__title font-size-3">Money Back Guarantee</h4>
               <p class="feature__subtitle m-0">Within 30 Days</p>
             </div>
@@ -63,9 +72,13 @@
             <div
               class="feature__icon font-size-14 text-primary-green text-lh-xs"
             >
-              <i class="glyph-icon flaticon-help"></i>
+              <img src="@/assets/logo.png" class="attracts-icon" alt="ilaw" />
+              <!-- <i class="glyph-icon flaticon-help"></i> -->
             </div>
-            <div class="media-body ml-4">
+            <div
+              class="media-body"
+              :class="$i18n.locale == 'ar' ? ' mr-4' : ' ml-4'"
+            >
               <h4 class="feature__title font-size-3">24/7 Support</h4>
               <p class="feature__subtitle m-0">Within 1 Business Day</p>
             </div>
@@ -80,4 +93,10 @@
 export default {}
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.media {
+  .attracts-icon {
+    width: 56px;
+  }
+}
+</style>

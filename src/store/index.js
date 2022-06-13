@@ -1,6 +1,10 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import { createToaster } from '@meforma/vue-toaster'
+
+// import { inject } from 'vue'
+const toast = createToaster()
 
 function updateLocaleStorage(cart) {
   localStorage.setItem('cart', JSON.stringify(cart))
@@ -17,7 +21,9 @@ export default createStore({
     loginMenu: false,
     publisher: null,
     cart: JSON.parse(localStorage.getItem('cart')) || [],
-
+    phoneStatus: '',
+    emailStatus: '',
+    usernamestatus: '',
     washlist: JSON.parse(localStorage.getItem('washlist')) || [],
     token: Cookies.get('token') || null,
   },
@@ -26,6 +32,7 @@ export default createStore({
     isPublisher: (state) => !!state.publisher,
     loginMenu: (state) => state.loginMenu,
     currency: (state) => state.currency,
+    status: (state) => state.status,
     totalPrice: (state) => {
       return `${state.cart.reduce((a, b) => a + b.totalPrice, 0)} ${
         state.currency
@@ -36,10 +43,13 @@ export default createStore({
     },
     userId: (state) => {
       if (state.user) {
-        return state.user[0].id
+        return state.user.id
       }
     },
     cart: (state) => state.cart,
+    usernamestatus: (state) => state.usernamestatus,
+    emailstatus: (state) => state.emailStatus,
+    phoneStatus: (state) => state.phoneStatus,
     washlist: (state) => state.washlist,
   },
   mutations: {
@@ -134,13 +144,23 @@ export default createStore({
     currency(state, payload) {
       state.currency = payload
     },
-    auth_success(state) {
-      state.status = 'success'
+    auth_success(state, payload) {
+      state.status = payload
       state.token = Cookies.get('token')
       state.user = JSON.parse(localStorage.getItem('user'))
     },
-    auth_error(state) {
-      state.status = 'error'
+    auth_error(state, payload) {
+      state.status = payload
+    },
+    usernamestatus(state, payload) {
+      state.usernamestatus = payload
+    },
+    emailstatus(state, payload) {
+      state.emailStatus = payload
+    },
+
+    phoneStatus(state, payload) {
+      state.phoneStatus = payload
     },
 
     logout(state) {
@@ -159,21 +179,25 @@ export default createStore({
           method: 'POST',
         })
           .then((resp) => {
-            console.log(resp)
-            const token = resp.data.access_token
-            const user = resp.data.user
-            Cookies.set('token', token)
+            if (resp.data.status == 'faild') {
+              context.commit('auth_error', resp.data.message)
+              return
+            }
+            // const token = resp.data.access_token
+            const user = resp.data.data
+            Cookies.set('token', 'successed')
             localStorage.setItem('user', JSON.stringify(user))
-            const lang = user[0].default_language
+            console.log(resp)
+            const lang = user.language
 
-            if (lang == 'Arabic') {
+            if (lang == 'ar') {
               Cookies.set('locale', 'ar')
-            } else if (lang == 'English') {
+            } else if (lang == 'en') {
               Cookies.set('locale', 'en')
             } else {
               Cookies.set('locale', 'fr')
             }
-
+            toast.success(resp.data.message)
             context.commit('auth_success')
             setTimeout(() => {
               window.location.reload()
@@ -191,19 +215,38 @@ export default createStore({
     },
 
     register(context, [user, url]) {
-      console.log(url)
       return new Promise((resolve, reject) => {
         context.commit('auth_request')
         axios({
           url: `${url}`,
           data: user,
           method: 'POST',
+          headers: {
+            'Accept-Language': Cookies.get('locale'),
+          },
         })
           .then((resp) => {
+            context.commit('emailstatus', '')
+            context.commit('phoneStatus', '')
+            context.commit('usernamestatus', '')
+            if (resp.data.status == 'faild') {
+              context.commit('auth_error', resp.data.message)
+              toast.error(resp.data.message)
+              if (resp.data.data.email) {
+                context.commit('emailstatus', resp.data.data.email[0])
+              } else if (resp.data.data.phone) {
+                context.commit('phoneStatus', resp.data.data.phone[0])
+              } else if (resp.data.data.username) {
+                context.commit('usernamestatus', resp.data.data.username[0])
+              }
+              return
+            }
+            toast.success(resp.data.message)
             context.dispatch('login', user)
             resolve(resp)
           })
           .catch((err) => {
+            toast.error(err.message)
             context.commit('auth_error', err)
             Cookies.remove('token')
             reject(err)

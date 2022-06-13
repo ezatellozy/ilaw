@@ -52,22 +52,26 @@ export default {
     this.getAuthors()
     this.getPublisher()
     this.getPartner()
+    this.getBooks()
   },
   methods: {
     getAuthors() {
-      this.axios.get('writer/writers').then((data) => {
+      this.axios.get('writers').then((data) => {
         this.authors = data.data.data
       })
     },
     getPublisher() {
-      this.axios.get('vendors/vendors').then((data) => {
+      this.axios.get('publishers').then((data) => {
         this.publisher = data.data.data
       })
     },
     getPartner() {
-      this.axios.get('partner/partners').then((data) => {
-        this.partners = data.data.data
-      })
+      // this.axios.get('partner/partners').then((data) => {
+      //   this.partners = data.data.data
+      // })
+    },
+    getBooks() {
+      // this.axios.get('')
     },
   },
 }

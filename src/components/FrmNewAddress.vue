@@ -52,7 +52,7 @@
                             name="country"
                             id="country"
                             required=""
-                            v-model="form.country_id"
+                            v-model="form.country"
                             @change="getGovernment($event)"
                             class="form-select rounded-0 height-4 px-4"
                           >
@@ -79,7 +79,7 @@
                             {{ $t('misc.Governorate') }}
                           </label>
                           <select
-                            v-model="form.governorate_id"
+                            v-model="form.governorate"
                             name="governorate"
                             id="governorate"
                             :disabled="!governments"
@@ -110,7 +110,7 @@
                             {{ $t('misc.City') }}
                           </label>
                           <select
-                            v-model="form.city_id"
+                            v-model="form.city"
                             name="city"
                             id="city"
                             required=""
@@ -157,7 +157,7 @@
                             :placeholder="
                               $t('placeholder.Please enter your phone')
                             "
-                            v-model="form.phone_number"
+                            v-model="form.phone"
                             required=""
                           />
                         </div>
@@ -229,22 +229,26 @@ export default {
       this[event] = true
     },
     getCountries() {
-      axios.get('countries/countries').then((res) => {
+      axios.get('countries', { headers: { value: 'id' } }).then((res) => {
         this.countries = res.data.data
       })
     },
 
     getGovernment(e) {
       this.governments = null
-      axios.get(`governorates/${e.target.value}`).then((res) => {
+      axios.get(`countries/${e.target.value}/governorates`).then((res) => {
         this.governments = res.data.data
       })
     },
     getCities(e) {
       this.cities = null
-      axios.get(`cites/${e.target.value}`).then((res) => {
-        this.cities = res.data.data
-      })
+      axios
+        .get(
+          `countries/${this.countryId}/governorates/${e.target.value}/cities`,
+        )
+        .then((res) => {
+          this.cities = res.data.data
+        })
     },
   },
   setup() {
@@ -252,16 +256,20 @@ export default {
     const toast = inject('toast')
     const form = reactive({
       postal_code: '',
-      phone_number: '',
-      country_id: '',
+      phone: '',
+      country: '',
       address: '',
-      governorate_id: '',
-      city_id: '',
+      governorate: '',
+      city: '',
     })
     function addNewAddress() {
       axios
-        .post('shippingAddress/shippingAddress', form)
+        .post('user/address/create', form)
         .then((data) => {
+          if (data.data.status == 'faild') {
+            toast.error(data.data.message)
+            return
+          }
           toast.success(data.data.message)
           setTimeout(() => {
             window.location.reload()

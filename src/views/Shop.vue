@@ -2,7 +2,7 @@
   <div class="site-content space-bottom-3 pt-11" id="content">
     <div class="container">
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-5 col-lg-3">
           <div id="secondary" class="sidebar widget-area" role="complementary">
             <b-accordion free>
               <b-accordion-item :title="$t('nav.categories')" visible>
@@ -308,7 +308,7 @@
             </b-accordion>
           </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-7 col-lg-9">
           <div id="primary" class="content-area">
             <div
               class="shop-control-bar d-lg-flex justify-content-between align-items-center mb-5 text-center text-md-left"

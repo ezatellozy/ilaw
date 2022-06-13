@@ -32,7 +32,7 @@
           ></button>
         </div>
         <div class="modal-body">
-          {{ $t('misc.are you sure you want to delete address') }}
+          {{ $t('misc.are you sure you want to delete') }}
         </div>
         <div class="modal-footer">
           <button
@@ -52,19 +52,18 @@
 </template>
 
 <script>
+// import Cookie from 'js-cookie'
 export default {
-  props: ['id'],
+  props: ['id', 'name'],
   methods: {
     deleteItem() {
-      this.axios
-        .post(`shippingAddress/shippingAddress/${this.id}`)
-        .then((data) => {
-          this.$toast.success(data.data.message)
-          setTimeout(() => {
-            window.location.reload()
-          }, 300)
-          this.$refs.closeModal.click()
-        })
+      this.axios.get(`${this.name}/${this.id}/delete`).then((data) => {
+        this.$toast.success(data.data.message)
+        setTimeout(() => {
+          window.location.reload()
+        }, 300)
+        this.$refs.closeModal.click()
+      })
     },
   },
 }

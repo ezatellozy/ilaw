@@ -36,6 +36,8 @@
       </div>
     </div>
 
+    <div class="error-msg mb-2">{{ loginMessage }}</div>
+
     <div class="d-flex justify-content-between mb-5 align-items-center">
       <div class="js-form-message">
         <div
@@ -55,12 +57,14 @@
           </label>
         </div>
       </div>
-      <button
+      <a
+        role="button"
+        target="_blank"
         class="js-animation-link btn text-dark font-size-2 t-d-u link-muted font-weight-medium"
-        @click="setting('forgotPassword')"
+        :href="globalResetPassword"
       >
         {{ $t('misc.Forgot Password?') }}
-      </button>
+      </a>
     </div>
     <div class="mb-4d75">
       <button type="submit" class="btn btn-block py-3 rounded-0 btn-dark">
@@ -98,6 +102,11 @@
 import { useStore } from 'vuex'
 import { reactive, ref } from 'vue'
 export default {
+  computed: {
+    loginMessage() {
+      return this.$store.getters.status
+    },
+  },
   methods: {
     setting(e) {
       this.$emit('setting', e)
