@@ -230,7 +230,7 @@
       <div class="error-msg mb-4">{{ registerErr }}</div>
       <div class="mb-4d75">
         <button type="submit" class="btn btn-block py-3 rounded-0 btn-dark">
-          {{ $t('misc.Create Account') }}
+          {{ $t('misc.Create account') }}
         </button>
         <div class="text-center mb-4">
           <span class="small text-muted">

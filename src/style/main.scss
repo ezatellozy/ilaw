@@ -23881,6 +23881,12 @@ html:not(.no-transition) body,
   transition-property: left, right, transform;
   transition-property: left, right, transform, -webkit-transform;
 }
+button {
+  box-shadow: none !important;
+  &:focus {
+    outline: none !important;
+  }
+}
 
 .zeynep ul {
   list-style: none;
@@ -23889,6 +23895,7 @@ html:not(.no-transition) body,
 
 .zeynep ul > li {
   display: block;
+  text-align: left;
 }
 
 .zeynep ul > li > a:not(.btn) {
@@ -23905,14 +23912,26 @@ html:not(.no-transition) body,
 
 .zeynep ul > li.has-submenu > a,
 .zeynep .submenu-header > a {
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-pack: justify;
   justify-content: space-between;
-  -ms-flex-align: center;
   align-items: center;
 }
-
+.is-rtl {
+  .zeynep ul > li.has-submenu > a,
+  .zeynep .submenu-header > a {
+    flex-direction: row-reverse;
+    text-align: right;
+  }
+  .zeynep ul > li > a:not(.btn) {
+    text-align: right;
+  }
+  .zeynep ul > li.has-submenu > a::after {
+    content: '\f053';
+  }
+}
+.is-rtl .dropdown .dropdown-menu {
+  text-align: right;
+}
 .zeynep .submenu-header > a:before,
 .zeynep ul > li.has-submenu > a:after {
   font-family: 'Font Awesome 5 Free';

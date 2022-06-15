@@ -22,7 +22,7 @@
               aria-controls="featured"
               aria-selected="true"
             >
-              Featured
+              {{ $t('misc.Featured') }}
             </a>
           </li>
 
@@ -36,7 +36,7 @@
               aria-controls="mostviewed"
               aria-selected="false"
             >
-              Most Viewed
+              {{ $t('misc.Most Viewed') }}
             </a>
           </li>
         </ul>

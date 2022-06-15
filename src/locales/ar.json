@@ -50,10 +50,12 @@
     "Save Changes": "حفظ التغييرات",
     "Add New Address": "إضافة عنوان جديد",
     "Place order": "إكمال الطلب",
-    "Login as a vendor": "إنشاء حساب بائع"
+    "Login as a vendor": "تسجيل الدخول كبائع"
   },
   "misc": {
     "Status": "الحالة",
+    "Most Viewed": "الاكثر مشاهدة",
+    "Featured": "متميز",
     "New Address": "عنوان جديد",
     "primary": "Primary",
     "none": "None",

@@ -1,4 +1,5 @@
 <template>
+  <BookTypeModal v-if="BookTypeModal" @closemodal="addToCart" :book="items" />
   <div class="product product__list">
     <div class="product__inner overflow-hidden bg-hover-white p-3 p-md-4d875">
       <div class="product__inner overflow-hidden p-3 p-md-4d875">
@@ -9,35 +10,37 @@
             class="col-md-auto woocommerce-loop-product__thumbnail mb-3 mb-md-0"
           >
             <a href="../shop/single-product-v5.html" class="d-block">
-              <img
-                src="@/assets/img9.jpg"
-                class="img-fluid d-block mx-auto attachment-shop_catalog size-shop_catalog wp-post-image img-fluid"
-                alt="image-description"
-              />
+              <router-link :to="`/book/${items.id}`">
+                <img
+                  :src="items.main_media"
+                  class="img-fluid d-block mx-auto attachment-shop_catalog size-shop_catalog wp-post-image img-fluid"
+                  alt="image-description"
+                />
+              </router-link>
             </a>
           </div>
           <div
             class="col-md woocommerce-loop-product__body product__body pt-3 bg-white mb-3 mb-md-0"
           >
             <div class="text-uppercase font-size-1 mb-1 text-truncate">
-              <a href="/book">Paperback</a>
+              <router-link to="/book" class="text-gray-700">
+                {{ items.category }}
+              </router-link>
             </div>
             <h2
               class="woocommerce-loop-product__title product__title h6 text-lh-md mb-1 crop-text-2 h-dark"
             >
-              <a href="../shop/single-product-v5.html" tabindex="0">
-                The Overdue Life of Amy Byler
-              </a>
+              <router-link to="/book" class="text-gray-700">
+                {{ items.name }}
+              </router-link>
             </h2>
             <div class="font-size-2 mb-2 text-truncate">
-              <a href="/authers" class="text-gray-700">
-                Jay Shetty
-              </a>
+              <router-link to="/authers" class="text-gray-700">
+                {{ items.author }}
+              </router-link>
             </div>
             <p class="font-size-2 mb-2 crop-text-2">
-              After disappearing for three years, Artemis Fowl has returned to a
-              life different from the one he left. And spends his days teaching
-              his twin siblings the
+              {{ items.description }}
             </p>
             <div
               class="price d-flex align-items-center font-weight-medium font-size-3"
@@ -50,20 +53,23 @@
           </div>
           <div class="col-md-auto d-flex align-items-center">
             <a
-              href="/book"
+              role="button"
+              @click="addToCart"
               class="text-uppercase text-dark h-dark font-weight-medium mr-4"
-              data-toggle="tooltip"
-              data-placement="right"
-              title=""
-              data-original-title="ADD TO CART"
             >
-              <span class="product__add-to-cart">ADD TO CART</span>
+              <span class="product__add-to-cart">
+                {{ $t('misc.ADD TO CART') }}
+              </span>
               <span class="product__add-to-cart-icon font-size-4">
                 <i class="flaticon-icon-126515"></i>
               </span>
             </a>
 
-            <a href="/book" class="h-p-bg btn btn-outline-primary border-0">
+            <a
+              role="button"
+              @click="addToWashList(items)"
+              class="text-uppercase text-dark h-dark font-weight-medium"
+            >
               <i class="flaticon-heart"></i>
             </a>
           </div>
@@ -74,10 +80,46 @@
 </template>
 
 <script>
-export default {}
+import BookTypeModal from './BookTypeModal.vue'
+import { inject } from 'vue'
+import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
+export default {
+  props: ['items'],
+  components: { BookTypeModal },
+  data() {
+    return {
+      BookTypeModal: false,
+    }
+  },
+  methods: {
+    addToCart() {
+      this.BookTypeModal = !this.BookTypeModal
+    },
+    addToWashlist() {
+      this.BookTypeModal = !this.BookTypeModal
+    },
+  },
+  computed: {
+    currency() {
+      return this.$store.getters.currency
+    },
+  },
+  setup() {
+    const store = useStore()
+    const toast = inject('toast')
+    const { t } = useI18n()
+
+    function addToWashList(item) {
+      store.commit('addToWashlist', item)
+      toast.success(t('misc.addSuccess'))
+    }
+    return { addToWashList }
+  },
+}
 </script>
 
-<style>
+<style scoped lang="scss">
 @media (min-width: 1200px) {
   .products
     .product:not(.product__card):not(.product__no-border):not(.product__list):not(.product__space):hover {
@@ -86,6 +128,11 @@ export default {}
   .products
     .product:not(.product__card):not(.product__no-border):not(.product__list):not(.product__space):hover::before {
     background-color: #161619;
+  }
+}
+.is-rtl {
+  div {
+    text-align: right;
   }
 }
 </style>

@@ -96,16 +96,7 @@
                   </div>
                 </div>
 
-                <div class="col-sm-7">
-                  <iframe
-                    :src="mapAddessLink"
-                    style="width: 100%; height: 300px; border: 0;"
-                    frameborder="0"
-                    allowfullscreen=""
-                    aria-hidden="false"
-                    tabindex="0"
-                  ></iframe>
-                </div>
+                <div class="col-sm-7 map" v-html="mapAddessLink"></div>
               </div>
             </div>
             <div class="col-4 col-lg-2 mb-6 mb-lg-0">
@@ -176,17 +167,13 @@
               <h4 class="font-size-3 font-weight-medium mb-2 mb-xl-5 pb-xl-1">
                 {{ $t('nav.categories') }}
               </h4>
-              <ul class="list-unstyled mb-0" v-if="categories">
-                <li
-                  class="py-2"
-                  v-for="category in categories"
-                  :key="category.id"
-                >
+              <ul class="list-unstyled mb-0" v-if="categories.length">
+                <li class="py-2" v-for="n in 5" :key="n">
                   <a
                     class="widgets-hover transition-3d-hover text-capitalize font-size-2 link-black-100"
-                    :href="`shop/${category.id}`"
+                    :href="`/shop/${categories[n].id}`"
                   >
-                    {{ category.name }}
+                    {{ categories[n].name }}
                   </a>
                 </li>
               </ul>
@@ -243,8 +230,7 @@ export default {
         this.contactEmail = result.contact_data.email
         this.phone = result.contact_data.phone
         this.instgram = result.social.instagram
-        this.mapAddessLink =
-          'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13675.833764016936!2d31.3732275!3d31.0274075!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x859ee8ea1a8da4ae!2sTechnomasr%20for%20web%20solutions!5e0!3m2!1sen!2seg!4v1596684538546!5m2!1sen!2seg'
+        this.mapAddessLink = result.contact_data.map
         this.facebook = result.social.facebook
         this.youtube = result.social.youtube
         this.twitter = result.social.twitter
@@ -268,5 +254,17 @@ export default {
     margin: 0 auto !important;
   }
   max-width: 14rem;
+}
+.map {
+  iframe {
+    width: 100%;
+    height: 200px !important;
+    border: 0;
+  }
+}
+.is-rtl {
+  div {
+    text-align: right;
+  }
 }
 </style>

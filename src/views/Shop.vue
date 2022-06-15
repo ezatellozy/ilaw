@@ -7,20 +7,37 @@
             <b-accordion free>
               <b-accordion-item :title="$t('nav.categories')" visible>
                 <ul class="product-categories">
-                  <li class="cat-item cat-item-9 cat-parent">
-                    <a href="/shop">Clothing</a>
-                  </li>
-                  <li class="cat-item cat-item-9 cat-parent">
-                    <a href="/shop">Electronics</a>
-                  </li>
-                  <li class="cat-item cat-item-9 cat-parent">
-                    <a href="/shop">Kitchen</a>
-                  </li>
-                  <li class="cat-item cat-item-9 cat-parent">
-                    <a href="/shop">Clothing</a>
-                  </li>
-                  <li class="cat-item cat-item-9 cat-parent">
-                    <a href="/shop">Clothing</a>
+                  <li
+                    class="cat-item cat-item-9 cat-parent"
+                    v-for="category in categories"
+                    :key="category.id"
+                  >
+                    <span
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <a :href="`/shop/${category.id}`">{{ category.name }}</a>
+                      <button
+                        v-if="category.subs.length"
+                        class="btn"
+                        @click="openSub(category.id)"
+                      >
+                        <font-awesome-icon
+                          size="lg"
+                          :icon="['fas', 'caret-down']"
+                        />
+                      </button>
+                    </span>
+                    <div v-if="category.subs.length">
+                      <transition name="fade">
+                        <ul v-show="selectedItem == category.id">
+                          <li v-for="sub in category.subs" :key="sub.id">
+                            <a :href="`/shop/${sub.id}`">
+                              {{ sub.name }}
+                            </a>
+                          </li>
+                        </ul>
+                      </transition>
+                    </div>
                   </li>
                 </ul>
               </b-accordion-item>
@@ -398,7 +415,11 @@
             <div class="tab-content">
               <div class="tab-pane fade show active">
                 <ul v-if="list" id="" class="products list-unstyled mb-6">
-                  <book-card-list v-for="n in 10" :key="n" />
+                  <book-card-list
+                    v-for="book in books"
+                    :key="book.id"
+                    :items="book"
+                  />
                 </ul>
                 <ul
                   v-if="!list"
@@ -444,17 +465,36 @@ export default {
   components: { BookCardList, BookCard, Paginate },
   data() {
     return {
+      selectedItem: 0,
       books: Books,
       list: false,
       perPage: 10,
       page: 1,
+      categories: null,
       pageOfItems: [],
     }
+  },
+  mounted() {
+    this.getMainGategories()
   },
   methods: {
     onChangePage(e) {
       console.log(e)
       // this.pageOfItems = pageOfItems
+    },
+    getMainGategories() {
+      this.axios
+        .get('/sections', {
+          headers: {
+            section: 0,
+          },
+        })
+        .then((data) => {
+          this.categories = data.data.data
+        })
+    },
+    openSub(id) {
+      this.selectedItem = id
     },
   },
   computed: {

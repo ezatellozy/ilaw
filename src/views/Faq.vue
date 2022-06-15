@@ -54,7 +54,9 @@ export default {
     font-weight: 500;
   }
 }
-
+.accordion-button::after {
+  margin-right: unset !important;
+}
 .is-rtl {
   .accordion-button::after {
     margin-left: unset !important;

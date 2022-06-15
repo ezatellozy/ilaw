@@ -21,7 +21,7 @@
               <li class="nav-item">
                 <router-link
                   class="font-weight-medium link-black-100"
-                  to="/shop"
+                  to="/shop/all"
                 >
                   {{ $t('nav.categories') }}
                 </router-link>
@@ -222,22 +222,37 @@
                   :placeholder="$t('misc.Search for books by keyword')"
                 />
                 <div class="input-group-append ml-0">
-                  <select
-                    class="d-none d-lg-block h-100 custom-select pr-7 pl-4 rounded-0 shadow-none border-0 text-dark"
-                    id="inputGroupSelect01"
-                    style="cursor: pointer;"
-                    v-if="categories"
-                  >
-                    <option selected>{{ $t('misc.All Categories') }}</option>
-
-                    <option
-                      v-for="category in categories"
-                      :key="category.id"
-                      :value="category.id"
+                  <div class="dropdown">
+                    <button
+                      class="dropdown-toggle h-100 custom-select pr-7 pl-4 rounded-0 shadow-none border-0 text-dark"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
                     >
-                      {{ category.name }}
-                    </option>
-                  </select>
+                      {{ $t('misc.All Categories') }}
+                    </button>
+                    <ul
+                      class="dropdown-menu category"
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                      <li v-for="category in categories" :key="category.id">
+                        <a
+                          class="dropdown-item fw-bold"
+                          :href="`/shop/${category.id}`"
+                        >
+                          {{ category.name }}
+                        </a>
+                        <ul v-if="category.subs.length">
+                          <li v-for="sub in category.subs" :key="sub.id">
+                            <a class="text-black" :href="`/shop/${sub.id}`">
+                              {{ sub.name }}
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
                   <button
                     class="btn btn-primary-yellow px-3 py-2"
                     type="submit"
@@ -295,6 +310,7 @@
 
   <transition name="show-side">
     <sidebar-categories
+      :categories="categories"
       @closeMenu="openGategoryMenu"
       v-if="categoriesSideMenu"
     />
@@ -371,7 +387,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .navigation {
   background-color: #22559d;
 }
@@ -468,7 +484,13 @@ button.btn:focus {
     border-radius: unset !important;
   }
 }
+.select-category {
+  text-align: left;
+}
 .is-rtl {
+  .select-category {
+    text-align: right;
+  }
   .offcanvas-toggler {
     direction: rtl !important;
   }
@@ -482,8 +504,17 @@ button.btn:focus {
   div {
     text-align: right;
   }
-  .is-rtl .btn-group:hover .dropdown-menu {
-    inset: 0px 0px auto auto !important;
-  }
+}
+.is-rtl .shop .btn-group:hover .dropdown-menu {
+  inset: 0px 0px auto auto !important;
+  text-align: right;
+}
+.dropdown-toggle:focus {
+  outline: none !important;
+}
+.dropdown-menu.category {
+  height: 200px;
+  overflow: auto;
+  font-size: 14px;
 }
 </style>

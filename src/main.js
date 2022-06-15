@@ -27,13 +27,12 @@ import Toaster from '@meforma/vue-toaster'
 import i18n from './i18n'
 
 // api link
-axios.defaults.baseURL = `https://ilawfairv2.technomasrsystems.com/api`
-
+const apiLink = `https://ilawfairv2.technomasrsystems.com/api`
 // reset password global
-
 const ResetPasswordLink =
   'https://ilawfairv2.technomasrsystems.com/password/reset'
 
+axios.defaults.baseURL = apiLink
 axios.defaults.headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',

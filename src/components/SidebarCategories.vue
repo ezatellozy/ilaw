@@ -119,59 +119,42 @@
                             <a href="#">{{ $t('nav.categories') }}</a>
                           </div>
                           <ul>
-                            <li class="has-submenu">
+                            <li
+                              v-for="category in categories"
+                              :key="category.id"
+                              :class="category.subs.length ? 'has-submenu' : ''"
+                            >
                               <a
-                                href="#"
                                 role="button"
                                 data-submenu="off-single-product"
                               >
-                                category1
+                                {{ category.name }}
                               </a>
 
-                              <div class="submenu js-scrollbar">
+                              <div
+                                class="submenu js-scrollbar"
+                                v-if="category.subs"
+                              >
                                 <div
                                   class="submenu-header"
                                   data-submenu-close="off-single-product"
                                 >
-                                  <a href="#">category1</a>
+                                  <a href="#">
+                                    {{ category.name }}
+                                  </a>
                                 </div>
 
                                 <ul class="">
-                                  <li>
-                                    <a href="#">
-                                      sub Category
-                                    </a>
-                                  </li>
-
-                                  <li>
-                                    <a href="#">
-                                      sub Category
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a href="#">
-                                      sub Category
+                                  <li
+                                    v-for="sub in category.subs"
+                                    :key="sub.id"
+                                  >
+                                    <a :href="`/shop/${sub.id}`">
+                                      {{ sub.name }}
                                     </a>
                                   </li>
                                 </ul>
                               </div>
-                            </li>
-
-                            <li>
-                              <a href="#">
-                                Category2
-                              </a>
-                            </li>
-                            <li>
-                              <a href="#">
-                                Category3
-                              </a>
-                            </li>
-
-                            <li>
-                              <a href="#">
-                                Category4
-                              </a>
                             </li>
                           </ul>
                         </div>
@@ -217,13 +200,22 @@
                   </h2>
                   <ul class="list-group list-group-flush list-group-borderless">
                     <li class="list-group-item px-0 py-2 border-0">
-                      <a href="#" class="h-primary">{{ $t('misc.Account') }}</a>
+                      <a href="/account" class="h-primary">
+                        {{ $t('misc.Account') }}
+                      </a>
                     </li>
                     <li class="list-group-item px-0 py-2 border-0">
-                      <a href="#" class="h-primary">{{ $t('misc.Help') }}</a>
+                      <a href="/faq" class="h-primary">
+                        {{ $t('misc.Help') }}
+                      </a>
                     </li>
                     <li class="list-group-item px-0 py-2 border-0">
-                      <a href="#" class="h-primary">
+                      <a
+                        href="#"
+                        role="button"
+                        @click="goLogin"
+                        class="h-primary"
+                      >
                         {{ $t('buttons.Login') }}
                       </a>
                     </li>
@@ -231,34 +223,43 @@
                 </div>
 
                 <div class="px-4 px-md-5 py-5">
-                  <!-- Social Networks -->
                   <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                      <a class="h-primary pr-2 font-size-2" href="#">
+                    <li class="list-inline-item" v-if="social.facebook != ''">
+                      <a
+                        class="h-primary pr-2 font-size-2"
+                        :href="social.facebook"
+                      >
                         <span class="fab fa-facebook-f btn-icon__inner"></span>
                       </a>
                     </li>
-                    <li class="list-inline-item">
-                      <a class="h-primary pr-2 font-size-2" href="#">
-                        <span class="fab fa-google btn-icon__inner"></span>
+                    <li class="list-inline-item" v-if="social.instagram != ''">
+                      <a
+                        class="h-primary pr-2 font-size-2"
+                        :href="social.instagram"
+                      >
+                        <span class="fab fa-instagram btn-icon__inner"></span>
                       </a>
                     </li>
-                    <li class="list-inline-item">
-                      <a class="h-primary pr-2 font-size-2" href="#">
+                    <li class="list-inline-item" v-if="social.youtube != ''">
+                      <a
+                        class="h-primary pr-2 font-size-2"
+                        :href="social.youtube"
+                      >
+                        <span class="fab fa-youtube btn-icon__inner"></span>
+                      </a>
+                    </li>
+                    <li class="list-inline-item" v-if="social.twitter != ''">
+                      <a
+                        class="h-primary pr-2 font-size-2"
+                        :href="social.twitter"
+                      >
                         <span class="fab fa-twitter btn-icon__inner"></span>
                       </a>
                     </li>
-                    <li class="list-inline-item">
-                      <a class="h-primary pr-2 font-size-2" href="#">
-                        <span class="fab fa-github btn-icon__inner"></span>
-                      </a>
-                    </li>
                   </ul>
-                  <!-- End Social Networks -->
                 </div>
               </div>
             </div>
-            <!-- End Content -->
           </div>
         </div>
       </div>
@@ -269,8 +270,11 @@
 <script>
 import Cookies from 'js-cookie'
 export default {
+  props: ['categories'],
   data() {
-    return {}
+    return {
+      social: [],
+    }
   },
   methods: {
     closeGategoryMenu() {
@@ -283,8 +287,18 @@ export default {
         window.location.reload()
       }, 300)
     },
+    getSettings() {
+      this.axios.get('settings').then((data) => {
+        this.social = data.data.data.social
+      })
+    },
+    goLogin() {
+      this.$emit('closeMenu')
+      this.$store.commit('login_Menu')
+    },
   },
   mounted() {
+    this.getSettings()
     let hasSubmenu = document.querySelectorAll('.has-submenu')
     hasSubmenu.forEach((el) => {
       el.addEventListener('click', (e) => {

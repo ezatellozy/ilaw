@@ -58,7 +58,7 @@ const routes = [
     component: OrderRecived,
   },
   {
-    path: '/shop',
+    path: '/shop/:id',
     name: 'shop',
     component: Shop,
   },
