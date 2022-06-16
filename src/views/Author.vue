@@ -20,7 +20,7 @@
 
               <div class="mb-0" v-html="author.bio"></div>
             </div>
-            <ul
+            <!-- <ul
               class="products list-unstyled row no-gutters row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-wd-4 my-0 mb-md-8 mb-wd-12"
             >
               <book-card
@@ -28,7 +28,7 @@
                 :key="book.id"
                 :items="book"
               />
-            </ul>
+            </ul> -->
           </div>
         </div>
       </div>
@@ -36,13 +36,13 @@
   </section>
   <section class="space-bottom-3 author">
     <div class="container">
-      <header class="mb-2 d-md-flex justify-content-between align-items-center">
+      <!-- <header class="mb-2 d-md-flex justify-content-between align-items-center">
         <h2 class="font-size-7 mb-3 mb-md-0">
           {{ $t('misc.Authors Books') }}
         </h2>
-      </header>
+      </header> -->
 
-      <div class="product">
+      <!-- <div class="product">
         <carousel v-bind="settingsBook">
           <slide v-for="book in author.books" :key="book.id">
             <div
@@ -57,17 +57,17 @@
             <pagination />
           </template>
         </carousel>
-      </div>
+      </div> -->
     </div>
   </section>
 </template>
 
 <script>
-import BookCard from '@/components/BookCard.vue'
+// import BookCard from '@/components/BookCard.vue'
 import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Pagination } from 'vue3-carousel'
+// import { Carousel, Slide, Pagination } from 'vue3-carousel'
 export default {
-  components: { Carousel, Slide, Pagination, BookCard },
+  // components: { BookCard },
 
   data() {
     return {
@@ -103,7 +103,6 @@ export default {
         .get(`writers/${this.$route.params.id}/details`)
         .then((data) => {
           this.author = data.data.data
-          console.log(this.author)
         })
     },
   },

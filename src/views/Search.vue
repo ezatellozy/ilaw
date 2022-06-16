@@ -540,13 +540,13 @@ export default {
     getBooks() {
       let url
       if (this.$route.params.id == 'all') {
-        url = `books?section&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}`
+        url = 'books'
       } else {
         if (this.rate.length) {
           const min = this.rate.reduce((a, b) => Math.min(a, b))
           this.rates = min
         }
-        url = `books?section=${this.$route.params.id}&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}`
+        url = `books?${this.$route.params.id}&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}`
       }
       this.$nextTick(() => {
         this.axios.get(`${url}`).then((data) => {

@@ -1,5 +1,7 @@
 <template>
-  <BookTypeModal v-if="BookTypeModal" @closemodal="addToCart" :book="items" />
+  <Teleport to="body">
+    <BookTypeModal v-if="BookTypeModal" @closemodal="addToCart" :book="items" />
+  </Teleport>
   <li class="product col bg-hover-white">
     <div class="product__inner overflow-hidden p-3 p-md-4d875" v-if="items">
       <div
@@ -8,7 +10,7 @@
         <div class="woocommerce-loop-product__thumbnail">
           <router-link :to="`/book/${items.id}`">
             <img
-              :src="items.main_media"
+              :src="items.photo"
               class="img-fluid d-block mx-auto attachment-shop_catalog size-shop_catalog wp-post-image img-fluid"
               alt="image-description"
             />
@@ -18,20 +20,26 @@
           class="woocommerce-loop-product__body product__body pt-3 text-start"
         >
           <div class="text-uppercase font-size-1 mb-1 text-truncate">
-            <router-link to="/book" class="text-gray-700">
-              {{ items.category }}
+            <router-link
+              :to="`/shop/${items.section.id}`"
+              class="text-gray-700"
+            >
+              {{ items.section.name }}
             </router-link>
           </div>
           <h2
             class="woocommerce-loop-product__title product__title h6 text-lh-md mb-1 text-height-2 crop-text-2 h-dark"
           >
-            <router-link to="/book" class="text-gray-700">
+            <router-link :to="`/book/${items.id}`" class="text-gray-700">
               {{ items.name }}
             </router-link>
           </h2>
           <div class="font-size-2 mb-1 text-truncate">
-            <router-link to="/authers" class="text-gray-700">
-              {{ items.author }}
+            <router-link
+              :to="`/author/${items.writer.id}`"
+              class="text-gray-700"
+            >
+              {{ items.writer.name }}
             </router-link>
           </div>
           <div
@@ -39,22 +47,73 @@
           >
             <span class="woocommerce-Price-amount amount">
               <span class="woocommerce-Price-currencySymbol">
-                {{ items.pdf_price }} - {{ items.hardcopy_price }}
+                <div class="pdf" v-if="items.pdfCopy">
+                  <h5 class="price">{{ $t('misc.pdf') }}</h5>
+                  <span v-if="items.pdfCopy.status == 1">
+                    <span v-if="items.pdfCopy.price.offer">
+                      {{ items.pdfCopy.price.offer }} -
+                    </span>
+
+                    <span
+                      :class="
+                        items.pdfCopy.price.offer
+                          ? 'text-decoration-line-through'
+                          : ''
+                      "
+                    >
+                      {{ items.pdfCopy.price.original }}
+                    </span>
+                    {{ currency }}
+                  </span>
+                </div>
+                <div class="hardCopy" v-if="items.hardCopy">
+                  <h5 class="price">{{ $t('misc.Hardcopy') }}</h5>
+                  <span v-if="items.hardCopy.status == 1">
+                    <span v-if="items.hardCopy.price.offer">
+                      {{ items.hardCopy.price.offer }} -
+                    </span>
+
+                    <span
+                      :class="
+                        items.hardCopy.price.offer
+                          ? 'text-decoration-line-through text-gray-700'
+                          : ''
+                      "
+                    >
+                      {{ items.hardCopy.price.original }}
+                    </span>
+                    {{ currency }}
+                  </span>
+                </div>
               </span>
-              {{ currency }}
             </span>
           </div>
           <div
             class="product__rating d-md-flex align-items-center justify-content-start font-size-2 d-none"
           >
             <div class="text-yellow-darker mr-2">
-              <small class="fas fa-star"></small>
-              <small class="fas fa-star"></small>
-              <small class="fas fa-star"></small>
-              <small class="far fa-star"></small>
-              <small class="far fa-star"></small>
+              <small
+                :class="items.reviewsTotal == 0 ? 'far' : 'fas'"
+                class="fa-star"
+              ></small>
+              <small
+                :class="items.reviewsTotal > 1 ? 'fas' : 'far'"
+                class="fa-star"
+              ></small>
+              <small
+                :class="items.reviewsTotal > 2 ? 'fas' : 'far'"
+                class="fa-star"
+              ></small>
+              <small
+                :class="items.reviewsTotal > 3 ? 'fas' : 'far'"
+                class="fa-star"
+              ></small>
+              <small
+                :class="items.reviewsTotal > 4 ? 'fas' : 'far'"
+                class="fa-star"
+              ></small>
             </div>
-            <div class="">{{ items.rate }}</div>
+            <div class="">{{ items.reviewsTotal }}</div>
           </div>
         </div>
         <div class="product__hover d-flex align-items-center">
@@ -107,6 +166,9 @@ export default {
     addToWashlist() {
       this.BookTypeModal = !this.BookTypeModal
     },
+  },
+  mounted() {
+    console.log(this.items)
   },
   computed: {
     currency() {

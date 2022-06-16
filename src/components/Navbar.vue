@@ -209,7 +209,7 @@
           <div
             class="site-search ml-xl-0 px-2 px-sm-0 ml-md-auto w-r-100 flex-grow-1 mr-md-5 mt-2 mt-md-0 py-2 py-md-0"
           >
-            <form class="form-inline my-2 my-xl-0">
+            <form class="form-inline my-2 my-xl-0" @submit.prevent>
               <div class="input-group input-group-borderless w-100">
                 <input
                   type="text"
@@ -219,6 +219,7 @@
                       ? 'border-left rounded-right-1'
                       : 'border-right'
                   "
+                  v-model="searchInput"
                   :placeholder="$t('misc.Search for books by keyword')"
                 />
                 <div class="input-group-append ml-0">
@@ -239,13 +240,19 @@
                       <li v-for="category in categories" :key="category.id">
                         <a
                           class="dropdown-item fw-bold"
-                          :href="`/shop/${category.id}`"
+                          href="#"
+                          role="button"
+                          @click="categoryId = category.id"
                         >
                           {{ category.name }}
                         </a>
                         <ul v-if="category.subs.length">
-                          <li v-for="sub in category.subs" :key="sub.id">
-                            <a class="text-black" :href="`/shop/${sub.id}`">
+                          <li
+                            v-for="sub in category.subs"
+                            :key="sub.id"
+                            @click="categoryId = sub.id"
+                          >
+                            <a class="text-black" role="button" href="#">
                               {{ sub.name }}
                             </a>
                           </li>
@@ -255,7 +262,7 @@
                   </div>
                   <button
                     class="btn btn-primary-yellow px-3 py-2"
-                    type="submit"
+                    @click="search"
                   >
                     <i class="mx-1 glph-icon flaticon-loupe text-dark"></i>
                   </button>
@@ -344,6 +351,8 @@ export default {
         { value: 'en', text: 'English' },
         { value: 'ar', text: 'عربي' },
       ],
+      categoryId: '',
+      searchInput: '',
     }
   },
   mounted() {
@@ -382,6 +391,12 @@ export default {
       this.axios.get('settings').then((data) => {
         this.contact_data = data.data.data.contact_data
       })
+    },
+    search() {
+      console.log(this.searchInput)
+      this.$router.push(
+        `/search/name=${this.searchInput}&section=${this.categoryId}&`,
+      )
     },
   },
 }
@@ -478,7 +493,7 @@ button.btn:focus {
 }
 
 .modal {
-  width: fit-content !important;
+  // width: fit-content !important;
   .modal-content {
     border: unset !important;
     border-radius: unset !important;

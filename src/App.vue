@@ -21,11 +21,14 @@ import Breadcrumb from '@/components/Breadcrumb.vue'
 import Navbar from './components/Navbar.vue'
 
 import Footer from './components/Footer.vue'
+import Cookies from 'js-cookie'
 export default {
   components: { MainHeader, Navbar, Footer, Breadcrumb },
   data() {
     return {
       categories: [],
+      countryCode: '',
+      countryId: '',
     }
   },
   methods: {
@@ -40,8 +43,23 @@ export default {
           this.categories = data.data.data
         })
     },
+    getCountryCode() {
+      this.axios.get(`getLocationInfo`).then((data) => {
+        this.countryCode = data.data.data.countryCode
+        this.countryId = data.data.data.countryId
+        Cookies.set('countryCode', this.countryCode)
+        Cookies.set('countryId', this.countryId)
+      })
+    },
+    getSettings() {
+      this.axios.get('settings').then((data) => {
+        this.$store.commit('settings', data.data.data)
+      })
+    },
   },
   mounted() {
+    this.getSettings()
+    this.getCountryCode()
     this.getMainGategories()
   },
 }

@@ -95,10 +95,9 @@ export default {
       this.$store.commit('currency', c)
     },
     getCurrencis() {
-      // this.axios.get('countries').then((data) => {
-      //   this.currencis = data.data.data
-      //   console.log(this.currencis)
-      // })
+      this.axios.get('countries').then((data) => {
+        this.currencis = data.data.data
+      })
     },
   },
   computed: {

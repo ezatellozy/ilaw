@@ -15,6 +15,7 @@ function updateWashlistStorage(washlist) {
 
 export default createStore({
   state: {
+    settings: [],
     status: '',
     currency: Cookies.get('currency') || 'UAE',
     user: JSON.parse(localStorage.getItem('user')) || null,
@@ -33,6 +34,7 @@ export default createStore({
     loginMenu: (state) => state.loginMenu,
     currency: (state) => state.currency,
     status: (state) => state.status,
+    settings: (state) => state.settings,
     totalPrice: (state) => {
       return `${state.cart.reduce((a, b) => a + b.totalPrice, 0)} ${
         state.currency
@@ -55,7 +57,7 @@ export default createStore({
   mutations: {
     addToCart(state, product) {
       console.log(product)
-      let item = state.cart.filter((i) => i.id === product.id)
+      let item = state.cart.filter((i) => i.book.id === product.book.id)
       if (item.length) {
         let cItem = item.filter((i) => i.bookType === product.bookType)
         if (cItem.length) {
@@ -143,6 +145,9 @@ export default createStore({
     },
     currency(state, payload) {
       state.currency = payload
+    },
+    settings(state, payload) {
+      state.settings = payload
     },
     auth_success(state, payload) {
       state.status = payload

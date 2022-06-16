@@ -12,80 +12,107 @@
                   class="js-slick-carousel u-slick"
                   data-pagi-classes="text-center u-slick__pagination my-4"
                 >
-                  <carousel v-bind="settings">
-                    <slide v-for="item in book.media" :key="item.id">
-                      <div class="js-slide w-100">
-                        <img
-                          :src="item.path"
-                          alt="Image Description"
-                          class="mx-auto w-100"
-                        />
-                      </div>
-                    </slide>
-                    <template #addons>
-                      <pagination />
-                    </template>
-                  </carousel>
+                  <img class="w-100" :src="book.photo" alt="ilaw" />
                 </div>
               </figure>
             </div>
             <div class="col-md-7 pl-0 summary entry-summary border-left">
               <div class="space-top-2 px-4 px-xl-7 border-bottom pb-5">
                 <h1 class="product_title entry-title font-size-7 mb-3">
-                  {{ book.title }}
+                  {{ book.name }}
                 </h1>
                 <div class="font-size-2 mb-4">
                   <span class="text-yellow-darker">
                     <span
-                      :class="book.rate > 1 ? 'fas' : 'far'"
+                      :class="book.reviewsTotal > 1 ? 'fas' : 'far'"
                       class="fa-star"
                     ></span>
                     <span
-                      :class="book.rate > 1 ? 'fas' : 'far'"
+                      :class="book.reviewsTotal > 1 ? 'fas' : 'far'"
                       class="fa-star"
                     ></span>
                     <span
-                      :class="book.rate > 2 ? 'fas' : 'far'"
+                      :class="book.reviewsTotal > 2 ? 'fas' : 'far'"
                       class="fa-star"
                     ></span>
                     <span
-                      :class="book.rate > 3 ? 'fas' : 'far'"
+                      :class="book.reviewsTotal > 3 ? 'fas' : 'far'"
                       class="fa-star"
                     ></span>
                     <span
-                      :class="book.rate > 4 ? 'fas' : 'far'"
+                      :class="book.reviewsTotal > 4 ? 'fas' : 'far'"
                       class="fa-star"
                     ></span>
                   </span>
-                  <span class="ml-3">({{ book.rate }})</span>
-                  <router-link to="/author">
+                  <span class="ml-3">({{ book.reviewsTotal }})</span>
+                  <router-link :to="`/author/${book.writer.id}`">
                     <span class="ml-3 font-weight-medium text-black">
                       <bdi>{{ $t('misc.By') }}</bdi>
                       ({{ $t('misc.author') }})
                     </span>
                     <span class="ml-2 text-gray-600">
-                      {{ book.author }}
+                      {{ book.writer.name }}
                     </span>
                   </router-link>
-                  <router-link to="/publisher">
+                  <router-link :to="`/publisher/${book.publisher.id}`">
                     <span class="ml-3 font-weight-medium text-black">
                       <bdi>{{ $t('misc.seller') }}</bdi>
                       ({{ $t('misc.publisher') }})
                     </span>
                     <span class="ml-2 text-gray-600">
-                      {{ book.publisher }}
+                      {{ book.publisher.name }}
                     </span>
                   </router-link>
                 </div>
-                <p class="price font-size-22 font-weight-medium mb-3">
-                  <span class="woocommerce-Price-amount amount">
-                    <span class="woocommerce-Price-currencySymbol">
-                      {{ currency }}
-                    </span>
-                    {{ book.hardcopy_price }} - {{ book.pdf_price }}
+                <div>
+                  <span
+                    class="woocommerce-Price-currencySymbol d-flex text-center"
+                  >
+                    <div class="pdf" v-if="book.pdfCopy">
+                      <h5 class="price">{{ $t('misc.pdf') }}</h5>
+                      <span v-if="book.pdfCopy.status == 1">
+                        <span v-if="book.pdfCopy.price.offer">
+                          {{ book.pdfCopy.price.offer }} -
+                        </span>
+
+                        <span
+                          :class="
+                            book.pdfCopy.price.offer
+                              ? 'text-decoration-line-through'
+                              : ''
+                          "
+                        >
+                          {{ book.pdfCopy.price.original }}
+                        </span>
+                        {{ currency }}
+                      </span>
+                    </div>
+                    <div
+                      class="hardCopy"
+                      :class="$i18n.locale == 'ar' ? ' mr-4' : 'ml-4'"
+                      v-if="book.hardCopy"
+                    >
+                      <h5 class="price">{{ $t('misc.Hardcopy') }}</h5>
+                      <span v-if="book.hardCopy.status == 1">
+                        <span v-if="book.hardCopy.price.offer">
+                          {{ book.hardCopy.price.offer }} -
+                        </span>
+
+                        <span
+                          :class="
+                            book.hardCopy.price.offer
+                              ? 'text-decoration-line-through text-gray-700'
+                              : ''
+                          "
+                        >
+                          {{ book.hardCopy.price.original }}
+                        </span>
+                        {{ currency }}
+                      </span>
+                    </div>
                   </span>
-                </p>
-                <div class="mb-2 font-size-2">
+                </div>
+                <div class="mb-2 mt-4 font-size-2">
                   <span class="font-weight-medium">
                     {{ $t('misc.Book Format') }}:
                   </span>
@@ -95,7 +122,7 @@
                 </div>
 
                 <div class="row mx-gutters-2 mb-4">
-                  <div class="col col-md-3 mb-3 mb-md-0">
+                  <div class="col mb-3 mb-md-0">
                     <div class="">
                       <input
                         id="typeOfListingRadio1"
@@ -113,17 +140,30 @@
                           {{ $t('misc.Hardcopy') }}
                         </span>
                         <span class="d-block text-center fw-bold">
-                          {{ book.hardcopy_price }} {{ currency }}
+                          <span v-if="book.hardCopy.price.offer">
+                            {{ book.hardCopy.price.offer }} -
+                          </span>
+
+                          <span
+                            :class="
+                              book.hardCopy.price.offer
+                                ? 'text-decoration-line-through text-gray-700'
+                                : ''
+                            "
+                          >
+                            {{ book.hardCopy.price.original }}
+                          </span>
+                          {{ currency }}
                         </span>
                       </label>
                     </div>
                   </div>
-                  <div class="col col-md-3 mb-3 mb-md-0">
+                  <div class="col mb-3 mb-md-0">
                     <div class="">
                       <input
                         id="typeOfListingRadio2"
                         type="radio"
-                        value="pdf"
+                        value="pdfCopy"
                         name="typeOfListingRadio1"
                         v-model="item.bookType"
                         class="custom-control-input checkbox-outline__input"
@@ -135,10 +175,23 @@
                         <span
                           class="d-block text-uppercase text-center d-block text-center"
                         >
-                          PDF
+                          {{ $t('misc.pdf') }}
                         </span>
                         <span class="d-block text-center fw-bold">
-                          {{ book.pdf_price }} {{ currency }}
+                          <span v-if="book.pdfCopy.price.offer">
+                            {{ book.pdfCopy.price.offer }} -
+                          </span>
+
+                          <span
+                            :class="
+                              book.pdfCopy.price.offer
+                                ? 'text-decoration-line-through'
+                                : ''
+                            "
+                          >
+                            {{ book.pdfCopy.price.original }}
+                          </span>
+                          {{ currency }}
                         </span>
                       </label>
                     </div>
@@ -149,7 +202,7 @@
                   class="woocommerce-product-details__short-description font-size-2 mb-5"
                 >
                   <p class="">
-                    {{ book.description }}
+                    {{ book.des }}
                   </p>
                 </div>
 
@@ -998,20 +1051,27 @@
 
 <script>
 import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Pagination } from 'vue3-carousel'
+// import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import BookCard from '@/components/BookCard.vue'
-import { reactive } from 'vue'
-import Books from '@/books.json'
-import { inject } from 'vue'
-import { useRoute } from 'vue-router'
-import { useStore } from 'vuex'
-import { useI18n } from 'vue-i18n'
-
+// import { reactive } from 'vue'
+// import Books from '@/books.json'
+// import { onMounted, inject } from 'vue'
+// import { useRoute } from 'vue-router'
+// import { useStore } from 'vuex'
+// import useI18n from 'vue-i18n'
+import axios from 'axios'
 export default {
-  components: { Carousel, Slide, Pagination, BookCard },
+  components: { BookCard },
   data() {
     return {
-      // book: [],
+      book: null,
+      item: {
+        qty: 1,
+        bookType: 'pdfCopy',
+        price: 0,
+        totalPrice: 0,
+        book: null,
+      },
       // books: Books,
       tabs: {
         description: true,
@@ -1049,7 +1109,9 @@ export default {
       },
     }
   },
-  mounted() {},
+  mounted() {
+    this.getBook()
+  },
   methods: {
     activeTab(tab) {
       this.tabs.description = false
@@ -1058,6 +1120,43 @@ export default {
       this.tabs.index = false
       this.tabs.aboutPublisher = false
       this.tabs[tab] = true
+    },
+    getBook() {
+      axios.get(`books/${this.$route.params.id}/details`).then((data) => {
+        this.book = data.data.data
+        this.item.book = data.data.data
+      })
+    },
+    qtyPlus() {
+      this.item.qty++
+    },
+    qtyMinus() {
+      if (this.item.qty > 1) this.item.qty--
+    },
+    addToCart() {
+      console.log(this.item)
+      if (this.item.bookType == 'pdfCopy') {
+        if (this.item.book.pdfCopy.price.offer) {
+          this.item.price = this.item.book.pdfCopy.price.offer
+        } else {
+          this.item.price = this.item.book.pdfCopy.price.original
+        }
+      } else {
+        if (this.item.book.hardCopy.price.offer) {
+          this.item.price = this.item.book.hardCopy.price.offer
+        } else {
+          this.item.price = this.item.book.hardCopy.price.original
+        }
+      }
+
+      this.item.totalPrice = this.item.price * this.item.qty
+
+      this.$store.commit('addToCart', this.item)
+      this.$toast.success(this.$t('misc.addSuccess'))
+    },
+    addToWashList() {
+      this.$store.commit('addToWashlist', this.book)
+      this.$toast.success(this.$t('misc.addSuccess'))
     },
   },
   computed: {
@@ -1069,54 +1168,49 @@ export default {
     },
   },
   setup() {
-    const route = useRoute()
-    const store = useStore()
-    const toast = inject('toast')
-    const { t } = useI18n()
-    const books = Books
-    let book = reactive({})
-
-    function getBook() {
-      let obj = Books.filter((el) => el.id == route.params.id)
-
-      book = obj[0]
-    }
-
-    getBook()
-
-    const item = reactive({
-      // id: route.params.id,
-      qty: 1,
-      bookType: 'pdf',
-      price: 0,
-      totalPrice: 0,
-      ...book,
-    })
-
-    function qtyPlus() {
-      item.qty++
-    }
-    function qtyMinus() {
-      if (item.qty > 1) item.qty--
-    }
-
-    function addToCart() {
-      if (item.bookType == 'pdf') {
-        item.price = item.pdf_price
-      } else {
-        item.price = item.hardcopy_price
-      }
-
-      item.totalPrice = item.price * item.qty
-
-      store.commit('addToCart', item)
-      toast.success(t('misc.addSuccess'))
-    }
-    function addToWashList() {
-      store.commit('addToWashlist', item)
-      toast.success(t('misc.addSuccess'))
-    }
-    return { item, qtyPlus, qtyMinus, addToCart, books, book, addToWashList }
+    // const route = useRoute()
+    // const store = useStore()
+    // const toast = inject('toast')
+    // const { t } = useI18n()
+    // let book
+    // onMounted(() => {
+    //   getBook()
+    // })
+    // function getBook() {
+    //   axios.get(`books/${route.params.id}/details`).then((data) => {
+    //    book = data.data.data
+    //   })
+    // }
+    // console.log(book)
+    // const item = reactive({
+    //   // id: route.params.id,
+    //   qty: 1,
+    //   bookType: 'pdf',
+    //   price: 0,
+    //   totalPrice: 0,
+    //   // ...book,
+    // })
+    // function qtyPlus() {
+    //   item.qty++
+    // }
+    // function qtyMinus() {
+    //   if (item.qty > 1) item.qty--
+    // }
+    // function addToCart() {
+    //   if (item.bookType == 'pdf') {
+    //     item.price = item.pdf_price
+    //   } else {
+    //     item.price = item.hardcopy_price
+    //   }
+    //   item.totalPrice = item.price * item.qty
+    //   store.commit('addToCart', item)
+    //   toast.success(t('misc.addSuccess'))
+    // }
+    // function addToWashList() {
+    //   store.commit('addToWashlist', item)
+    //   toast.success(t('misc.addSuccess'))
+    // }
+    // return { item, qtyPlus, qtyMinus, addToCart, addToWashList }
   },
 }
 </script>

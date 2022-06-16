@@ -15,9 +15,7 @@
             <h6 class="font-weight medium font-size-10 mb-4 mb-lg-7">
               {{ welcomeTitle }}
             </h6>
-            <p class="font-weight-medium font-italic">
-              “ {{ welcomeSubject }} ”
-            </p>
+            <p class="font-weight-medium font-italic">“ {{ content }} ”</p>
           </div>
           <!-- <div class="mb-4 pb-xl-1 ml-xl-4">
             <h6 class="font-weight-medium font-size-4 mb-4">
@@ -27,7 +25,7 @@
               {{ contentAnswer }}
             </p>
           </div> -->
-          <div class="ml-xl-4">
+          <!-- <div class="ml-xl-4">
             <div class="row">
               <div class="col-md-6">
                 <h6 class="font-weight-medium font-size-4">
@@ -46,38 +44,38 @@
                 </p>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
-    <slider
+    <!-- <slider
       title="Our team"
       name="team"
       cardDesc="25 Published Books"
       cardtitle="Barbara O'Neil"
       imgSrc="./images.jpg"
       partner="true"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
-import Slider from '@/components/Slider.vue'
+// import Slider from '@/components/Slider.vue'
 export default {
-  components: { Slider },
+  // components: { Slider },
   data() {
     return {
       settings: [],
-      welcomeTitle: '',
-      welcomeSubject: '',
-      contentQuestion: '',
-      contentAnswer: '',
-      ourVision: '',
-      ourMission: '',
+      // welcomeTitle: '',
+      // welcomeSubject: '',
+      // contentQuestion: '',
+      // contentAnswer: '',
+      // ourVision: '',
+      // ourMission: '',
     }
   },
   mounted() {
-    this.getSettings()
+    // this.getSettings()
   },
   methods: {
     getSettings() {
@@ -90,6 +88,14 @@ export default {
         this.ourVision = result.vision
         this.ourMission = result.mission
       })
+    },
+  },
+  computed: {
+    welcomeTitle() {
+      return this.$store.getters.settings.policy_page.title
+    },
+    content() {
+      return this.$store.getters.settings.policy_page.content
     },
   },
 }

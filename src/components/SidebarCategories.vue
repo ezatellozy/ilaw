@@ -298,7 +298,7 @@ export default {
     },
   },
   mounted() {
-    this.getSettings()
+    // this.getSettings()
     let hasSubmenu = document.querySelectorAll('.has-submenu')
     hasSubmenu.forEach((el) => {
       el.addEventListener('click', (e) => {

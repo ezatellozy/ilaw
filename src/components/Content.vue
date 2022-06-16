@@ -50,11 +50,7 @@
             <ul
               class="products justify-content-center list-unstyled m-0 row no-gutters row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 border-top border-left my-0"
             >
-              <book-card
-                :items="books[book]"
-                v-for="book in 8"
-                :key="book.id"
-              />
+              <book-card v-for="book in books" :key="book.id" :items="book" />
             </ul>
           </div>
         </div>
@@ -65,21 +61,20 @@
 
 <script>
 import BookCard from '@/components/BookCard.vue'
-import Books from '@/books.json'
 export default {
   components: { BookCard },
   data() {
     return {
-      books: Books,
+      books: null,
     }
   },
   mounted() {
-    // this.getBooks()
+    this.getBooks()
   },
   methods: {
     getBooks() {
       this.axios
-        .get('book/books')
+        .get('books')
         .then((data) => {
           this.books = data.data.data
         })

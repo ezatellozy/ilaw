@@ -4,6 +4,7 @@ import Contact from '../views/Contact.vue'
 import AboutUs from '../views/About.vue'
 import Faq from '../views/Faq.vue'
 import Shop from '../views/Shop.vue'
+import Search from '../views/Search.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Signup.vue'
@@ -61,6 +62,11 @@ const routes = [
     path: '/shop/:id',
     name: 'shop',
     component: Shop,
+  },
+  {
+    path: '/search/:id',
+    name: 'search',
+    component: Search,
   },
   {
     path: '/login',

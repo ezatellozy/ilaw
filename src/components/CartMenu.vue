@@ -45,10 +45,10 @@
                   :key="item.id"
                 >
                   <div class="media">
-                    <a :href="`/book/${item.id}`" class="d-block">
+                    <a :href="`/book/${item.book.id}`" class="d-block">
                       <img
-                        :src="item.main_media"
-                        class="img-fluid"
+                        :src="item.book.photo"
+                        class="bookimg"
                         alt="image-description"
                       />
                     </a>
@@ -59,17 +59,27 @@
                       <div
                         class="text-primary text-uppercase font-size-1 mb-1 text-truncate"
                       >
-                        <a href="#">{{ item.category }}</a>
+                        <a :href="`/shop/${item.book.section.id}`">
+                          {{ item.book.section.name }}
+                        </a>
                       </div>
                       <h2
                         class="woocommerce-loop-product__title h6 text-lh-md mb-1 text-height-2 crop-text-2"
                       >
-                        <a :href="`/book/${item.id}`" class="text-dark">
-                          {{ item.title }}
+                        <a :href="`/book/${item.book.id}`" class="text-dark">
+                          {{ item.book.name }}
                         </a>
                       </h2>
-                      <div class="font-size-2 mb-1 text-truncate">
-                        <a href="#" class="text-gray-700">{{ item.author }}</a>
+                      <div
+                        class="font-size-2 mb-1 text-truncate"
+                        v-if="item.book.writer"
+                      >
+                        <a
+                          :href="`/author/${item.book.writer.id}`"
+                          class="text-gray-700"
+                        >
+                          {{ item.book.writer.name }}
+                        </a>
                       </div>
                       <div class="font-size-2 mb-1 text-truncate">
                         <p class="text-gray-700 my-2">{{ item.bookType }}</p>
@@ -142,6 +152,9 @@ export default {
       this.$store.commit('removeItem', item)
     },
   },
+  mounted() {
+    console.log(this.cart)
+  },
   computed: {
     totalQuantity() {
       return this.$store.getters.totalQuantity
@@ -180,5 +193,9 @@ export default {
       z-index: 100;
     }
   }
+}
+.bookimg {
+  width: 200px;
+  height: 200px;
 }
 </style>

@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div class="publisher">
+    <!-- <div class="publisher">
       <h2 class="main-title">
         {{ $t('misc.Books') }}
       </h2>
@@ -39,15 +39,15 @@
       <div class="text-center">
         <button class="btn btn-primary mt-5">See more</button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import BookCard from '@/components/BookCard.vue'
+// import BookCard from '@/components/BookCard.vue'
 
 export default {
-  components: { BookCard },
+  // components: { BookCard },
 
   data() {
     return {

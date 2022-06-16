@@ -1,9 +1,9 @@
 <template>
   <div class="map w-100">
-    <div v-html="mapAddessLink" class="iframe"></div>
+    <div v-if="map" v-html="mapAddessLink" class="iframe"></div>
   </div>
   <div class="container contacts-us row mx-auto">
-    <div class="card mx-auto mb-2 tra">
+    <div class="card mx-auto mb-2 tra" :class="map ? 'map' : ''">
       <div class="ml-xl-4 space-bottom-1 space-bottom-lg-2">
         <div class="mb-4 mb-lg-7">
           <h6 class="font-weight medium font-size-10 mb-4 mb-lg-7">
@@ -16,7 +16,7 @@
         <div class="mb-4 mb-lg-8">
           <div class="row">
             <div class="col-md-6">
-              <address class="font-size-2 mb-5">
+              <address class="font-size-2 mb-5" v-if="address">
                 <p class="d-flex align-items-center">
                   <font-awesome-icon
                     size="lg"
@@ -271,21 +271,20 @@ export default {
         content: '',
         subject: '',
       },
-      address: '',
-      contactEmail: '',
-      phone: '',
-      mobile: '',
-      instgram: '',
-      facebook: '',
-      youtube: '',
-      twitter: '',
-      mapAddessLink: '',
+      // address: '',
+      // contactEmail: '',
+      // phone: '',
+      // mobile: '',
+      // instgram: '',
+      // facebook: '',
+      // youtube: '',
+      // twitter: '',
+      // mapAddessLink: '',
       loading: false,
       countries: null,
     }
   },
   mounted() {
-    this.getSettings()
     this.getCountries()
   },
   methods: {
@@ -319,24 +318,40 @@ export default {
           this.contact.country = ''
         })
     },
-    getSettings() {
-      this.axios.get('settings').then((data) => {
-        let result = data.data.data
-        this.contactEmail = result.contact_data.email
-        this.address = result.contact_data.address
-        this.phone = result.contact_data.phone
-        this.mobile = result.contact_data.mobile
-        this.instgram = result.social.instgram
-        this.facebook = result.social.facebook
-        this.youtube = result.social.youtube
-        this.twitter = result.social.twitter
-        this.mapAddessLink = result.contact_data.map
-      })
-    },
+
     getCountries() {
       this.axios.get('countries', { headers: { value: 'id' } }).then((res) => {
         this.countries = res.data.data
       })
+    },
+  },
+  computed: {
+    contactEmail() {
+      return this.$store.getters.settings.contact_data.email
+    },
+    address() {
+      return this.$store.getters.settings.contact_data.address
+    },
+    phone() {
+      return this.$store.getters.settings.contact_data.phone
+    },
+    mobile() {
+      return this.$store.getters.settings.contact_data.mobile
+    },
+    instgram() {
+      return this.$store.getters.settings.contact_data.instgram
+    },
+    facebook() {
+      return this.$store.getters.settings.contact_data.facebook
+    },
+    youtube() {
+      return this.$store.getters.settings.contact_data.youtube
+    },
+    twitter() {
+      return this.$store.getters.settings.contact_data.twitter
+    },
+    mapAddessLink() {
+      return this.$store.getters.settings.contact_data.map
     },
   },
 }
@@ -365,6 +380,8 @@ export default {
   .card {
     padding: 50px !important;
     max-width: 800px;
+  }
+  .card.map {
     transform: translateY(-100px);
   }
   .info {

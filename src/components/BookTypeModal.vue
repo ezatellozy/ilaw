@@ -15,68 +15,125 @@
             data-pagi-classes="text-center u-slick__pagination my-4"
           >
             <img
-              :src="book.main_media"
+              :src="book.photo"
               alt="Image Description"
               class="mx-auto w-100"
             />
           </div>
 
           <div class="px-4 px-xl-7 border-bottom pb-5">
-            <h1 class="product_title entry-title font-size-7 mb-3">
-              {{ book.title }}
+            <h1 class="product_title text-center fs-3 entry-title mb-3 mt-3">
+              {{ book.name }}
             </h1>
             <div class="font-size-2 mb-4">
-              <span class="text-yellow-darker">
-                <span
-                  :class="book.rate > 1 ? 'fas' : 'far'"
-                  class="fa-star"
-                ></span>
-                <span
-                  :class="book.rate > 1 ? 'fas' : 'far'"
-                  class="fa-star"
-                ></span>
-                <span
-                  :class="book.rate > 2 ? 'fas' : 'far'"
-                  class="fa-star"
-                ></span>
-                <span
-                  :class="book.rate > 3 ? 'fas' : 'far'"
-                  class="fa-star"
-                ></span>
-                <span
-                  :class="book.rate > 4 ? 'fas' : 'far'"
-                  class="fa-star"
-                ></span>
-              </span>
-              <span class="ml-3">({{ book.rate }})</span>
-              <router-link to="/author">
-                <span class="ml-3 font-weight-medium text-black">
-                  <bdi>{{ $t('misc.By') }}</bdi>
-                  ({{ $t('misc.author') }})
-                </span>
-                <span class="ml-2 text-gray-600">
-                  {{ book.author }}
-                </span>
-              </router-link>
-              <router-link to="/publisher">
-                <span class="ml-3 font-weight-medium text-black">
-                  <bdi>{{ $t('misc.seller') }}</bdi>
-                  ({{ $t('misc.publisher') }})
-                </span>
-                <span class="ml-2 text-gray-600">
-                  {{ book.publisher }}
-                </span>
-              </router-link>
+              <div class="d-flex justify-content-center">
+                <div>
+                  <span class="text-yellow-darker">
+                    <span
+                      :class="book.reviewsTotal > 1 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
+                    <span
+                      :class="book.reviewsTotal > 1 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
+                    <span
+                      :class="book.reviewsTotal > 2 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
+                    <span
+                      :class="book.reviewsTotal > 3 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
+                    <span
+                      :class="book.reviewsTotal > 4 ? 'fas' : 'far'"
+                      class="fa-star"
+                    ></span>
+                  </span>
+                  <span class="ml-3">({{ book.reviewsTotal }})</span>
+                </div>
+                <div>
+                  <router-link
+                    :class="
+                      $i18n.locale == 'ar' ? 'd-flex flex-row-reverse' : ''
+                    "
+                    :to="`/author/${book.writer.id}`"
+                  >
+                    <span class="ml-3 font-weight-medium text-black">
+                      <bdi>{{ $t('misc.By') }}</bdi>
+                      ({{ $t('misc.author') }})
+                    </span>
+                    <span class="ml-2 text-gray-600">
+                      {{ book.writer.name }}
+                    </span>
+                  </router-link>
+                </div>
+                <div>
+                  <router-link
+                    :class="
+                      $i18n.locale == 'ar' ? 'd-flex flex-row-reverse' : ''
+                    "
+                    :to="`/publisher/${book.publisher.id}`"
+                  >
+                    <span class="ml-3 font-weight-medium text-black">
+                      <bdi>{{ $t('misc.seller') }}</bdi>
+                      ({{ $t('misc.publisher') }})
+                    </span>
+                    <span class="ml-2 text-gray-600">
+                      {{ book.publisher.name }}
+                    </span>
+                  </router-link>
+                </div>
+              </div>
             </div>
-            <p class="price font-size-22 font-weight-medium mb-3">
-              <span class="woocommerce-Price-amount amount">
-                <span class="woocommerce-Price-currencySymbol">
-                  {{ currency }}
-                </span>
-                {{ book.hardcopy_price }} - {{ book.pdf_price }}
+            <div>
+              <span
+                class="woocommerce-Price-currencySymbol d-flex justify-content-around text-center"
+              >
+                <div class="pdf" v-if="book.pdfCopy">
+                  <h5 class="price">{{ $t('misc.pdf') }}</h5>
+                  <span v-if="book.pdfCopy.status == 1">
+                    <span v-if="book.pdfCopy.price.offer">
+                      {{ book.pdfCopy.price.offer }} -
+                    </span>
+
+                    <span
+                      :class="
+                        book.pdfCopy.price.offer
+                          ? 'text-decoration-line-through'
+                          : ''
+                      "
+                    >
+                      {{ book.pdfCopy.price.original }}
+                    </span>
+                    {{ currency }}
+                  </span>
+                </div>
+                <div class="hardCopy" v-if="book.hardCopy">
+                  <h5 class="price">{{ $t('misc.Hardcopy') }}</h5>
+                  <span v-if="book.hardCopy.status == 1">
+                    <span v-if="book.hardCopy.price.offer">
+                      {{ book.hardCopy.price.offer }} -
+                    </span>
+
+                    <span
+                      :class="
+                        book.hardCopy.price.offer
+                          ? 'text-decoration-line-through text-gray-700'
+                          : ''
+                      "
+                    >
+                      {{ book.hardCopy.price.original }}
+                    </span>
+                    {{ currency }}
+                  </span>
+                </div>
               </span>
-            </p>
-            <div class="mb-2 font-size-2">
+            </div>
+            <div
+              class="mb-2 mt-4 font-size-2"
+              :class="$i18n.locale == 'ar' ? 'text-right' : ''"
+            >
               <span class="font-weight-medium">
                 {{ $t('misc.Book Format') }}:
               </span>
@@ -87,7 +144,7 @@
 
             <div class="row mb-4">
               <div class="col mb-3 mb-md-0">
-                <div class="">
+                <div class="" v-if="book.hardCopy.status == 1">
                   <input
                     id="typeOfListingRadio1"
                     type="radio"
@@ -104,17 +161,30 @@
                       {{ $t('misc.Hardcopy') }}
                     </span>
                     <span class="d-block text-center fw-bold">
-                      {{ book.hardcopy_price }} {{ currency }}
+                      <span v-if="book.hardCopy.price.offer">
+                        {{ book.hardCopy.price.offer }} -
+                      </span>
+
+                      <span
+                        :class="
+                          book.hardCopy.price.offer
+                            ? 'text-decoration-line-through text-gray-700'
+                            : ''
+                        "
+                      >
+                        {{ book.hardCopy.price.original }}
+                      </span>
+                      {{ currency }}
                     </span>
                   </label>
                 </div>
               </div>
-              <div class="col mb-3 mb-md-0">
+              <div class="col mb-3 mb-md-0" v-if="book.pdfCopy.status == 1">
                 <div class="">
                   <input
                     id="typeOfListingRadio2"
                     type="radio"
-                    value="pdf"
+                    value="pdfCopy"
                     name="typeOfListingRadio1"
                     v-model="item.bookType"
                     class="custom-control-input checkbox-outline__input"
@@ -126,10 +196,23 @@
                     <span
                       class="d-block text-uppercase text-center d-block text-center"
                     >
-                      PDF
+                      {{ $t('misc.pdf') }}
                     </span>
                     <span class="d-block text-center fw-bold">
-                      {{ book.pdf_price }} {{ currency }}
+                      <span v-if="book.pdfCopy.price.offer">
+                        {{ book.pdfCopy.price.offer }} -
+                      </span>
+
+                      <span
+                        :class="
+                          book.pdfCopy.price.offer
+                            ? 'text-decoration-line-through'
+                            : ''
+                        "
+                      >
+                        {{ book.pdfCopy.price.original }}
+                      </span>
+                      {{ currency }}
                     </span>
                   </label>
                 </div>
@@ -139,8 +222,8 @@
             <div
               class="woocommerce-product-details__short-description font-size-2 mb-5"
             >
-              <p class="">
-                {{ book.description }}
+              <p :class="$i18n.locale == 'ar' ? 'text-right' : ''">
+                {{ book.des }}
               </p>
             </div>
 
@@ -246,10 +329,10 @@ export default {
     const item = reactive({
       // id: route.params.id,
       qty: 1,
-      bookType: 'pdf',
+      bookType: 'pdfCopy',
       price: 0,
       totalPrice: 0,
-      ...props.book,
+      book: props.book,
     })
 
     function qtyPlus() {
@@ -262,14 +345,21 @@ export default {
       emit('closemodal')
     }
     function addToCart() {
-      if (item.bookType == 'pdf') {
-        item.price = item.pdf_price
+      if (item.bookType == 'pdfCopy') {
+        if (item.book.pdfCopy.price.offer) {
+          item.price = item.book.pdfCopy.price.offer
+        } else {
+          item.price = item.book.pdfCopy.price.original
+        }
       } else {
-        item.price = item.hardcopy_price
+        if (item.book.hardCopy.price.offer) {
+          item.price = item.book.hardCopy.price.offer
+        } else {
+          item.price = item.book.hardCopy.price.original
+        }
       }
 
       item.totalPrice = item.price * item.qty
-      console.log(item.totalPrice)
 
       store.commit('addToCart', item)
       toast.success(t('misc.addSuccess'))
@@ -302,7 +392,7 @@ export default {
   div,
   h2,
   h6 {
-    text-align: right;
+    text-align: right !important;
   }
 }
 </style>

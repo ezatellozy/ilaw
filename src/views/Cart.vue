@@ -51,7 +51,7 @@
                               <div class="d-flex align-items-center">
                                 <a :href="`/book/${item.id}`">
                                   <img
-                                    :src="item.main_media"
+                                    :src="item.photp"
                                     class="attachment-shop_thumbnail size-shop_thumbnail wp-post-image"
                                     alt=""
                                   />
@@ -62,13 +62,15 @@
                                     $i18n.locale == 'ar' ? 'mr-3' : 'ml-3'
                                   "
                                 >
-                                  <a href="#">{{ item.title }}</a>
+                                  <a :href="`/book/${item.book.id}`">
+                                    {{ item.book.name }}
+                                  </a>
                                   <a
-                                    href="#"
+                                    :href="`/author/${item.item.book.writer.id}`"
                                     class="text-gray-700 font-size-2 d-block"
                                     tabindex="0"
                                   >
-                                    {{ item.author }}
+                                    {{ item.book.writer.name }}
                                   </a>
                                 </div>
                               </div>

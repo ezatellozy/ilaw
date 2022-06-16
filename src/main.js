@@ -38,6 +38,7 @@ axios.defaults.headers = {
   'Content-Type': 'application/json',
   lang: i18n.global.locale,
   user: store.getters.userId,
+  country: Cookies.get('countryId') || '',
   'Accept-Language': Cookies.get('locale'),
   currency: Cookies.get('currency'),
 }

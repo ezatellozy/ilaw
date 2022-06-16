@@ -12,8 +12,8 @@
             <a href="../shop/single-product-v5.html" class="d-block">
               <router-link :to="`/book/${items.id}`">
                 <img
-                  :src="items.main_media"
-                  class="img-fluid d-block mx-auto attachment-shop_catalog size-shop_catalog wp-post-image img-fluid"
+                  :src="items.photo"
+                  class="d-block mx-auto attachment-shop_catalog size-shop_catalog wp-post-image"
                   alt="image-description"
                 />
               </router-link>
@@ -24,7 +24,7 @@
           >
             <div class="text-uppercase font-size-1 mb-1 text-truncate">
               <router-link to="/book" class="text-gray-700">
-                {{ items.category }}
+                {{ items.section.name }}
               </router-link>
             </div>
             <h2
@@ -36,18 +36,49 @@
             </h2>
             <div class="font-size-2 mb-2 text-truncate">
               <router-link to="/authers" class="text-gray-700">
-                {{ items.author }}
+                {{ items.writer.name }}
               </router-link>
             </div>
             <p class="font-size-2 mb-2 crop-text-2">
-              {{ items.description }}
+              {{ items.des }}
             </p>
-            <div
-              class="price d-flex align-items-center font-weight-medium font-size-3"
-            >
-              <span class="woocommerce-Price-amount amount">
-                <span class="woocommerce-Price-currencySymbol">$</span>
-                29
+
+            <div class="pdf" v-if="items.pdfCopy">
+              <h5 class="price">{{ $t('misc.pdf') }}</h5>
+              <span v-if="items.pdfCopy.status == 1" class="mb-2">
+                <span v-if="items.pdfCopy.price.offer">
+                  {{ items.pdfCopy.price.offer }} -
+                </span>
+
+                <span
+                  :class="
+                    items.pdfCopy.price.offer
+                      ? 'text-decoration-line-through'
+                      : ''
+                  "
+                >
+                  {{ items.pdfCopy.price.original }}
+                </span>
+                {{ currency }}
+              </span>
+            </div>
+            <div class="hardCopy" v-if="items.hardCopy">
+              <h5 class="price">{{ $t('misc.Hardcopy') }}</h5>
+              <span v-if="items.hardCopy.status == 1" class="mb-2">
+                <span v-if="items.hardCopy.price.offer">
+                  {{ items.hardCopy.price.offer }} -
+                </span>
+
+                <span
+                  :class="
+                    items.hardCopy.price.offer
+                      ? 'text-decoration-line-through text-gray-700'
+                      : ''
+                  "
+                >
+                  {{ items.hardCopy.price.original }}
+                </span>
+                {{ currency }}
               </span>
             </div>
           </div>
@@ -130,6 +161,12 @@ export default {
     background-color: #161619;
   }
 }
+
+.attachment-shop_catalog {
+  width: 200px;
+  height: 200px;
+}
+
 .is-rtl {
   div {
     text-align: right;
