@@ -73,13 +73,13 @@ export default createStore({
       updateLocaleStorage(state.cart)
     },
     addToCartByOne(state, product) {
-      let item = state.cart.filter((i) => i.id === product.id)
+      let item = state.cart.filter((i) => i.book.id === product.book.id)
       if (item.length) {
         let cItem = item.filter((i) => i.bookType === product.bookType)
         if (cItem.length) {
           item = item.find((e) => e.bookType === product.bookType)
           item.qty += 1
-          item.totalPrice += product.price
+          item.totalPrice += +product.price
         } else {
           state.cart.push({ ...product })
         }
@@ -89,7 +89,7 @@ export default createStore({
       updateLocaleStorage(state.cart)
     },
     removeItem(state, product) {
-      let item = state.cart.filter((el) => el.id !== product.id)
+      let item = state.cart.filter((el) => el.book.id !== product.book.id)
       let cItem = state.cart.filter((el) => el.id == product.id)
       let removed = cItem.filter((el) => el.bookType != product.bookType)
       let newItems = []
@@ -98,13 +98,13 @@ export default createStore({
       state.cart = JSON.parse(localStorage.getItem('cart'))
     },
     removeItemByOne(state, product) {
-      let item = state.cart.filter((i) => i.id === product.id)
+      let item = state.cart.filter((i) => i.book.id === product.book.id)
       if (item.length) {
         let cItem = item.filter((i) => i.bookType === product.bookType)
         if (cItem.length) {
           item = item.find((e) => e.bookType === product.bookType)
           item.qty -= 1
-          item.totalPrice -= product.price
+          item.totalPrice -= +product.price
           if (item.qty < 1) {
             let item = state.cart.filter((el) => el.id !== product.id)
             let cItem = state.cart.filter((el) => el.id == product.id)

@@ -15,20 +15,6 @@
             <!-- .entry-header -->
             <div class="entry-content">
               <div class="woocommerce d-block">
-                <div class="woocommerce-info p-4 bg-white border">
-                  {{ $t('misc.Have a coupon?') }}
-                  <a
-                    class="showcoupon fw-bold"
-                    @click="haveCoppon = !haveCoppon"
-                    role="button"
-                  >
-                    {{ $t('misc.Click here to enter your code') }}
-                  </a>
-                </div>
-                <transition name="coppon">
-                  <coppon v-if="haveCoppon" />
-                </transition>
-
                 <div>
                   <form
                     name="checkout"
@@ -787,7 +773,7 @@
                       id="order_review"
                       class="col-md-6 col-lg-5 col-xl-4 woocommerce-checkout-review-order"
                     >
-                      <b-accordion>
+                      <b-accordion free>
                         <b-accordion-item
                           :title="$t(`misc.Your order`)"
                           visible
@@ -812,7 +798,7 @@
                                 :key="item.id"
                               >
                                 <td class="product-name">
-                                  {{ item.title }}&nbsp;
+                                  {{ item.book.name }}&nbsp;
                                   <strong class="product-quantity">
                                     × {{ item.qty }}
                                   </strong>
@@ -864,7 +850,7 @@
                             </tfoot>
                           </table>
                         </b-accordion-item>
-                        <b-accordion-item :title="$t('misc.total')">
+                        <b-accordion-item visible :title="$t('misc.total')">
                           <table class="shop_table shop_table_responsive">
                             <tbody>
                               <tr class="checkout-subtotal">
@@ -881,123 +867,45 @@
                                 </td>
                               </tr>
 
-                              <tr class="order-shipping">
+                              <!-- <tr class="order-shipping">
                                 <th>{{ $t('misc.Shipping') }}</th>
                                 <td data-title="Shipping">Free Shipping</td>
-                              </tr>
+                              </tr> -->
                             </tbody>
                           </table>
                         </b-accordion-item>
-                        <b-accordion-item :title="$t('misc.Shipping')">
+                        <b-accordion-item visible :title="$t('misc.Shipping')">
                           <ul id="shipping_method">
-                            <li>
-                              <input
-                                type="radio"
-                                name="shipping_method[0]"
-                                data-index="0"
-                                id="shipping_method_0_flat_rate1"
-                                value="flat_rate:1"
-                                class="shipping_method"
-                              />
-                              <label for="shipping_method_0_flat_rate1">
-                                Free shipping
-                              </label>
-                            </li>
-
-                            <li>
-                              <input
-                                type="radio"
-                                name="shipping_method[0]"
-                                data-index="0"
-                                id="shipping_method_0_flat_rate2"
-                                value="flat_rate:2"
-                                class="shipping_method"
-                                checked="checked"
-                              />
-                              <label for="shipping_method_0_flat_rate2">
-                                Flat rate:
-                                <span class="woocommerce-Price-amount amount">
-                                  <span
-                                    class="woocommerce-Price-currencySymbol"
-                                  >
-                                    $
-                                  </span>
-                                  15
-                                </span>
-                              </label>
-                            </li>
-
-                            <li>
-                              <input
-                                type="radio"
-                                name="shipping_method[0]"
-                                data-index="0"
-                                id="shipping_method_0_flat_rate3"
-                                value="flat_rate:2"
-                                class="shipping_method"
-                                checked="checked"
-                              />
-                              <label for="shipping_method_0_flat_rate3">
-                                Local pickup::
-                                <span class="woocommerce-Price-amount amount">
-                                  <span
-                                    class="woocommerce-Price-currencySymbol"
-                                  >
-                                    $
-                                  </span>
-                                  8
-                                </span>
-                              </label>
-                            </li>
+                            <div v-for="ship in shippingMethods" :key="ship.id">
+                              <li v-if="ship.status == 1">
+                                <input
+                                  type="radio"
+                                  name="shipping_method[0]"
+                                  data-index="0"
+                                  id="shipping_method_0_flat_rate1"
+                                  :value="ship.id"
+                                  class="shipping_method"
+                                  v-model="shippingCost"
+                                />
+                                <label for="shipping_method_0_flat_rate1">
+                                  {{ ship.name }}
+                                </label>
+                              </li>
+                            </div>
                           </ul>
-                          <!-- End Checkboxes -->
-                          <span class="font-size-2">Shipping to Turkey.</span>
-                          <a
-                            href="#"
-                            class="font-weight-medium h-primary ml-3 font-size-2"
-                          >
-                            Change Address
-                          </a>
                         </b-accordion-item>
-                        <b-accordion-item :title="$t('misc.Coupon')">
-                          <div class="coupon d-flex justify-content-between">
-                            <label for="coupon_code">
-                              {{ $t('misc.Coupon') }}
-                            </label>
-                            <input
-                              type="text"
-                              name="coupon_code"
-                              class="form-control border px-2"
-                              id="coupon_code"
-                              value=""
-                              :placeholder="$t('misc.Coupon code')"
-                              autocomplete="off"
-                            />
-                            <button
-                              type="button"
-                              class="btn btn-primary"
-                              name="apply_coupon"
-                            >
-                              {{ $t('buttons.Apply coupon') }}
-                            </button>
-                          </div>
-                        </b-accordion-item>
+
                         <div class="p-4d875 border">
                           <table class="shop_table shop_table_responsive">
                             <tbody>
                               <tr class="order-total">
-                                <th>Total</th>
+                                <th>{{ $t('misc.total') }}</th>
                                 <td data-title="Total">
                                   <strong>
                                     <span
                                       class="woocommerce-Price-amount amount"
                                     >
-                                      <span
-                                        class="woocommerce-Price-currencySymbol"
-                                      >
-                                        £
-                                      </span>
-                                      97.99
+                                      {{ totalPrice }}
                                     </span>
                                   </strong>
                                 </td>
@@ -1005,7 +913,7 @@
                             </tbody>
                           </table>
                         </div>
-                        <b-accordion-item :title="$t('misc.Payment')">
+                        <b-accordion-item visible :title="$t('misc.Payment')">
                           <div
                             id="payment"
                             class="woocommerce-checkout-payment"
@@ -1019,52 +927,13 @@
                                   type="radio"
                                   class="input-radio"
                                   name="payment_method"
-                                  value="bacs"
-                                  data-order_button_text=""
+                                  value="online"
+                                  v-model="paymentMethod"
                                 />
 
                                 <label for="payment_method_bacs">
-                                  Direct bank transfer
+                                  {{ $t('misc.Visa/Master card') }}
                                 </label>
-                                <div
-                                  class="payment_box payment_method_bacs"
-                                  style="display: block;"
-                                >
-                                  <p>
-                                    Make your payment directly into our bank
-                                    account. Please use your Order ID as the
-                                    payment reference. Your order won’t be
-                                    shipped until the funds have cleared in our
-                                    account.
-                                  </p>
-                                </div>
-                              </li>
-
-                              <li
-                                class="wc_payment_method payment_method_cheque"
-                              >
-                                <input
-                                  id="payment_method_cheque"
-                                  type="radio"
-                                  class="input-radio"
-                                  name="payment_method"
-                                  value="cheque"
-                                  data-order_button_text=""
-                                />
-
-                                <label for="payment_method_cheque">
-                                  Check payments
-                                </label>
-                                <div
-                                  class="payment_box payment_method_cheque"
-                                  style="display: block;"
-                                >
-                                  <p>
-                                    Please send a check to Store Name, Store
-                                    Street, Store Town, Store State / County,
-                                    Store Postcode.
-                                  </p>
-                                </div>
                               </li>
 
                               <li class="wc_payment_method payment_method_cod">
@@ -1073,20 +942,13 @@
                                   type="radio"
                                   class="input-radio"
                                   name="payment_method"
-                                  value="cod"
-                                  checked="checked"
-                                  data-order_button_text=""
+                                  value="cash"
+                                  v-model="paymentMethod"
                                 />
 
-                                <label for="payment_method_cod">
-                                  Cash on delivery
+                                <label for="payment_method_bacs">
+                                  {{ $t('misc.Cash on delivery') }}
                                 </label>
-                                <div
-                                  class="payment_box payment_method_cod"
-                                  style="display: block;"
-                                >
-                                  <p>Pay with cash upon delivery.</p>
-                                </div>
                               </li>
                             </ul>
                           </div>
@@ -1095,8 +957,11 @@
 
                       <div class="form-row place-order">
                         <button
+                          :disabled="paymentMethod != 'cash'"
                           name="woocommerce_checkout_place_order"
+                          type="button"
                           class="button alt btn btn-dark btn-block rounded-0 py-4"
+                          @click="placeOrder"
                         >
                           {{ $t('buttons.Place order') }}
                         </button>
@@ -1114,11 +979,9 @@
 </template>
 
 <script>
-import Coppon from '@/components/Coppon.vue'
 import axios from 'axios'
 
 export default {
-  components: { Coppon },
   data() {
     return {
       form: {
@@ -1129,14 +992,17 @@ export default {
         phone: '',
         address: '',
       },
+      shippingCost: 'exprese',
       haveCoppon: false,
       countries: null,
       governments: null,
       cities: null,
       paymentMethods: null,
+      paymentMethod: '',
       addresses: null,
       selectedAddress: '',
       newAddress: false,
+      shippingMethods: null,
     }
   },
   computed: {
@@ -1154,6 +1020,7 @@ export default {
     this.getCountries()
     this.getAddresses()
     this.getPayments()
+    this.getShippingMethod()
   },
   methods: {
     getCountries() {
@@ -1198,12 +1065,56 @@ export default {
     getAddresses() {
       this.axios.get('user/address').then((data) => {
         this.addresses = data.data.data
+        this.selectedAddress = this.addresses[0].id
       })
     },
     getPayments() {
       this.axios.get('/user/paymentMethods').then((data) => {
         this.paymentMethods = data.data.data
       })
+    },
+    getShippingMethod() {
+      this.axios.get('/settings').then((data) => {
+        this.shippingMethods = data.data.data.shippingMethods
+      })
+    },
+    placeOrder() {
+      // const frmData = new FormData
+      const cart = JSON.parse(localStorage.getItem('cart'))
+
+      // let newcart= cart.array.forEach(element => {
+
+      // });
+
+      let items = []
+
+      cart.forEach((element) => {
+        items.push({
+          book_id: element.book.id,
+          book_type: element.bookType,
+          quntity: element.qty,
+          price: element.price,
+        })
+      })
+
+      let payment_method_id = this.paymentMethod
+      let shipping_address_id = this.selectedAddress
+      let shipping_method = this.shippingCost
+
+      this.axios
+        .post('/user/orders/create', {
+          items,
+          payment_method_id,
+          shipping_address_id,
+          shipping_method,
+        })
+        .then((data) => {
+          this.$toast.success(data.data.message)
+          localStorage.removeItem('cart')
+          setTimeout(() => {
+            window.location.reload()
+          }, 300)
+        })
     },
   },
 }

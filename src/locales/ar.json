@@ -54,6 +54,12 @@
   },
   "misc": {
     "Status": "الحالة",
+    "View Cart": "عرض السلة",
+    "Cart Totals": "اجمالي السلة",
+    "Visa/Master card": "فيزا / ماستر كارد",
+    "Cash on delivery": "الدفع عند الاستلام",
+    "select addresses": "إختر عنوان الشحن",
+    "Free shipping": "شحن مجاني",
     "Most Viewed": "الاكثر مشاهدة",
     "Featured": "متميز",
     "Search": "بحث",

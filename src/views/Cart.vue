@@ -49,9 +49,9 @@
                           >
                             <td class="product-name" data-title="Product">
                               <div class="d-flex align-items-center">
-                                <a :href="`/book/${item.id}`">
+                                <a :href="`/book/${item.book.id}`">
                                   <img
-                                    :src="item.photp"
+                                    :src="item.book.photo"
                                     class="attachment-shop_thumbnail size-shop_thumbnail wp-post-image"
                                     alt=""
                                   />
@@ -66,7 +66,7 @@
                                     {{ item.book.name }}
                                   </a>
                                   <a
-                                    :href="`/author/${item.item.book.writer.id}`"
+                                    :href="`/author/${item.book.writer.id}`"
                                     class="text-gray-700 font-size-2 d-block"
                                     tabindex="0"
                                   >
@@ -194,7 +194,7 @@
             role="complementary"
           >
             <b-accordion>
-              <b-accordion-item title="Cart Totals" visible>
+              <b-accordion-item :title="$t('misc.Cart Totals')" visible>
                 <table class="shop_table shop_table_responsive">
                   <tbody>
                     <tr class="cart-subtotal">
@@ -205,101 +205,33 @@
                         </span>
                       </td>
                     </tr>
-
-                    <tr class="order-shipping">
-                      <th>{{ $t('misc.Shipping') }}</th>
-                      <td data-title="Shipping">
-                        {{ $t('misc.Free Shipping') }}
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </b-accordion-item>
-              <b-accordion-item title="Shipping" visible>
-                <!-- Checkboxes -->
-                <ul id="shipping_method">
-                  <li>
-                    <input
-                      type="radio"
-                      name="shipping_method[0]"
-                      data-index="0"
-                      id="shipping_method_0_flat_rate1"
-                      value="flat_rate:1"
-                      class="shipping_method"
-                    />
-                    <label for="shipping_method_0_flat_rate1">
-                      Free shipping
-                    </label>
-                  </li>
 
-                  <li>
-                    <input
-                      type="radio"
-                      name="shipping_method[0]"
-                      data-index="0"
-                      id="shipping_method_0_flat_rate2"
-                      value="flat_rate:2"
-                      class="shipping_method"
-                      checked="checked"
-                    />
-                    <label for="shipping_method_0_flat_rate2">
-                      Flat rate:
-                      <span class="woocommerce-Price-amount amount">
-                        <span class="woocommerce-Price-currencySymbol">
-                          15
-                        </span>
-                        {{ currency }}
-                      </span>
-                    </label>
-                  </li>
-
-                  <li>
-                    <input
-                      type="radio"
-                      name="shipping_method[0]"
-                      data-index="0"
-                      id="shipping_method_0_flat_rate3"
-                      value="flat_rate:2"
-                      class="shipping_method"
-                      checked="checked"
-                    />
-                    <label for="shipping_method_0_flat_rate3">
-                      Local pickup::
-                      <span class="woocommerce-Price-amount amount">
-                        <span class="woocommerce-Price-currencySymbol">
-                          8
-                        </span>
-                        {{ currency }}
-                      </span>
-                    </label>
-                  </li>
-                </ul>
-                <!-- End Checkboxes -->
-                <span class="font-size-2">Shipping to Turkey.</span>
-                <a
-                  href="#"
-                  class="font-weight-medium h-primary ml-3 font-size-2"
+              <b-accordion-item :title="$t('misc.Coupon')" visible>
+                <div
+                  class="coupon"
+                  :class="
+                    $i18n.locale == 'ar'
+                      ? 'd-flex justify-content-between '
+                      : ''
+                  "
                 >
-                  Change Address
-                </a>
-              </b-accordion-item>
-              <b-accordion-item title="Coupon " visible>
-                <div class="coupon">
-                  <label for="coupon_code">Coupon:</label>
+                  <label for="coupon_code">{{ $t('misc.Coupon') }}</label>
                   <input
                     type="text"
                     name="coupon_code"
                     class="input-text"
                     id="coupon_code"
-                    value=""
-                    placeholder="Coupon code"
+                    :placeholder="$t('misc.Coupon code')"
                     autocomplete="off"
                   />
                   <input
                     type="submit"
                     class="button"
                     name="apply_coupon"
-                    value="Apply coupon"
+                    :value="$t('buttons.Apply coupon')"
                   />
                 </div>
               </b-accordion-item>
@@ -314,9 +246,8 @@
                         <strong>
                           <span class="woocommerce-Price-amount amount">
                             <span class="woocommerce-Price-currencySymbol">
-                              97.99
+                              {{ totalPrice }}
                             </span>
-                            {{ currency }}
                           </span>
                         </strong>
                       </td>
@@ -328,9 +259,9 @@
             <div class="wc-proceed-to-checkout">
               <a
                 href="/checkout"
-                class="checkout-button button alt wc-forward btn btn-dark btn-block rounded-0 py-4"
+                class="checkout-button button text-center alt wc-forward btn btn-dark btn-block rounded-0 py-4"
               >
-                {{ $t('misc.Proceed to checkout') }}
+                {{ $t('misc.select addresses') }}
               </a>
             </div>
           </div>
@@ -400,5 +331,9 @@ export default {
     text-align: right;
     direction: rtl;
   }
+}
+.attachment-shop_thumbnail {
+  width: 150px;
+  height: 150px;
 }
 </style>

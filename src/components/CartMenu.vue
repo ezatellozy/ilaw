@@ -122,14 +122,7 @@
                     class="btn btn-block py-4 rounded-0 btn-outline-dark mb-4"
                     @click="closeCartMenu"
                   >
-                    View Cart
-                  </router-link>
-                  <router-link
-                    to="/checkout"
-                    class="btn btn-block py-4 rounded-0 btn-dark"
-                    @click="closeCartMenu"
-                  >
-                    Checkout
+                    {{ $t('misc.View Cart') }}
                   </router-link>
                 </div>
               </div>
