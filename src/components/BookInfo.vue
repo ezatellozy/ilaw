@@ -122,7 +122,7 @@
                   </span>
                 </div>
 
-                <div class="row mx-gutters-2 mb-4">
+                <div class="row mx-gutters-2 mb-4" v-if="currency">
                   <div class="col mb-3 mb-md-0">
                     <div class="">
                       <input
