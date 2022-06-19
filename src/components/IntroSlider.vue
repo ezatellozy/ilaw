@@ -1,39 +1,44 @@
 <template>
   <div
     class="media intro w-100 d-flex justify-content-center px-11 align-items-center"
-    style="background-image: url('./img1.jpg');"
+    :style="`background-image: url(${item.image});`"
   >
     <div class="intro">
       <div class="hero__body media-body mb-4 mb-xl-0">
         <div class="info">
-          <div class="hero__pretitle text-uppercase font-weight-bold mb-3">
-            Book Club
+          <div
+            class="hero__pretitle text-uppercase font-weight-bold mb-3 text-center"
+          >
+            {{ item.title }}
           </div>
-          <h2 class="hero__title font-size-10 mb-3">
+          <!-- <h2 class="hero__title font-size-10 mb-3">
             <span class="hero__title--1 font-weight-bold d-block">
               A selection with
             </span>
             <span class="hero__title--2 d-block font-weight-normal">
               only the best books
             </span>
-          </h2>
-          <p class="hero__subtitle font-size-2 mb-5">
-            Sale Ends Midnight 30th April 2020
+          </h2> -->
+          <p class="hero__subtitle font-size-2 mb-5 text-center">
+            {{ item.des }}
           </p>
         </div>
-        <router-link
-          to="/book"
+        <a
+          v-if="item.button_text"
+          :href="item.link"
           class="hero__btn fw-bold fs-5 rounded py-2 px-4 btn text-white btn-wide"
         >
-          {{ $t('misc.Explore Books') }}
-        </router-link>
+          {{ item.button_text }}
+        </a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: ['item'],
+}
 </script>
 
 <style lang="scss">

@@ -26,13 +26,14 @@ const emitter = mitt()
 import Toaster from '@meforma/vue-toaster'
 import i18n from './i18n'
 
-// api link
-const apiLink = `https://ilawfairv2.technomasrsystems.com/api`
-// reset password global
-const ResetPasswordLink =
-  'https://ilawfairv2.technomasrsystems.com/password/reset'
+const siteLink = `https://ilawfairv2.technomasrsystems.com`
 
-axios.defaults.baseURL = apiLink
+// reset password global
+const ResetPasswordLink = `${siteLink}/password/reset`
+const PublisherLogin = `${siteLink}/publisher/auth/login`
+const PublisherRegister = `${siteLink}/publisher/auth/register`
+
+axios.defaults.baseURL = `${siteLink}/api`
 axios.defaults.headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
@@ -50,6 +51,8 @@ library.add(far)
 const app = createApp(App).use(i18n)
 
 app.config.globalProperties.globalResetPassword = ResetPasswordLink
+app.config.globalProperties.PublisherLogin = PublisherLogin
+app.config.globalProperties.PublisherRegister = PublisherRegister
 
 app.component('FontAwesomeIcon', FontAwesomeIcon)
 app.component('BaseCard', BaseCard)

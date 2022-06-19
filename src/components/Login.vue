@@ -82,7 +82,8 @@
   </div>
   <div class="mb-4d75">
     <a
-      href="https://ilaw.technomasrsystems.com/vendor/login"
+      target="_blank"
+      :href="PublisherLogin"
       class="vendor js-animation-link btn btn-block py-3 rounded-0 btn-outline-dark font-weight-medium"
     >
       {{ $t('buttons.Login as a vendor') }}
@@ -90,12 +91,19 @@
   </div>
 
   <div class="mb-4d75">
-    <button
+    <a
+      target="_blank"
+      :href="PublisherRegister"
+      class="vendor js-animation-link btn btn-block py-3 rounded-0 btn-outline-dark font-weight-medium"
+    >
+      {{ $t('misc.New Publisher Account') }}
+    </a>
+    <!-- <button
       class="js-animation-link btn btn-block py-3 rounded-0 btn-outline-dark font-weight-medium"
       @click="setting('signUpVendor')"
     >
       {{ $t('misc.New Publisher Account') }}
-    </button>
+    </button> -->
   </div>
 </template>
 

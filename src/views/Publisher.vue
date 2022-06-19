@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <!-- <div class="publisher">
+    <div class="publisher" v-if="publisher.publisherBooks">
       <h2 class="main-title">
         {{ $t('misc.Books') }}
       </h2>
@@ -30,24 +30,24 @@
       <div class="products-book border-top border-right">
         <ul
           class="list-unstyled products border-left border-bottom mb-0"
-          v-for="book in publisher.books"
+          v-for="book in publisher.publisherBooks"
           :key="book.id"
         >
           <book-card :items="book" />
         </ul>
       </div>
-      <div class="text-center">
+      <!-- <div class="text-center">
         <button class="btn btn-primary mt-5">See more</button>
-      </div>
-    </div> -->
+      </div> -->
+    </div>
   </div>
 </template>
 
 <script>
-// import BookCard from '@/components/BookCard.vue'
+import BookCard from '@/components/BookCard.vue'
 
 export default {
-  // components: { BookCard },
+  components: { BookCard },
 
   data() {
     return {

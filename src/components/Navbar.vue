@@ -18,31 +18,23 @@
                 </router-link>
               </li>
 
-              <li class="nav-item">
-                <router-link
-                  class="font-weight-medium link-black-100"
-                  to="/shop/all"
-                >
-                  {{ $t('nav.categories') }}
-                </router-link>
-              </li>
               <li class="nav-item shop">
                 <b-dropdown
                   id="shop"
                   class="link-black-100 fw-bold d-flex align-items-center"
                   :text="$t('nav.shops')"
                 >
-                  <router-link to="/shop">
+                  <router-link to="/shop/all">
                     <b-dropdown-item>
                       {{ $t('misc.By Books') }}
                     </b-dropdown-item>
                   </router-link>
-                  <router-link to="/publisher">
+                  <router-link to="/publishers">
                     <b-dropdown-item>
                       {{ $t('misc.By Vendor / publisher') }}
                     </b-dropdown-item>
                   </router-link>
-                  <router-link to="/author">
+                  <router-link to="/authers">
                     <b-dropdown-item>
                       {{ $t('misc.By Author') }}
                     </b-dropdown-item>
@@ -192,8 +184,11 @@
                     {{ totalQuantity }}
                   </span>
                   <i class="glph-icon flaticon-icon-126515 font-size-4"></i>
-                  <span class="d-none d-xl-inline h6 mb-0 ml-1">
-                    {{ totalPrice }}
+                  <span
+                    class="d-none d-xl-inline h6 mb-0 ml-1"
+                    v-if="currency && totalPrice != 0"
+                  >
+                    {{ totalPrice }} {{ currency.sympl }}
                   </span>
                 </button>
               </li>
@@ -304,8 +299,11 @@
                   {{ totalQuantity }}
                 </span>
                 <i class="glph-icon flaticon-icon-126515 font-size-4"></i>
-                <span class="d-none d-xl-inline h6 mb-0 ml-1">
-                  {{ totalPrice }}
+                <span
+                  class="d-none d-xl-inline h6 mb-0 ml-1"
+                  v-if="currency && totalPrice != 0"
+                >
+                  {{ totalPrice }} {{ currency.sympl }}
                 </span>
               </button>
             </li>
@@ -370,6 +368,9 @@ export default {
     },
     totalPrice() {
       return this.$store.getters.totalPrice
+    },
+    currency() {
+      return this.$store.getters.currency
     },
   },
   methods: {

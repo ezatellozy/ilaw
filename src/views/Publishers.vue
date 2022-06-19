@@ -1,14 +1,14 @@
 <template>
-  <h2 class="mt-11 text-center main-title">{{ $t('misc.Authers') }}</h2>
+  <h2 class="mt-11 text-center main-title">{{ $t('misc.publishers') }}</h2>
   <div class="container pb-11">
-    <div class="mb-4" v-for="writer in writers" :key="writer.id">
+    <div class="mb-4" v-for="publisher in publishers" :key="publisher.id">
       <div class="author col px-0">
         <div class="item">
-          <router-link :to="`/author/${writer.id}`">
+          <router-link :to="`/publisher/${publisher.id}`">
             <figure class="devLogo mx-auto">
               <img
-                v-if="writer.photo"
-                :src="writer.photo"
+                v-if="publisher.photo"
+                :src="publisher.photo"
                 alt=""
                 class="w-auto"
               />
@@ -18,7 +18,7 @@
         <div class="author__body text-center mb-2">
           <!-- <h2 class="author__name h6 mb-0">{{ cardtitle }}</h2> -->
           <div class="text-gray-700 font-size-2 text-center">
-            {{ writer.name }}
+            {{ publisher.name }}
           </div>
         </div>
       </div>
@@ -30,7 +30,7 @@
 export default {
   data() {
     return {
-      writers: null,
+      publishers: null,
     }
   },
   mounted() {
@@ -38,8 +38,8 @@ export default {
   },
   methods: {
     getWriters() {
-      this.axios.get('writers').then((data) => {
-        this.writers = data.data.data
+      this.axios.get('publishers').then((data) => {
+        this.publishers = data.data.data
       })
     },
   },

@@ -21,18 +21,19 @@
           </li>
           <li class="nav-item">
             <b-dropdown
+              v-if="currency"
               id="currency"
               class="link-black-100 d-flex align-items-center"
-              v-model="currency"
-              :text="currency"
+              v-model="currency.id"
+              :text="currency.sympl"
             >
               <b-dropdown-item
                 v-for="currency in currencis"
-                :key="currency.value"
-                :value="currency.code"
-                @click="changeCurrency(currency.code)"
+                :key="currency.id"
+                :value="currency.sympl"
+                @click="changeCurrency(currency)"
               >
-                {{ currency.code }}
+                {{ currency.name }}
               </b-dropdown-item>
             </b-dropdown>
           </li>
@@ -91,12 +92,25 @@ export default {
       }, 300)
     },
     changeCurrency(c) {
-      Cookies.set('currency', c)
+      localStorage.setItem('currency', JSON.stringify(c))
       this.$store.commit('currency', c)
     },
     getCurrencis() {
-      this.axios.get('countries').then((data) => {
-        this.currencis = data.data.data
+      this.axios.get('settings').then((data) => {
+        this.currencis = data.data.data.currencies
+        if (localStorage.getItem('currency')) {
+          this.$store.commit(
+            'currency',
+            JSON.parse(localStorage.getItem('currency')),
+          )
+          return
+        } else {
+          localStorage.setItem('currency', JSON.stringify(this.currencis[0]))
+          this.$store.commit(
+            'currency',
+            JSON.parse(localStorage.getItem('currency')),
+          )
+        }
       })
     },
   },

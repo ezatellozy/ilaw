@@ -15,6 +15,7 @@ import Page from '../views/Page.vue'
 import Author from '../views/Author.vue'
 import Publisher from '../views/Publisher.vue'
 import Authers from '../views/Authers.vue'
+import Publishers from '../views/Publishers.vue'
 import OrderRecived from '../views/OrderRecived.vue'
 import Book from '@/components/BookInfo.vue'
 import PageNotFound from '@/components/NotFound.vue'
@@ -43,6 +44,8 @@ const routes = [
     name: 'authers',
     component: Authers,
   },
+  { path: '/shop', redirect: '/shop/all' },
+
   {
     path: '/about-us',
     name: 'about-us',
@@ -91,6 +94,9 @@ const routes = [
   {
     path: '/checkout',
     name: 'checkout',
+    meta: {
+      auth: true,
+    },
     component: Checkout,
   },
   {
@@ -105,6 +111,11 @@ const routes = [
     path: '/page',
     name: 'page',
     component: Page,
+  },
+  {
+    path: '/publishers',
+    name: 'publishers',
+    component: Publishers,
   },
   {
     path: '/author/:id',

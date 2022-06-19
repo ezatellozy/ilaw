@@ -1,7 +1,6 @@
 <template>
-  <Teleport to="body">
-    <BookTypeModal v-if="BookTypeModal" @closemodal="addToCart" :book="items" />
-  </Teleport>
+  <BookTypeModal v-if="BookTypeModal" @closemodal="addToCart" :book="items" />
+
   <li class="product col bg-hover-white">
     <div class="product__inner overflow-hidden p-3 p-md-4d875" v-if="items">
       <div
@@ -46,8 +45,8 @@
             class="price d-flex align-items-center justify-content-start font-weight-medium font-size-3"
           >
             <span class="woocommerce-Price-amount amount">
-              <span class="woocommerce-Price-currencySymbol">
-                <div class="pdf" v-if="items.pdfCopy">
+              <span class="woocommerce-Price-currencySymbol" v-if="currency">
+                <div class="pdf" v-if="items.pdfCopy.status != 0">
                   <h5 class="price">{{ $t('misc.pdf') }}</h5>
                   <span v-if="items.pdfCopy.status == 1">
                     <span v-if="items.pdfCopy.price.offer">
@@ -63,10 +62,10 @@
                     >
                       {{ items.pdfCopy.price.original }}
                     </span>
-                    {{ currency }}
+                    {{ currency.sympl }}
                   </span>
                 </div>
-                <div class="hardCopy" v-if="items.hardCopy">
+                <div class="hardCopy" v-if="items.hardCopy.status != 0">
                   <h5 class="price">{{ $t('misc.Hardcopy') }}</h5>
                   <span v-if="items.hardCopy.status == 1">
                     <span v-if="items.hardCopy.price.offer">
@@ -82,7 +81,7 @@
                     >
                       {{ items.hardCopy.price.original }}
                     </span>
-                    {{ currency }}
+                    {{ currency.sympl }}
                   </span>
                 </div>
               </span>
@@ -167,9 +166,7 @@ export default {
       this.BookTypeModal = !this.BookTypeModal
     },
   },
-  mounted() {
-    console.log(this.items)
-  },
+
   computed: {
     currency() {
       return this.$store.getters.currency

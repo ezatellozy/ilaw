@@ -69,20 +69,20 @@
                                 </div>
                                 <ul class="">
                                   <li>
-                                    <a href="#">
+                                    <router-link to="/shop/all">
                                       {{ $t('misc.By Books') }}
-                                    </a>
+                                    </router-link>
                                   </li>
 
                                   <li>
-                                    <a href="#">
+                                    <router-link to="/authers">
                                       {{ $t('misc.By Vendor / publisher') }}
-                                    </a>
+                                    </router-link>
                                   </li>
                                   <li>
-                                    <a href="#">
+                                    <router-link to="/publishers">
                                       {{ $t('misc.By Author') }}
-                                    </a>
+                                    </router-link>
                                   </li>
                                 </ul>
                               </div>

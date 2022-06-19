@@ -87,12 +87,15 @@
                       <div
                         class="price d-flex align-items-center font-weight-medium font-size-3"
                       >
-                        <span class="woocommerce-Price-amount amount">
+                        <span
+                          class="woocommerce-Price-amount amount"
+                          v-if="currency"
+                        >
                           {{ item.qty }} x
                           <span class="woocommerce-Price-currencySymbol">
                             {{ item.price }}
                           </span>
-                          {{ currency }}
+                          {{ currency.sympl }}
                         </span>
                       </div>
                     </div>
@@ -113,7 +116,9 @@
                   class="px-4 py-5 px-md-6 d-flex justify-content-between align-items-center font-size-3"
                 >
                   <h4 class="mb-0 font-size-3">{{ $t('misc.Subtotal:') }}</h4>
-                  <div class="font-weight-medium">{{ totalPrice }}</div>
+                  <div class="font-weight-medium" v-if="currency">
+                    {{ totalPrice }} {{ currency.sympl }}
+                  </div>
                 </div>
 
                 <div class="px-4 mb-8 px-md-6">
@@ -145,9 +150,7 @@ export default {
       this.$store.commit('removeItem', item)
     },
   },
-  mounted() {
-    console.log(this.cart)
-  },
+
   computed: {
     totalQuantity() {
       return this.$store.getters.totalQuantity

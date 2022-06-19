@@ -15,7 +15,10 @@
     </div>
     <div class="author__body text-center mb-2">
       <!-- <h2 class="author__name h6 mb-0">{{ cardtitle }}</h2> -->
-      <div v-if="routerPath == 'author'" class="text-gray-700 font-size-2">
+      <div
+        v-if="routerPath == 'author'"
+        class="text-gray-700 font-size-2 text-center"
+      >
         {{ name }}
       </div>
     </div>

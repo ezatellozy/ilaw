@@ -804,13 +804,16 @@
                                   </strong>
                                 </td>
                                 <td class="product-total">
-                                  <span class="woocommerce-Price-amount amount">
+                                  <span
+                                    class="woocommerce-Price-amount amount"
+                                    v-if="currency"
+                                  >
                                     <span
                                       class="woocommerce-Price-currencySymbol"
                                     >
                                       {{ item.totalPrice }}
                                     </span>
-                                    {{ currency }}
+                                    {{ currency.sympl }}
                                   </span>
                                 </td>
                               </tr>
@@ -856,13 +859,16 @@
                               <tr class="checkout-subtotal">
                                 <th>{{ $t('misc.Subtotal') }}</th>
                                 <td>
-                                  <span class="woocommerce-Price-amount amount">
+                                  <span
+                                    class="woocommerce-Price-amount amount"
+                                    v-if="currency"
+                                  >
                                     <span
                                       class="woocommerce-Price-currencySymbol"
                                     >
                                       {{ totalPrice }}
                                     </span>
-                                    {{ currency }}
+                                    {{ currency.sympl }}
                                   </span>
                                 </td>
                               </tr>
@@ -904,8 +910,9 @@
                                   <strong>
                                     <span
                                       class="woocommerce-Price-amount amount"
+                                      v-if="currency"
                                     >
-                                      {{ totalPrice }}
+                                      {{ totalPrice }} {{ currency.sympl }}
                                     </span>
                                   </strong>
                                 </td>
@@ -1065,7 +1072,10 @@ export default {
     getAddresses() {
       this.axios.get('user/address').then((data) => {
         this.addresses = data.data.data
-        this.selectedAddress = this.addresses[0].id
+
+        if (this.addresses.length) {
+          this.selectedAddress = this.addresses[0].id
+        }
       })
     },
     getPayments() {
@@ -1079,42 +1089,39 @@ export default {
       })
     },
     placeOrder() {
-      // const frmData = new FormData
       const cart = JSON.parse(localStorage.getItem('cart'))
 
-      // let newcart= cart.array.forEach(element => {
+      if (cart) {
+        let items = []
 
-      // });
-
-      let items = []
-
-      cart.forEach((element) => {
-        items.push({
-          book_id: element.book.id,
-          book_type: element.bookType,
-          quntity: element.qty,
-          price: element.price,
+        cart.forEach((element) => {
+          items.push({
+            book_id: element.book.id,
+            book_type: element.bookType,
+            quntity: element.qty,
+            price: element.price,
+          })
         })
-      })
-
-      let payment_method_id = this.paymentMethod
-      let shipping_address_id = this.selectedAddress
-      let shipping_method = this.shippingCost
-
-      this.axios
-        .post('/user/orders/create', {
-          items,
-          payment_method_id,
-          shipping_address_id,
-          shipping_method,
-        })
-        .then((data) => {
-          this.$toast.success(data.data.message)
-          localStorage.removeItem('cart')
-          setTimeout(() => {
-            window.location.reload()
-          }, 300)
-        })
+        let payment_method_id = this.paymentMethod
+        let shipping_address_id = this.selectedAddress
+        let shipping_method = this.shippingCost
+        this.axios
+          .post('/user/orders/create', {
+            items,
+            payment_method_id,
+            shipping_address_id,
+            shipping_method,
+          })
+          .then((data) => {
+            this.$toast.success(data.data.message)
+            localStorage.removeItem('cart')
+            setTimeout(() => {
+              window.location.reload()
+            }, 300)
+          })
+      } else {
+        this.$toast.success(this.$t('misc.cart is empty'))
+      }
     },
   },
 }

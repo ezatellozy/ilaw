@@ -1,12 +1,12 @@
 <template>
   <div class="hero-slider-with-banners overflow-hidden">
-    <div class="">
+    <div class="" v-if="sliders">
       <b-row>
         <b-col cols="12" class="mb-xl-0">
           <div class="bg-gray-200 min-height-530">
             <carousel v-bind="settings" class="h-100">
-              <slide v-for="n in 5" :key="n">
-                <intro-slider />
+              <slide v-for="slider in sliders" :key="slider.id">
+                <intro-slider :item="slider" />
               </slide>
               <template #addons>
                 <pagination />
@@ -27,6 +27,7 @@ export default {
   components: { Carousel, Slide, Pagination, IntroSlider },
   data() {
     return {
+      sliders: null,
       settings: {
         autoplay: 5000,
         itemsToShow: 1,
@@ -35,6 +36,16 @@ export default {
         snapAlign: 'center',
       },
     }
+  },
+  methods: {
+    getSlider() {
+      this.axios.get('settings').then((data) => {
+        this.sliders = data.data.data.slider
+      })
+    },
+  },
+  mounted() {
+    this.getSlider()
   },
 }
 </script>

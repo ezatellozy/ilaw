@@ -22,11 +22,7 @@
 </template>
 
 <script>
-export default {
-  mounted() {
-    console.log(this.$store.getters.totalPrice)
-  },
-}
+export default {}
 </script>
 
 <style lang="scss" scoped>

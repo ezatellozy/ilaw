@@ -115,7 +115,7 @@
                 <li class="py-2">
                   <a
                     class="widgets-hover transition-3d-hover font-size-2 link-black-100"
-                    href="/shop"
+                    href="/shop/all"
                   >
                     {{ $t('nav.shops') }}
                   </a>

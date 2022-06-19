@@ -17,7 +17,7 @@ export default createStore({
   state: {
     settings: [],
     status: '',
-    currency: Cookies.get('currency') || 'UAE',
+    currency: null,
     user: JSON.parse(localStorage.getItem('user')) || null,
     loginMenu: false,
     publisher: null,
@@ -36,9 +36,7 @@ export default createStore({
     status: (state) => state.status,
     settings: (state) => state.settings,
     totalPrice: (state) => {
-      return `${state.cart.reduce((a, b) => a + b.totalPrice, 0)} ${
-        state.currency
-      }`
+      return `${state.cart.reduce((a, b) => a + b.totalPrice, 0)}`
     },
     totalQuantity: (state) => {
       return state.cart.reduce((a, b) => a + b.qty, 0)
@@ -56,7 +54,6 @@ export default createStore({
   },
   mutations: {
     addToCart(state, product) {
-      console.log(product)
       let item = state.cart.filter((i) => i.book.id === product.book.id)
       if (item.length) {
         let cItem = item.filter((i) => i.bookType === product.bookType)

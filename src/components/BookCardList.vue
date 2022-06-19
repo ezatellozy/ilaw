@@ -42,44 +42,45 @@
             <p class="font-size-2 mb-2 crop-text-2">
               {{ items.des }}
             </p>
+            <div v-if="currency">
+              <div class="pdf" v-if="items.pdfCopy">
+                <h5 class="price">{{ $t('misc.pdf') }}</h5>
+                <span v-if="items.pdfCopy.status == 1" class="mb-2">
+                  <span v-if="items.pdfCopy.price.offer">
+                    {{ items.pdfCopy.price.offer }} -
+                  </span>
 
-            <div class="pdf" v-if="items.pdfCopy">
-              <h5 class="price">{{ $t('misc.pdf') }}</h5>
-              <span v-if="items.pdfCopy.status == 1" class="mb-2">
-                <span v-if="items.pdfCopy.price.offer">
-                  {{ items.pdfCopy.price.offer }} -
+                  <span
+                    :class="
+                      items.pdfCopy.price.offer
+                        ? 'text-decoration-line-through'
+                        : ''
+                    "
+                  >
+                    {{ items.pdfCopy.price.original }}
+                  </span>
+                  {{ currency.sympl }}
                 </span>
+              </div>
+              <div class="hardCopy" v-if="items.hardCopy">
+                <h5 class="price">{{ $t('misc.Hardcopy') }}</h5>
+                <span v-if="items.hardCopy.status == 1" class="mb-2">
+                  <span v-if="items.hardCopy.price.offer">
+                    {{ items.hardCopy.price.offer }} -
+                  </span>
 
-                <span
-                  :class="
-                    items.pdfCopy.price.offer
-                      ? 'text-decoration-line-through'
-                      : ''
-                  "
-                >
-                  {{ items.pdfCopy.price.original }}
+                  <span
+                    :class="
+                      items.hardCopy.price.offer
+                        ? 'text-decoration-line-through text-gray-700'
+                        : ''
+                    "
+                  >
+                    {{ items.hardCopy.price.original }}
+                  </span>
+                  {{ currency.sympl }}
                 </span>
-                {{ currency }}
-              </span>
-            </div>
-            <div class="hardCopy" v-if="items.hardCopy">
-              <h5 class="price">{{ $t('misc.Hardcopy') }}</h5>
-              <span v-if="items.hardCopy.status == 1" class="mb-2">
-                <span v-if="items.hardCopy.price.offer">
-                  {{ items.hardCopy.price.offer }} -
-                </span>
-
-                <span
-                  :class="
-                    items.hardCopy.price.offer
-                      ? 'text-decoration-line-through text-gray-700'
-                      : ''
-                  "
-                >
-                  {{ items.hardCopy.price.original }}
-                </span>
-                {{ currency }}
-              </span>
+              </div>
             </div>
           </div>
           <div class="col-md-auto d-flex align-items-center">

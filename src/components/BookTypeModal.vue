@@ -87,8 +87,9 @@
               </div>
             </div>
             <div>
-              <span
+              <!-- <span
                 class="woocommerce-Price-currencySymbol d-flex justify-content-around text-center"
+                v-if="currency"
               >
                 <div class="pdf" v-if="book.pdfCopy">
                   <h5 class="price">{{ $t('misc.pdf') }}</h5>
@@ -106,7 +107,7 @@
                     >
                       {{ book.pdfCopy.price.original }}
                     </span>
-                    {{ currency }}
+                    {{ currency.sympl }}
                   </span>
                 </div>
                 <div class="hardCopy" v-if="book.hardCopy">
@@ -125,10 +126,10 @@
                     >
                       {{ book.hardCopy.price.original }}
                     </span>
-                    {{ currency }}
+                    {{ currency.sympl }}
                   </span>
                 </div>
-              </span>
+              </span> -->
             </div>
             <div
               class="mb-2 mt-4 font-size-2"
@@ -174,7 +175,7 @@
                       >
                         {{ book.hardCopy.price.original }}
                       </span>
-                      {{ currency }}
+                      {{ currency.sympl }}
                     </span>
                   </label>
                 </div>
@@ -212,7 +213,7 @@
                       >
                         {{ book.pdfCopy.price.original }}
                       </span>
-                      {{ currency }}
+                      {{ currency.sympl }}
                     </span>
                   </label>
                 </div>
@@ -388,9 +389,8 @@ export default {
 }
 .is-rtl {
   p,
-  h1,
-  div,
   h2,
+  div,
   h6 {
     text-align: right !important;
   }

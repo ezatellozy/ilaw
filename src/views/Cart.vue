@@ -77,11 +77,14 @@
                             </td>
 
                             <td class="product-price" data-title="Price">
-                              <span class="woocommerce-Price-amount amount">
+                              <span
+                                class="woocommerce-Price-amount amount"
+                                v-if="currency"
+                              >
                                 <span class="woocommerce-Price-currencySymbol">
                                   {{ item.price }}
                                 </span>
-                                {{ currency }}
+                                {{ currency.sympl }}
                               </span>
                             </td>
 
@@ -149,11 +152,14 @@
                             </td>
 
                             <td class="product-subtotal">
-                              <span class="woocommerce-Price-amount amount">
+                              <span
+                                class="woocommerce-Price-amount amount"
+                                v-if="currency"
+                              >
                                 <span class="woocommerce-Price-currencySymbol">
                                   {{ item.totalPrice }}
                                 </span>
-                                {{ currency }}
+                                {{ currency.sympl }}
                               </span>
                             </td>
                             <td class="product-remove">
@@ -200,8 +206,11 @@
                     <tr class="cart-subtotal">
                       <th>{{ $t('misc.Subtotal:') }}</th>
                       <td data-title="Subtotal">
-                        <span class="woocommerce-Price-amount amount">
-                          {{ totalPrice }}
+                        <span
+                          class="woocommerce-Price-amount amount"
+                          v-if="currency"
+                        >
+                          {{ totalPrice }} {{ currency.sympl }}
                         </span>
                       </td>
                     </tr>
@@ -245,8 +254,11 @@
                       <td>
                         <strong>
                           <span class="woocommerce-Price-amount amount">
-                            <span class="woocommerce-Price-currencySymbol">
-                              {{ totalPrice }}
+                            <span
+                              class="woocommerce-Price-currencySymbol"
+                              v-if="currency"
+                            >
+                              {{ totalPrice }} {{ currency.sympl }}
                             </span>
                           </span>
                         </strong>

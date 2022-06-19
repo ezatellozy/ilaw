@@ -29,7 +29,7 @@
     routerPath="partners"
     :items="partners"
   />
-  <attract-features />
+  <attract-features v-if="false" />
 </template>
 
 <script>

@@ -63,8 +63,9 @@
           <td class="align-middle py-5">
             <span
               class="woocommerce-Price-currencySymbol d-flex justify-content-around text-center"
+              v-if="currency"
             >
-              <div class="pdf" v-if="item.pdfCopy">
+              <div class="pdf" v-if="item.pdfCopy.status != 0">
                 <h5 class="price">{{ $t('misc.pdf') }}</h5>
                 <span v-if="item.pdfCopy.status == 1">
                   <span v-if="item.pdfCopy.price.offer">
@@ -80,10 +81,10 @@
                   >
                     {{ item.pdfCopy.price.original }}
                   </span>
-                  {{ currency }}
+                  {{ currency.sympl }}
                 </span>
               </div>
-              <div class="hardCopy" v-if="item.hardCopy">
+              <div class="hardCopy" v-if="item.hardCopy.status != 0">
                 <h5 class="price">{{ $t('misc.Hardcopy') }}</h5>
                 <span v-if="item.hardCopy.status == 1">
                   <span v-if="item.hardCopy.price.offer">
@@ -99,7 +100,7 @@
                   >
                     {{ item.hardCopy.price.original }}
                   </span>
-                  {{ currency }}
+                  {{ currency.sympl }}
                 </span>
               </div>
             </span>

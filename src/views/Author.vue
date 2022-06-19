@@ -11,7 +11,7 @@
               alt="Image-Description"
             />
           </div>
-          <div class="col-lg-8 col-md-9">
+          <div class="col-lg-8 col-md-9" v-if="author.books">
             <div class="mb-8">
               <!-- <span class="text-gray-400 font-size-2">AUTHOR OF THE MONTH</span> -->
               <h4 class="font-weight-medium mt-2 mb-3 pb-1">
@@ -20,7 +20,7 @@
 
               <div class="mb-0" v-html="author.bio"></div>
             </div>
-            <!-- <ul
+            <ul
               class="products list-unstyled row no-gutters row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-wd-4 my-0 mb-md-8 mb-wd-12"
             >
               <book-card
@@ -28,7 +28,7 @@
                 :key="book.id"
                 :items="book"
               />
-            </ul> -->
+            </ul>
           </div>
         </div>
       </div>
@@ -63,11 +63,11 @@
 </template>
 
 <script>
-// import BookCard from '@/components/BookCard.vue'
+import BookCard from '@/components/BookCard.vue'
 import 'vue3-carousel/dist/carousel.css'
 // import { Carousel, Slide, Pagination } from 'vue3-carousel'
 export default {
-  // components: { BookCard },
+  components: { BookCard },
 
   data() {
     return {
