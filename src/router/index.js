@@ -57,7 +57,7 @@ const routes = [
     component: Faq,
   },
   {
-    path: '/order-recived',
+    path: '/order-recived/:id',
     name: 'order-recived',
     component: OrderRecived,
   },
@@ -94,9 +94,7 @@ const routes = [
   {
     path: '/checkout',
     name: 'checkout',
-    meta: {
-      auth: true,
-    },
+
     component: Checkout,
   },
   {

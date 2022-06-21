@@ -25,8 +25,7 @@ import mitt from 'mitt'
 const emitter = mitt()
 import Toaster from '@meforma/vue-toaster'
 import i18n from './i18n'
-
-const siteLink = `https://ilawfairv2.technomasrsystems.com`
+const siteLink = `https://dashboard.ilawfair.com`
 
 // reset password global
 const ResetPasswordLink = `${siteLink}/password/reset`
@@ -41,7 +40,7 @@ axios.defaults.headers = {
   user: store.getters.userId,
   country: Cookies.get('countryId') || '',
   'Accept-Language': Cookies.get('locale'),
-  currency: Cookies.get('currency'),
+  currency: JSON.parse(localStorage.getItem('currency')).id || null,
 }
 
 library.add(fas)

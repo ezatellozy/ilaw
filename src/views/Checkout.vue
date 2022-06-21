@@ -1,7 +1,15 @@
 <template>
   <div id="content" class="site-content space-bottom-3">
     <div class="col-full container">
-      <div id="primary" class="content-area">
+      <div class="log border text-center mt-4 py-4 fs-4" v-if="!isLoggedIn">
+        <p>
+          {{ $t('misc.you must') }}
+          <a role="button" @click="login" href="#">{{ $t('buttons.Login') }}</a>
+          {{ $t('misc.to continue') }}
+        </p>
+      </div>
+
+      <div id="primary" class="content-area" v-else>
         <main id="main" class="site-main">
           <article
             id="post-6"
@@ -972,6 +980,25 @@
                         >
                           {{ $t('buttons.Place order') }}
                         </button>
+                        <div>
+                          <div>
+                            <StripeElements
+                              v-if="stripeLoaded"
+                              v-slot="{ elements }"
+                              ref="elms"
+                              :stripe-key="stripeKey"
+                              :instance-options="instanceOptions"
+                              :elements-options="elementsOptions"
+                            >
+                              <StripeElement
+                                ref="card"
+                                :elements="elements"
+                                :options="cardOptions"
+                              />
+                            </StripeElements>
+                            <button type="button" @click="pay">Pay</button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </form>
@@ -987,8 +1014,14 @@
 
 <script>
 import axios from 'axios'
-
-export default {
+import { loadStripe } from '@stripe/stripe-js'
+import { StripeElements, StripeElement } from 'vue-stripe-js'
+import { ref, onBeforeMount, defineComponent } from 'vue'
+export default defineComponent({
+  components: {
+    StripeElements,
+    StripeElement,
+  },
   data() {
     return {
       form: {
@@ -1021,6 +1054,9 @@ export default {
     },
     totalPrice() {
       return this.$store.getters.totalPrice
+    },
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn
     },
   },
   mounted() {
@@ -1123,8 +1159,58 @@ export default {
         this.$toast.success(this.$t('misc.cart is empty'))
       }
     },
+    login() {
+      this.$store.commit('login_Menu')
+    },
+    pay() {
+      // Get stripe element
+      const cardElement = this.card.stripeElement
+      console.log(this.card)
+
+      // Access instance methods, e.g. createToken()
+      this.elms.instance.createToken(cardElement).then(({ result }) => {
+        // Handle result.error or result.token
+        console.log(result)
+      })
+    },
   },
-}
+  setup() {
+    const stripeKey = ref('pk_test_TYooMQauvdEDq54NiTphI7jx') // test key
+    const instanceOptions = ref({
+      // https://stripe.com/docs/js/initializing#init_stripe_js-options
+    })
+    const elementsOptions = ref({
+      // https://stripe.com/docs/js/elements_object/create#stripe_elements-options
+    })
+
+    const cardOptions = ref({
+      // https://stripe.com/docs/stripe.js#element-options
+      value: {
+        postalCode: '12345',
+      },
+    })
+    const stripeLoaded = ref(false)
+    const card = ref()
+    const elms = ref()
+
+    onBeforeMount(() => {
+      const stripePromise = loadStripe(stripeKey.value)
+      stripePromise.then(() => {
+        stripeLoaded.value = true
+      })
+    })
+
+    return {
+      stripeKey,
+      stripeLoaded,
+      instanceOptions,
+      elementsOptions,
+      cardOptions,
+      card,
+      elms,
+    }
+  },
+})
 </script>
 
 <style lang="scss" scoped>

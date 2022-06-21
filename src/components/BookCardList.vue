@@ -1,5 +1,7 @@
 <template>
-  <BookTypeModal v-if="BookTypeModal" @closemodal="addToCart" :book="items" />
+  <Teleport to="body">
+    <BookTypeModal v-if="BookTypeModal" @closemodal="addToCart" :book="items" />
+  </Teleport>
   <div class="product product__list">
     <div class="product__inner overflow-hidden bg-hover-white p-3 p-md-4d875">
       <div class="product__inner overflow-hidden p-3 p-md-4d875">

@@ -1,6 +1,6 @@
 <template>
-  <div class="hero-slider-with-banners overflow-hidden">
-    <div class="" v-if="sliders">
+  <div class="hero-slider-with-banners overflow-hidden" v-if="sliders">
+    <div class="" v-if="sliders.length">
       <b-row>
         <b-col cols="12" class="mb-xl-0">
           <div class="bg-gray-200 min-height-530">

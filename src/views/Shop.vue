@@ -53,8 +53,8 @@
                     <input
                       class="form-control bg-white-100 py-2d75 height-4 border-white-100 rounded-0"
                       type="search"
+                      @input="search($event)"
                       :placeholder="$t('misc.Search')"
-                      aria-label="Search"
                     />
                   </div>
                   <button
@@ -67,7 +67,7 @@
                 <ul class="product-categories">
                   <li
                     class="cat-item cat-item-9 cat-parent"
-                    v-for="item in publishers"
+                    v-for="item in autherFilterd"
                     :key="item.id"
                   >
                     <input
@@ -500,6 +500,7 @@ export default {
       publishers: null,
       pageOfItems: [],
       rate: [],
+      autherFilterd: [],
       rates: '',
       publisher: '',
       section: '',
@@ -535,6 +536,7 @@ export default {
     getPublishers() {
       this.axios.get('publishers').then((data) => {
         this.publishers = data.data.data
+        this.autherFilterd = this.publishers
       })
     },
     getBooks() {
@@ -553,6 +555,11 @@ export default {
           this.books = data.data.data
         })
       })
+    },
+    search(e) {
+      this.autherFilterd = this.publishers.filter((el) =>
+        el.name.startsWith(e.target.value),
+      )
     },
   },
   computed: {

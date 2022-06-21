@@ -106,7 +106,7 @@
               <dashboard v-if="dashboard" @openTab="openTab($event)" />
             </transition>
             <transition name="tabs">
-              <others v-if="orders" />
+              <Orders v-if="orders" />
             </transition>
             <transition name="tabs">
               <downloads v-if="downloads" />
@@ -132,7 +132,7 @@
 
 <script>
 import Dashboard from '@/components/Dashboard.vue'
-import Others from '@/components/Others.vue'
+import Orders from '@/components/Orders.vue'
 import Downloads from '@/components/Downloads.vue'
 import Addresses from '@/components/Addresses.vue'
 import Wishlist from '@/components/Wishlist.vue'
@@ -142,7 +142,7 @@ export default {
   components: {
     Dashboard,
     AccountDetails,
-    Others,
+    Orders,
     Downloads,
     Addresses,
     Wishlist,

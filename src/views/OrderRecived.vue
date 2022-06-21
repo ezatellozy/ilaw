@@ -3,53 +3,61 @@
     <div class="container">
       <div class="py-5 py-lg-7">
         <h6 class="font-weight-medium font-size-7 text-center mt-lg-1">
-          Order Received
+          {{ $t('misc.Order Received') }}
         </h6>
       </div>
-      <div class="max-width-890 mx-auto">
-        <button class="btn btn-dark rounded-0 btn-wide font-weight-medium">
-          Print
+      <div class="max-width-890 mx-auto" v-if="order">
+        <button
+          class="btn btn-dark rounded-0 btn-wide font-weight-medium"
+          @click="print"
+        >
+          {{ $t('buttons.Print') }}
           <font-awesome-icon class="ml-2 text-white" :icon="['fas', 'print']" />
         </button>
-        <div class="bg-white pt-6 border">
+        <div class="bg-white pt-6 border" id="order-summary12">
           <h6 class="font-size-3 font-weight-medium text-center mb-4 pb-xl-1">
-            Thank you. Your order has been received.
+            {{ $t('misc.Thank youYour order has been received') }}
           </h6>
           <div class="border-bottom mb-5 pb-5">
             <div class="pl-3">
               <table class="table table-borderless mb-0 ml-1">
                 <thead>
-                  <tr>
-                    <th scope="col" class="font-size-2 font-weight-normal py-0">
-                      Order number:
+                  <tr class="text-center">
+                    <th
+                      scope="col"
+                      class="font-size-2 font-weight-normal py-0 text-center"
+                    >
+                      {{ $t('misc.Order') }}
                     </th>
                     <th scope="col" class="font-size-2 font-weight-normal py-0">
-                      Date:
+                      {{ $t('misc.Date') }}
                     </th>
                     <th
                       scope="col"
                       class="font-size-2 font-weight-normal py-0 text-md-center"
                     >
-                      Total:
+                      {{ $t('misc.total') }}
                     </th>
-                    <th
-                      scope="col"
-                      class="font-size-2 font-weight-normal py-0 text-md-right pr-md-9"
-                    >
-                      Payment method:
+                    <th scope="col" class="font-size-2 font-weight-normal py-0">
+                      {{ $t('misc.PaymentMethod') }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr class="text-center">
                     <th scope="row" class="pr-0 py-0 font-weight-medium">
-                      1779
+                      {{ order.id }}
                     </th>
-                    <td class="pr-0 py-0 font-weight-medium">March 24, 2020</td>
-                    <td class="pr-0 py-0 font-weight-medium text-md-center">
-                      $2930
+                    <td class="pr-0 py-0 font-weight-medium">
+                      {{ order.date }}
                     </td>
-                    <td class="pr-md-4 py-0 font-weight-medium text-md-right">
+                    <td
+                      class="pr-0 py-0 font-weight-medium text-md-center"
+                      v-if="currency"
+                    >
+                      {{ order.total }}{{ currency.sympl }}
+                    </td>
+                    <td class="pr-md-4 py-0 font-weight-medium">
                       Direct bank transfer
                     </td>
                   </tr>
@@ -61,7 +69,7 @@
             <div class="px-3 px-md-4">
               <div class="ml-md-2">
                 <h6 class="font-size-3 on-weight-medium mb-4 pb-1">
-                  Order Details
+                  {{ $t('misc.Order Details') }}
                 </h6>
                 <div class="d-flex justify-content-between mb-4">
                   <div class="d-flex align-items-baseline">
@@ -77,7 +85,9 @@
                     </div>
                     <span class="font-size-2 ml-4 ml-md-8">x7</span>
                   </div>
-                  <span class="font-weight-medium font-size-2">$951</span>
+                  <span class="font-weight-medium font-size-2" v-if="currency">
+                    $951{{ currency.sympl }}
+                  </span>
                 </div>
                 <div class="d-flex justify-content-between">
                   <div class="d-flex align-items-baseline">
@@ -93,7 +103,9 @@
                     </div>
                     <span class="font-size-2 ml-2 ml-md-6">x3</span>
                   </div>
-                  <span class="font-weight-medium font-size-2">$348</span>
+                  <span class="font-weight-medium font-size-2" v-if="currency">
+                    $348{{ currency.sympl }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -101,18 +113,24 @@
           <div class="border-bottom mb-5 pb-5">
             <ul class="list-unstyled px-3 pl-md-5 pr-md-4 mb-0">
               <li class="d-flex justify-content-between py-2">
-                <span class="font-weight-medium font-size-2">Subtotal:</span>
-                <span class="font-weight-medium font-size-2">$951</span>
+                <span class="font-weight-medium font-size-2">
+                  {{ $t('misc.total') }}
+                </span>
+                <span class="font-weight-medium font-size-2" v-if="currency">
+                  {{ order.total }} {{ currency.sympl }}
+                </span>
               </li>
               <li class="d-flex justify-content-between py-2">
-                <span class="font-weight-medium font-size-2">Shipping:</span>
+                <span class="font-weight-medium font-size-2">
+                  {{ $t('misc.Shipping') }}:
+                </span>
                 <span class="font-weight-medium font-size-2">
                   Free Shipping
                 </span>
               </li>
               <li class="d-flex justify-content-between pt-2">
                 <span class="font-weight-medium font-size-2">
-                  Payment Method:
+                  {{ $t('misc.PaymentMethod') }}
                 </span>
                 <span class="font-weight-medium font-size-2">
                   Direct bank transfer
@@ -123,45 +141,38 @@
           <div class="border-bottom mb-5 pb-4">
             <div class="px-3 pl-md-5 pr-md-4">
               <div class="d-flex justify-content-between">
-                <span class="font-size-2 font-weight-medium">Total</span>
-                <span class="font-weight-medium fon-size-2">$2498</span>
+                <span class="font-size-2 font-weight-medium">
+                  {{ $t('misc.total') }}
+                </span>
+                <span class="font-weight-medium fon-size-2" v-if="currency">
+                  {{ order.total }} {{ currency.sympl }}
+                </span>
               </div>
             </div>
           </div>
           <div class="px-3 pl-md-5 pr-md-4 mb-6 pb-xl-1">
-            <div class="row row-cols-1 row-cols-md-2">
-              <div class="col">
-                <div class="mb-6 mb-md-0">
-                  <h6 class="font-weight-medium font-size-22 mb-3">
-                    Billing Address
-                  </h6>
-                  <address class="d-flex flex-column mb-0">
-                    <span class="text-gray-600 font-size-2">Ali Tufan</span>
-                    <span class="text-gray-600 font-size-2">Bedford St,</span>
-                    <span class="text-gray-600 font-size-2">
-                      Covent Garden,
-                    </span>
-                    <span class="text-gray-600 font-size-2">
-                      London WC2E 9ED
-                    </span>
-                    <span class="text-gray-600 font-size-2">
-                      United Kingdom
-                    </span>
-                  </address>
-                </div>
-              </div>
-              <div class="col">
-                <h6 class="font-weight-medium font-size-22 mb-3">
-                  Shipping Address
-                </h6>
-                <address class="d-flex flex-column mb-0">
-                  <span class="text-gray-600 font-size-2">Ali Tufan</span>
-                  <span class="text-gray-600 font-size-2">Bedford St,</span>
-                  <span class="text-gray-600 font-size-2">Covent Garden,</span>
-                  <span class="text-gray-600 font-size-2">London WC2E 9ED</span>
-                  <span class="text-gray-600 font-size-2">United Kingdom</span>
-                </address>
-              </div>
+            <div class="">
+              <h6 class="font-weight-medium font-size-22 mb-3">
+                {{ $t('misc.Shipping Address') }}
+              </h6>
+              <address class="">
+                <span class="text-gray-600 font-size-2">
+                  {{ order.address.address }}
+                  <bdi>/</bdi>
+                </span>
+
+                <span class="text-gray-600 font-size-2">
+                  {{ order.address.city.name }}
+                  <bdi>/</bdi>
+                </span>
+                <span class="text-gray-600 font-size-2">
+                  {{ order.address.governorate.name }}
+                  <bdi>/</bdi>
+                </span>
+                <span class="text-gray-600 font-size-2">
+                  {{ order.address.country.name }}
+                </span>
+              </address>
             </div>
           </div>
         </div>
@@ -171,7 +182,45 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      order: null,
+    }
+  },
+  mounted() {
+    this.getOrder()
+  },
+  methods: {
+    getOrder() {
+      this.axios
+        .get(`/user/orders/${this.$route.params.id}/details`)
+        .then((data) => {
+          this.order = data.data.data
+
+          console.log(this.order)
+        })
+    },
+    print() {
+      let order = document.getElementById('order-summary12').innerHTML
+      let originalContents = document.body.innerHTML
+      document.body.innerHTML = order
+      window.print()
+      document.body.innerHTML = originalContents
+      window.location.reload()
+    },
+  },
+  watch: {
+    $route() {
+      this.getOrder()
+    },
+  },
+  computed: {
+    currency() {
+      return this.$store.getters.currency
+    },
+  },
+}
 </script>
 
 <style></style>

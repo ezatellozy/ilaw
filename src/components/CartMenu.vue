@@ -91,7 +91,8 @@
                           class="woocommerce-Price-amount amount"
                           v-if="currency"
                         >
-                          {{ item.qty }} x
+                          {{ item.qty }}
+                          <bdi>x</bdi>
                           <span class="woocommerce-Price-currencySymbol">
                             {{ item.price }}
                           </span>

@@ -1,5 +1,9 @@
 <template>
-  <div class="modal d-block bookinfoModal" @click="closemodal">
+  <div
+    class="modal d-block bookinfoModal"
+    :class="$i18n.locale == 'ar' ? 'is-rtl' : ''"
+    @click="closemodal"
+  >
     <div class="modal-dialog" @click.stop>
       <div class="row modal-content">
         <div class="pl-0 summary entry-summary border-left">

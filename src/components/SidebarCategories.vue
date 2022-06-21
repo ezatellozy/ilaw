@@ -43,7 +43,7 @@
                             class="submenu-header"
                             data-submenu-close="off-pages"
                           >
-                            <a href="#">{{ $t('misc.Pages') }}</a>
+                            <a href="#">{{ $t('misc.back') }}</a>
                           </div>
                           <ul>
                             <li class="nav-item">
@@ -65,7 +65,7 @@
                                   class="submenu-header"
                                   data-submenu-close="off-single-product"
                                 >
-                                  <a href="#">{{ $t('nav.shops') }}</a>
+                                  <a href="#">{{ $t('nav.back') }}</a>
                                 </div>
                                 <ul class="">
                                   <li>
@@ -116,7 +116,7 @@
                             class="submenu-header"
                             data-submenu-close="off-single"
                           >
-                            <a href="#">{{ $t('nav.categories') }}</a>
+                            <a href="#">{{ $t('nav.back') }}</a>
                           </div>
                           <ul>
                             <li
@@ -140,7 +140,7 @@
                                   data-submenu-close="off-single-product"
                                 >
                                   <a href="#">
-                                    {{ category.name }}
+                                    {{ $t('nav.back') }}
                                   </a>
                                 </div>
 
@@ -169,7 +169,7 @@
                             class="submenu-header"
                             data-submenu-close="off-single"
                           >
-                            <a href="#">{{ $t('nav.lang') }}</a>
+                            <a href="#">{{ $t('nav.back') }}</a>
                           </div>
                           <ul>
                             <li>
