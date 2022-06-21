@@ -39,7 +39,10 @@
             <span class="text-primary" v-if="currency">
               {{ item.total }} {{ currency.sympl }}
             </span>
-            for 5 items
+            -
+            <bdi>{{ $t('misc.for') }}</bdi>
+            {{ item.itemsCount }}
+            <bdi>{{ $t('misc.items') }}</bdi>
           </td>
           <td class="align-middle py-5">
             <div class="d-flex justify-content-center">
@@ -71,8 +74,6 @@ export default {
     getOrders() {
       this.axios.get('/user/orders').then((data) => {
         this.orders = data.data.data
-
-        console.log(this.orders)
       })
     },
   },

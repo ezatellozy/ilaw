@@ -38,7 +38,11 @@
                     >
                       {{ $t('misc.total') }}
                     </th>
-                    <th scope="col" class="font-size-2 font-weight-normal py-0">
+                    <th
+                      scope="col"
+                      class="font-size-2 font-weight-normal py-0"
+                      v-if="order.paymentMethod"
+                    >
                       {{ $t('misc.PaymentMethod') }}
                     </th>
                   </tr>
@@ -57,8 +61,11 @@
                     >
                       {{ order.total }}{{ currency.sympl }}
                     </td>
-                    <td class="pr-md-4 py-0 font-weight-medium">
-                      Direct bank transfer
+                    <td
+                      class="pr-md-4 py-0 font-weight-medium"
+                      v-if="order.paymentMethod"
+                    >
+                      {{ order.paymentMethod }}
                     </td>
                   </tr>
                 </tbody>
@@ -71,40 +78,30 @@
                 <h6 class="font-size-3 on-weight-medium mb-4 pb-1">
                   {{ $t('misc.Order Details') }}
                 </h6>
-                <div class="d-flex justify-content-between mb-4">
+                <div
+                  class="d-flex justify-content-between mb-4"
+                  v-for="item in order.items"
+                  :key="item.id"
+                >
                   <div class="d-flex align-items-baseline">
                     <div>
                       <h6 class="font-size-2 font-weight-normal mb-1">
-                        The Overdue Life of
+                        <bdi>{{ item.book.name }}</bdi>
+
                         <br />
-                        Amy Byler
+                        {{ item.publisher.name }}
                       </h6>
                       <span class="font-size-2 text-gray-600">
-                        (Paperback, English)
+                        {{ item.type }}
                       </span>
                     </div>
-                    <span class="font-size-2 ml-4 ml-md-8">x7</span>
+                    <span class="font-size-2 ml-4 ml-md-8">
+                      <bdi>x</bdi>
+                      <bdi>{{ item.quantity }}</bdi>
+                    </span>
                   </div>
                   <span class="font-weight-medium font-size-2" v-if="currency">
-                    $951{{ currency.sympl }}
-                  </span>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <div class="d-flex align-items-baseline">
-                    <div>
-                      <h6 class="font-size-2 font-weight-normal mb-1">
-                        All You Can Ever Know:
-                        <br />
-                        A Memoir
-                      </h6>
-                      <span class="font-size-2 text-gray-600">
-                        (Paperback, English)
-                      </span>
-                    </div>
-                    <span class="font-size-2 ml-2 ml-md-6">x3</span>
-                  </div>
-                  <span class="font-weight-medium font-size-2" v-if="currency">
-                    $348{{ currency.sympl }}
+                    {{ item.total }}{{ currency.sympl }}
                   </span>
                 </div>
               </div>
@@ -125,15 +122,18 @@
                   {{ $t('misc.Shipping') }}:
                 </span>
                 <span class="font-weight-medium font-size-2">
-                  Free Shipping
+                  {{ order.shippingMethod }}
                 </span>
               </li>
-              <li class="d-flex justify-content-between pt-2">
+              <li
+                class="d-flex justify-content-between pt-2"
+                v-if="order.paymentMethod"
+              >
                 <span class="font-weight-medium font-size-2">
                   {{ $t('misc.PaymentMethod') }}
                 </span>
                 <span class="font-weight-medium font-size-2">
-                  Direct bank transfer
+                  {{ order.paymentMethod }}
                 </span>
               </li>
             </ul>
@@ -197,8 +197,6 @@ export default {
         .get(`/user/orders/${this.$route.params.id}/details`)
         .then((data) => {
           this.order = data.data.data
-
-          console.log(this.order)
         })
     },
     print() {
