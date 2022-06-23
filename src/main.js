@@ -25,12 +25,31 @@ import mitt from 'mitt'
 const emitter = mitt()
 import Toaster from '@meforma/vue-toaster'
 import i18n from './i18n'
+import '@stripe/stripe-js'
+
+// import { StripePlugin } from '@vue-stripe/vue-stripe'
+
+// const options = {
+//   pk: process.env.STRIPE_PUBLISHABLE_KEY,
+//   stripeAccount: process.env.STRIPE_ACCOUNT,
+//   apiVersion: process.env.API_VERSION,
+//   locale: process.env.LOCALE,
+// }
+
 const siteLink = `https://dashboard.ilawfair.com`
 
 // reset password global
 const ResetPasswordLink = `${siteLink}/password/reset`
 const PublisherLogin = `${siteLink}/publisher/auth/login`
 const PublisherRegister = `${siteLink}/publisher/auth/register`
+
+let currency
+
+if (localStorage.getItem('currency')) {
+  currency = JSON.parse(localStorage.getItem('currency')).id
+} else {
+  currency = null
+}
 
 axios.defaults.baseURL = `${siteLink}/api`
 axios.defaults.headers = {
@@ -40,7 +59,8 @@ axios.defaults.headers = {
   user: store.getters.userId,
   country: Cookies.get('countryId') || '',
   'Accept-Language': Cookies.get('locale'),
-  currency: JSON.parse(localStorage.getItem('currency')).id || null,
+
+  currency: currency,
 }
 
 library.add(fas)
@@ -59,6 +79,7 @@ app.use(BootstrapVue3)
 app.use(VueAxios, axios)
 app.use(store)
 app.use(Paginate)
+// app.use(StripePlugin, options)
 app.config.globalProperties.emitter = emitter
 app
   .use(Toaster, {

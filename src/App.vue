@@ -52,11 +52,17 @@ export default {
       })
     },
     getSettings() {
+      // if (!localStorage.getItem('currency')) {
+      //   setTimeout(() => {
+      //     window.location.reload()
+      //   }, 1000)
+      // }
       this.axios.get('settings').then((data) => {
         this.$store.commit('settings', data.data.data)
       })
     },
   },
+
   mounted() {
     this.getSettings()
     this.getCountryCode()

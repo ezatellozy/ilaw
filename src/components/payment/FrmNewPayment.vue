@@ -206,7 +206,6 @@ export default {
           }, 300)
         })
         .catch((err) => {
-          console.log('Error', err)
           toast.error(err.message)
         })
     }

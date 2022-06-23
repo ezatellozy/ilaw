@@ -394,7 +394,6 @@ export default {
       })
     },
     search() {
-      console.log(this.searchInput)
       this.$router.push(
         `/search/name=${this.searchInput}&section=${this.categoryId}&`,
       )

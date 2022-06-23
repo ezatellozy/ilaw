@@ -17,7 +17,7 @@ export default createStore({
   state: {
     settings: [],
     status: '',
-    currency: null,
+    currency: JSON.parse(localStorage.getItem('currency')) || null,
     user: JSON.parse(localStorage.getItem('user')) || null,
     loginMenu: false,
     publisher: null,
@@ -189,7 +189,6 @@ export default createStore({
             const user = resp.data.data
             Cookies.set('token', 'successed')
             localStorage.setItem('user', JSON.stringify(user))
-            console.log(resp)
             const lang = user.language
 
             if (lang == 'ar') {
@@ -208,7 +207,6 @@ export default createStore({
             resolve(resp)
           })
           .catch((err) => {
-            console.log(err)
             context.commit('auth_error')
             Cookies.remove('token')
             reject(err)

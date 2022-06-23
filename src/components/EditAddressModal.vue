@@ -218,7 +218,6 @@ export default {
   },
   mounted() {
     // this.getCountries()
-    console.log(this.item)
   },
   methods: {
     setting(event) {

@@ -28,10 +28,12 @@
                     name="checkout"
                     @submit.prevent="addNewAddress"
                     class="checkout woocommerce-checkout row mt-8"
+                    :class="needAddress ? '' : 'justify-content-center'"
                   >
                     <div
                       class="col2-set col-md-6 col-lg-7 col-xl-8 mb-6 mb-md-0"
                       id="customer_details"
+                      v-if="needAddress"
                     >
                       <div
                         class="addresses px-4 py-3 bg-white border"
@@ -77,9 +79,12 @@
                       <transition name="fade">
                         <div
                           class="px-4 pt-5 bg-white border"
-                          v-if="!addresses || newAddress"
+                          v-if="addresses || newAddress"
                         >
-                          <div class="woocommerce-billing-fields">
+                          <div
+                            class="woocommerce-billing-fields"
+                            v-if="addresses.length == 0 || newAddress"
+                          >
                             <h3 class="mb-4 font-size-3">
                               {{ $t('misc.Billing details') }}
                             </h3>
@@ -934,21 +939,32 @@
                             class="woocommerce-checkout-payment"
                           >
                             <ul
-                              class="wc_payment_methods payment_methods methods"
+                              class="wc_payment_methods payment_methods methods p-0"
                             >
-                              <li class="wc_payment_method payment_method_bacs">
-                                <input
-                                  id="payment_method_bacs"
-                                  type="radio"
-                                  class="input-radio"
-                                  name="payment_method"
-                                  value="online"
-                                  v-model="paymentMethod"
-                                />
+                              <li
+                                class="wc_payment_method payment_method_bacs d-block"
+                              >
+                                <div>
+                                  <input
+                                    id="payment_method_bacs"
+                                    type="radio"
+                                    class="input-radio"
+                                    name="payment_method"
+                                    value="online"
+                                    v-model="paymentMethod"
+                                  />
 
-                                <label for="payment_method_bacs">
-                                  {{ $t('misc.Visa/Master card') }}
-                                </label>
+                                  <label for="payment_method_bacs">
+                                    {{ $t('misc.Visa/Master card') }}
+                                  </label>
+                                </div>
+
+                                <div
+                                  class="strip"
+                                  v-if="paymentMethod === 'online'"
+                                >
+                                  <StripePayment />
+                                </div>
                               </li>
 
                               <li class="wc_payment_method payment_method_cod">
@@ -980,25 +996,6 @@
                         >
                           {{ $t('buttons.Place order') }}
                         </button>
-                        <div>
-                          <div>
-                            <StripeElements
-                              v-if="stripeLoaded"
-                              v-slot="{ elements }"
-                              ref="elms"
-                              :stripe-key="stripeKey"
-                              :instance-options="instanceOptions"
-                              :elements-options="elementsOptions"
-                            >
-                              <StripeElement
-                                ref="card"
-                                :elements="elements"
-                                :options="cardOptions"
-                              />
-                            </StripeElements>
-                            <button type="button" @click="pay">Pay</button>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </form>
@@ -1014,13 +1011,13 @@
 
 <script>
 import axios from 'axios'
-import { loadStripe } from '@stripe/stripe-js'
-import { StripeElements, StripeElement } from 'vue-stripe-js'
-import { ref, onBeforeMount, defineComponent } from 'vue'
-export default defineComponent({
+// import StripePayment from '../components/StripePayment.vue'
+import { defineAsyncComponent } from 'vue'
+export default {
   components: {
-    StripeElements,
-    StripeElement,
+    StripePayment: defineAsyncComponent(() =>
+      import('../components/StripePayment.vue'),
+    ),
   },
   data() {
     return {
@@ -1043,6 +1040,7 @@ export default defineComponent({
       selectedAddress: '',
       newAddress: false,
       shippingMethods: null,
+      needAddress: false,
     }
   },
   computed: {
@@ -1063,9 +1061,20 @@ export default defineComponent({
     this.getCountries()
     this.getAddresses()
     this.getPayments()
+    this.checkCard()
     this.getShippingMethod()
+    console.log(process.env.LOCALE)
   },
   methods: {
+    checkCard() {
+      let found
+      this.cart.forEach((element) => {
+        found = element.bookType == 'hardcopy'
+      })
+      if (found) {
+        this.needAddress = true
+      }
+    },
     getCountries() {
       axios.get('countries', { headers: { value: 'id' } }).then((res) => {
         this.countries = res.data.data
@@ -1101,14 +1110,12 @@ export default defineComponent({
           }, 300)
         })
         .catch((err) => {
-          console.log('Error', err)
           this.$toast.error(err.message)
         })
     },
     getAddresses() {
       this.axios.get('user/address').then((data) => {
         this.addresses = data.data.data
-
         if (this.addresses.length) {
           this.selectedAddress = this.addresses[0].id
         }
@@ -1126,10 +1133,8 @@ export default defineComponent({
     },
     placeOrder() {
       const cart = JSON.parse(localStorage.getItem('cart'))
-
       if (cart) {
         let items = []
-
         cart.forEach((element) => {
           items.push({
             book_id: element.book.id,
@@ -1141,6 +1146,11 @@ export default defineComponent({
         let payment_method_id = this.paymentMethod
         let shipping_address_id = this.selectedAddress
         let shipping_method = this.shippingCost
+        if (this.needAddress && this.addresses.length == 0) {
+          this.$toast.error(this.$t('misc.you must select your address'))
+          this.newAddress = true
+          return
+        }
         this.axios
           .post('/user/orders/create', {
             items,
@@ -1162,55 +1172,13 @@ export default defineComponent({
     login() {
       this.$store.commit('login_Menu')
     },
-    pay() {
-      // Get stripe element
-      const cardElement = this.card.stripeElement
-      console.log(this.card)
-
-      // Access instance methods, e.g. createToken()
-      this.elms.instance.createToken(cardElement).then(({ result }) => {
-        // Handle result.error or result.token
-        console.log(result)
-      })
+  },
+  watch: {
+    paymentMethod(val) {
+      console.log(val)
     },
   },
-  setup() {
-    const stripeKey = ref('pk_test_TYooMQauvdEDq54NiTphI7jx') // test key
-    const instanceOptions = ref({
-      // https://stripe.com/docs/js/initializing#init_stripe_js-options
-    })
-    const elementsOptions = ref({
-      // https://stripe.com/docs/js/elements_object/create#stripe_elements-options
-    })
-
-    const cardOptions = ref({
-      // https://stripe.com/docs/stripe.js#element-options
-      value: {
-        postalCode: '12345',
-      },
-    })
-    const stripeLoaded = ref(false)
-    const card = ref()
-    const elms = ref()
-
-    onBeforeMount(() => {
-      const stripePromise = loadStripe(stripeKey.value)
-      stripePromise.then(() => {
-        stripeLoaded.value = true
-      })
-    })
-
-    return {
-      stripeKey,
-      stripeLoaded,
-      instanceOptions,
-      elementsOptions,
-      cardOptions,
-      card,
-      elms,
-    }
-  },
-})
+}
 </script>
 
 <style lang="scss" scoped>

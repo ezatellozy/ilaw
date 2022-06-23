@@ -360,7 +360,6 @@ export default {
     },
     async changePassword() {
       const isFormCorrect = await this.v$.$validate()
-      console.log(isFormCorrect)
       if (isFormCorrect) {
         let frmdata = new FormData()
         frmdata.append('name', this.accountDetails.name)

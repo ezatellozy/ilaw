@@ -231,7 +231,6 @@ export default {
       axios
         .get(`/user/address/${this.id}/details`)
         .then(({ data }) => {
-          console.log(data.data)
           let reasult = data.data
           this.form.address = reasult.address
           this.form.postal_code = reasult.postal_code
@@ -239,7 +238,6 @@ export default {
           this.form.governorate = reasult.governorate
           this.form.city = reasult.city
           this.form.country = reasult.country
-          console.log(this.form.country)
         })
         .finally(() => {
           this.getGovernment(this.form.country)

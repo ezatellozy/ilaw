@@ -1,0 +1,2 @@
+// to resolve payment i18n error
+// add if (!this || !this.\$el) return in vue-i18n.esm-bundler.js line 1756

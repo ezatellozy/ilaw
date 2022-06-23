@@ -933,7 +933,6 @@ export default {
       if (this.item.qty > 1) this.item.qty--
     },
     addToCart() {
-      console.log(this.item)
       if (this.item.bookType == 'pdfCopy') {
         if (this.item.book.pdfCopy.price.offer) {
           this.item.price = this.item.book.pdfCopy.price.offer
