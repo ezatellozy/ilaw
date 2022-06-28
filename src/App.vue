@@ -72,6 +72,28 @@ export default {
 </script>
 
 <style lang="scss">
+.btn-face {
+  margin: 0 5px;
+  background: #1877f2;
+  a {
+    color: #fff !important;
+    &:hover {
+      color: #fff !important;
+    }
+  }
+  border-radius: 4px;
+}
+.btn-google {
+  background: #ea4335;
+  a {
+    color: #fff !important;
+    &:hover {
+      color: #fff !important;
+    }
+  }
+  border-radius: 4px;
+}
+
 .carousel__pagination-button {
   padding: 0 !important;
   width: 15px !important;

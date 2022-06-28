@@ -48,15 +48,15 @@
       <div class="col">
         <div class="border border-left-0 py-6 text-center">
           <router-link
-            to="/account/downloads"
+            to="/account/books"
             class="btn bg-gray-200 rounded-circle px-4 mb-2"
           >
-            <span
-              class="flaticon-cloud-computing font-size-10 btn-icon__inner text-primary"
-            ></span>
+            <span class="font-size-10 btn-icon__inner text-primary">
+              <i class="fa-solid fa-book"></i>
+            </span>
           </router-link>
           <div class="font-size-3 mb-xl-1 text-center">
-            {{ $t('misc.Downloads') }}
+            {{ $t('misc.Books') }}
           </div>
         </div>
       </div>
@@ -102,6 +102,21 @@
           </router-link>
           <div class="font-size-3 mb-xl-1 text-center">
             {{ $t('misc.Wishlist') }}
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="border border-left-0 py-6 text-center">
+          <router-link
+            to="/account/payment"
+            class="btn bg-gray-200 rounded-circle px-4 mb-2"
+          >
+            <span
+              class="flaticon-credit font-size-10 btn-icon__inner text-primary"
+            ></span>
+          </router-link>
+          <div class="font-size-3 mb-xl-1 text-center">
+            {{ $t('misc.Paymentmethods') }}
           </div>
         </div>
       </div>

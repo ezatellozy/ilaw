@@ -3,11 +3,11 @@
     <section class="space-bottom-2 space-bottom-lg-3">
       <header class="mb-4">
         <h2 class="font-size-7 text-center main-title">
-          {{ $t('misc.Bestselling Books') }}
+          {{ $t(`misc.${title}`) }}
         </h2>
       </header>
       <div>
-        <ul
+        <!-- <ul
           id="featuredBooks"
           class="nav justify-content-md-center nav-gray-700 mb-5 flex-nowrap flex-md-wrap overflow-auto overflow-md-visible"
           role="tablist"
@@ -39,7 +39,7 @@
               {{ $t('misc.Most Viewed') }}
             </a>
           </li>
-        </ul>
+        </ul> -->
         <div id="featuredBooksContent" class="tab-content">
           <div
             id="featured"
@@ -62,6 +62,7 @@
 <script>
 import BookCard from '@/components/BookCard.vue'
 export default {
+  props: ['routeName', 'title'],
   components: { BookCard },
   data() {
     return {
@@ -74,7 +75,7 @@ export default {
   methods: {
     getBooks() {
       this.axios
-        .get('books')
+        .get(`${this.routeName}`)
         .then((data) => {
           this.books = data.data.data
         })

@@ -94,7 +94,7 @@
         </div>
       </div>
 
-      <div class="form-group mb-4">
+      <!-- <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="address">
             {{ $t('misc.address') }}
@@ -111,9 +111,9 @@
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
           </div>
         </div>
-      </div>
+      </div> -->
 
-      <div class="form-group mb-4">
+      <!-- <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="country">
             {{ $t('misc.Country') }}
@@ -138,8 +138,8 @@
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
           </div>
         </div>
-      </div>
-      <div class="form-group mb-4">
+      </div> -->
+      <!-- <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="governorate">
             {{ $t('misc.Governorate') }}
@@ -167,8 +167,8 @@
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
           </div>
         </div>
-      </div>
-      <div class="form-group mb-4">
+      </div> -->
+      <!-- <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label id="signinEmailLabel" class="form-label" for="city">
             {{ $t('misc.City') }}
@@ -189,7 +189,7 @@
             <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label class="form-label" for="Password">
@@ -232,6 +232,21 @@
         <button type="submit" class="btn btn-block py-3 rounded-0 btn-dark">
           {{ $t('misc.Create account') }}
         </button>
+        <div class="py-2 text-center line">
+          <span>{{ $t('misc.Or') }}</span>
+        </div>
+        <div class="d-flex justify-content-center">
+          <div class="text-center btn-google">
+            <a class="btn fs-4 text-uppercase btn-outline" href="#">
+              <span><i class="fa-brands fa-google"></i></span>
+            </a>
+          </div>
+          <div class="text-center btn-face">
+            <a class="btn fs-4 text-uppercase btn-outline" href="#">
+              <i class="fa-brands fa-facebook"></i>
+            </a>
+          </div>
+        </div>
         <div class="text-center mb-4">
           <span class="small text-muted">
             {{ $t('misc.Already have an account?') }}
@@ -321,10 +336,7 @@ export default {
       userName: '',
       phone: '',
       email: '',
-      country: '',
-      address: '',
-      governorate: '',
-      city: '',
+
       password: '',
       cPassword: '',
     })
@@ -338,10 +350,7 @@ export default {
           numeric,
           minLength: minLength(9),
         },
-        country: { required },
-        address: { required },
-        governorate: { required },
-        city: { required },
+
         password: { required },
         cPassword: {
           required,

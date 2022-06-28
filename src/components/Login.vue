@@ -71,6 +71,21 @@
         {{ $t('buttons.Login') }}
       </button>
     </div>
+    <div class="py-2 text-center line">
+      <span>{{ $t('misc.Or') }}</span>
+    </div>
+    <div class="d-flex justify-content-center mb-4">
+      <div class="text-center btn-google">
+        <a class="btn fs-4 text-uppercase btn-outline" href="#">
+          <span><i class="fa-brands fa-google"></i></span>
+        </a>
+      </div>
+      <div class="text-center btn-face">
+        <a class="btn fs-4 text-uppercase btn-outline" href="#">
+          <i class="fa-brands fa-facebook"></i>
+        </a>
+      </div>
+    </div>
   </form>
   <div class="mb-4d75">
     <button
@@ -138,8 +153,35 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 a.vendor:hover {
   color: #fff !important;
+}
+
+.line {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &::before {
+    position: absolute;
+    content: '';
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 2px;
+    background: #f2f2f2;
+  }
+  span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+    z-index: 2;
+  }
 }
 </style>

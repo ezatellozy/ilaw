@@ -68,8 +68,7 @@
             </ul>
           </div>
           <div class="d-none d-md-flex align-items-center mt-3 mt-md-0">
-            <a
-              :href="`mailto:${contact_data.email}`"
+            <div
               :class="$i18n.locale == 'ar' ? 'ml-4' : 'mr-4'"
               class="mb-4 mb-md-0"
             >
@@ -79,15 +78,21 @@
               >
                 <i class="flaticon-question font-size-5 mt-2 mr-1"></i>
                 <div class="ml-2">
-                  <span class="text-secondary-gray-1090 font-size-1">
+                  <a
+                    :href="`mailto:${contact_data.email}`"
+                    class="text-secondary-gray-1090 font-size-1"
+                  >
                     {{ contact_data.email }}
-                  </span>
-                  <div class="h6 mb-0">
+                  </a>
+                  <router-link
+                    to="/contact"
+                    class="h6 mb-0 d-block text-black mt-2"
+                  >
                     {{ $t('misc.Any questions') }}
-                  </div>
+                  </router-link>
                 </div>
               </div>
-            </a>
+            </div>
             <a :href="`tel:${contact_data.phone}`">
               <div
                 class="d-flex align-items-center text-dark font-size-2 text-lh-sm"

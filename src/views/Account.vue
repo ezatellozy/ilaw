@@ -37,11 +37,11 @@
               </li>
               <li class="nav-item mx-0">
                 <router-link
-                  to="/account/downloads"
+                  to="/account/books"
                   class="nav-link d-flex align-items-center px-0"
                 >
                   <span class="font-weight-normal text-gray-600">
-                    {{ $t('misc.Downloads') }}
+                    {{ $t('misc.Books') }}
                   </span>
                 </router-link>
               </li>
@@ -109,7 +109,7 @@
               <Orders v-if="orders" />
             </transition>
             <transition name="tabs">
-              <downloads v-if="downloads" />
+              <downloads v-if="books" />
             </transition>
             <transition name="tabs">
               <addresses v-if="addresses" />
@@ -156,7 +156,7 @@ export default {
       wishlist: false,
       accountDetails: false,
       payment: false,
-      downloads: false,
+      books: false,
     }
   },
   mounted() {
@@ -178,7 +178,7 @@ export default {
       this.orders = false
       this.addresses = false
       this.wishlist = false
-      this.downloads = false
+      this.books = false
       this.payment = false
       this.accountDetails = false
       this[tab] = true

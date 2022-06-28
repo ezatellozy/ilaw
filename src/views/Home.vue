@@ -1,5 +1,7 @@
 <template>
   <intro />
+  <Content routeName="books" title="Bestselling Books" />
+  <Content routeName="books" title="Newest" />
   <div class="publisher">
     <slider
       title="publishers"
@@ -10,7 +12,7 @@
       :items="publisher"
     />
   </div>
-  <Content />
+
   <div class="auther mb-11">
     <slider
       v-if="authors"

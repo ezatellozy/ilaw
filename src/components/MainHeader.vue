@@ -1,5 +1,5 @@
 <template>
-  <div class="topbar border-bottom d-none d-md-block">
+  <div class="topbar border-bottom">
     <div class="container">
       <div
         class="topbar__nav d-md-flex justify-content-between align-items-center font-size-2"
@@ -9,7 +9,19 @@
             <span class="link-black-100">Free Shipping on Orders Over $99</span>
           </li>
         </ul>
-        <ul class="topbar__nav--right nav mb-0">
+        <ul
+          class="topbar__nav--right nav mb-0 justify-content-center justify-content-md-between"
+        >
+          <li class="nav-item">
+            <a
+              role="button"
+              @click="login"
+              class="nav-link p-2 link-black-100 d-flex align-items-center"
+            >
+              <i class="flaticon-user-1 flaticon-sent mr-2 font-size-3"></i>
+              {{ $t('buttons.Login') }}
+            </a>
+          </li>
           <li class="nav-item">
             <router-link
               to="/"
@@ -112,6 +124,9 @@ export default {
           )
         }
       })
+    },
+    login() {
+      this.$store.commit('login_Menu')
     },
   },
   computed: {
