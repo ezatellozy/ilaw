@@ -200,7 +200,7 @@
                   </h2>
                   <ul class="list-group list-group-flush list-group-borderless">
                     <li class="list-group-item px-0 py-2 border-0">
-                      <a href="/account" class="h-primary">
+                      <a href="/account/accountDetails" class="h-primary">
                         {{ $t('misc.Account') }}
                       </a>
                     </li>
@@ -209,14 +209,31 @@
                         {{ $t('misc.Help') }}
                       </a>
                     </li>
-                    <li class="list-group-item px-0 py-2 border-0">
-                      <a
-                        href="#"
-                        role="button"
-                        @click="goLogin"
-                        class="h-primary"
-                      >
+
+                    <li
+                      class="list-group-item px-0 py-2 border-0"
+                      v-if="!isLoggedIn"
+                    >
+                      <a role="button" @click="goLogin">
+                        <i
+                          class="flaticon-user-1 flaticon-sent font-size-3"
+                          :class="$i18n.locale == 'ar' ? 'ml-2' : 'mr-2'"
+                        ></i>
                         {{ $t('buttons.Login') }}
+                      </a>
+                    </li>
+                    <li class="list-group-item px-0 py-2 border-0" v-else>
+                      <a
+                        role="button"
+                        @click="logout"
+                        class="list-group-item px-0 py-2 border-0"
+                      >
+                        <i
+                          class="fa-solid fa-right-from-bracket font-size-3"
+                          :class="$i18n.locale == 'ar' ? 'ml-2' : 'mr-2'"
+                        ></i>
+
+                        {{ $t('misc.Logout') }}
                       </a>
                     </li>
                   </ul>
@@ -295,6 +312,17 @@ export default {
     goLogin() {
       this.$emit('closeMenu')
       this.$store.commit('login_Menu')
+    },
+    logout() {
+      this.$store.dispatch('logout')
+      setTimeout(() => {
+        window.location.reload()
+      }, 300)
+    },
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn
     },
   },
   mounted() {

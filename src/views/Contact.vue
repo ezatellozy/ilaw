@@ -1,6 +1,6 @@
 <template>
-  <div class="map w-100">
-    <div v-if="map" v-html="mapAddessLink" class="iframe"></div>
+  <div class="map w-100" v-if="contact_data">
+    <div v-if="contact_data.map" v-html="contact_data.map" class="iframe"></div>
   </div>
   <div class="container contacts-us row mx-auto">
     <div class="card mx-auto mb-2 tra" :class="map ? 'map' : ''">
@@ -25,38 +25,42 @@
                   <span
                     class="mb-2 font-weight-normal text-dark"
                     :class="$i18n.locale == 'ar' ? 'mr-2' : 'ml-2'"
+                    v-if="address.address"
                   >
-                    {{ address }}
+                    {{ address.address }}
                   </span>
                 </p>
               </address>
-              <div>
+              <div v-if="contact_data">
                 <a
-                  :href="`mailto:${contactEmail}`"
+                  :href="`mailto:${contact_data.email}`"
+                  v-if="contact_data.email"
                   class="font-size-2 mb-2 d-block link-black-100 mb-1"
                 >
                   <font-awesome-icon size="lg" :icon="['fas', 'envelope']" />
                   <span :class="$i18n.locale == 'ar' ? 'mr-2' : 'ml-2'">
-                    {{ contactEmail }}
+                    {{ contact_data.email }}
                   </span>
                 </a>
 
                 <a
-                  :href="`tel:${phone}`"
+                  :href="`tel:${contact_data.phone}`"
+                  v-if="contact_data.phone"
                   class="font-size-2 d-block link-black-100"
                 >
                   <font-awesome-icon size="lg" :icon="['fas', 'phone']" />
                   <span :class="$i18n.locale == 'ar' ? 'mr-2' : 'ml-2'">
-                    {{ phone }}
+                    {{ contact_data.phone }}
                   </span>
                 </a>
                 <a
                   :href="`tel:${mobile}`"
+                  v-if="contact_data.mobile"
                   class="font-size-2 d-block link-black-100"
                 >
                   <font-awesome-icon size="lg" :icon="['fas', 'phone']" />
                   <span :class="$i18n.locale == 'ar' ? 'mr-2' : 'ml-2'">
-                    {{ mobile }}
+                    {{ contact_data.mobile }}
                   </span>
                 </a>
               </div>
@@ -177,7 +181,7 @@
 
           <div>
             <b-form-group
-              id="subject"
+              id="phone"
               :label="$t('inputs.phone')"
               label-for="phone"
             >
@@ -193,12 +197,12 @@
 
           <div>
             <b-form-group
-              id="subject"
+              id="contact-title"
               :label="$t('inputs.title')"
-              label-for="title"
+              label-for="contact-title"
             >
               <b-form-input
-                id="title"
+                id="contact-title"
                 v-model="contact.title"
                 type="text"
                 :placeholder="$t('inputs.title')"
@@ -206,7 +210,34 @@
             </b-form-group>
           </div>
           <div>
-            <b-form-group
+            <div class="js-form-message mb-3 js-focus-state">
+              <label
+                id="signinEmailLabel"
+                class="form-label d-block"
+                for="country"
+              >
+                {{ $t('misc.Select subject') }}
+              </label>
+              <select
+                name="country"
+                id="country"
+                v-model="contact.subject"
+                required
+                class="form-select form-control rounded-0 height-4 px-4"
+              >
+                <option value="" disabled>
+                  {{ $t('misc.Select subject') }}
+                </option>
+                <option
+                  v-for="subject in subjects"
+                  :key="subject.id"
+                  :value="subject.id"
+                >
+                  {{ subject.name }}
+                </option>
+              </select>
+            </div>
+            <!-- <b-form-group
               id="subject"
               :label="$t('inputs.Subject')"
               label-for="subject"
@@ -217,7 +248,7 @@
                 type="text"
                 :placeholder="$t('inputs.Subject')"
               ></b-form-input>
-            </b-form-group>
+            </b-form-group> -->
           </div>
           <div>
             <b-form-group
@@ -271,21 +302,14 @@ export default {
         content: '',
         subject: '',
       },
-      // address: '',
-      // contactEmail: '',
-      // phone: '',
-      // mobile: '',
-      // instgram: '',
-      // facebook: '',
-      // youtube: '',
-      // twitter: '',
-      // mapAddessLink: '',
+      subjects: null,
       loading: false,
       countries: null,
     }
   },
   mounted() {
     this.getCountries()
+    this.getSubjects()
   },
   methods: {
     onSubmit() {
@@ -324,35 +348,40 @@ export default {
         this.countries = res.data.data
       })
     },
+    getSubjects() {
+      this.axios.get('settings').then((data) => {
+        this.subjects = data.data.data.messageSubjects
+      })
+    },
   },
   computed: {
-    contactEmail() {
-      return this.$store.getters.settings.contact_data.email
+    contact_data() {
+      return this.$store.getters.settings.contact_data
     },
     address() {
-      return this.$store.getters.settings.contact_data.address
+      return this.$store.getters.settings.contact_data
     },
-    phone() {
-      return this.$store.getters.settings.contact_data.phone
-    },
-    mobile() {
-      return this.$store.getters.settings.contact_data.mobile
-    },
-    instgram() {
-      return this.$store.getters.settings.contact_data.instgram
-    },
-    facebook() {
-      return this.$store.getters.settings.contact_data.facebook
-    },
-    youtube() {
-      return this.$store.getters.settings.contact_data.youtube
-    },
-    twitter() {
-      return this.$store.getters.settings.contact_data.twitter
-    },
-    mapAddessLink() {
-      return this.$store.getters.settings.contact_data.map
-    },
+    // phone() {
+    //   return this.$store.getters.settings.contact_data.phone
+    // },
+    // mobile() {
+    //   return this.$store.getters.settings.contact_data.mobile
+    // },
+    // instgram() {
+    //   return this.$store.getters.settings.contact_data.instgram
+    // },
+    // facebook() {
+    //   return this.$store.getters.settings.contact_data.facebook
+    // },
+    // youtube() {
+    //   return this.$store.getters.settings.contact_data.youtube
+    // },
+    // twitter() {
+    //   return this.$store.getters.settings.contact_data.twitter
+    // },
+    // mapAddessLink() {
+    //   return this.$store.getters.settings.contact_data.map
+    // },
   },
 }
 </script>

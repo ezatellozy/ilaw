@@ -54,11 +54,14 @@
                               id="flexRadioDefault1"
                               :value="address.id"
                               v-model="selectedAddress"
+                              @change="getShippingCost"
                             />
                             <label
                               class="form-check-label d-block"
                               for="flexRadioDefault1"
                             >
+                              <bdi>{{ address.country.name }}</bdi>
+                              -
                               <bdi>{{ address.address }}</bdi>
                               -
                               <bdi>{{ $t('misc.phonenumber') }} :</bdi>
@@ -885,30 +888,49 @@
                                   </span>
                                 </td>
                               </tr>
-
-                              <!-- <tr class="order-shipping">
-                                <th>{{ $t('misc.Shipping') }}</th>
-                                <td data-title="Shipping">Free Shipping</td>
-                              </tr> -->
                             </tbody>
                           </table>
                         </b-accordion-item>
                         <b-accordion-item visible :title="$t('misc.Shipping')">
                           <ul id="shipping_method">
                             <div v-for="ship in shippingMethods" :key="ship.id">
-                              <li v-if="ship.status == 1">
-                                <input
-                                  type="radio"
-                                  name="shipping_method[0]"
-                                  data-index="0"
-                                  id="shipping_method_0_flat_rate1"
-                                  :value="ship.id"
-                                  class="shipping_method"
-                                  v-model="shippingCost"
-                                />
-                                <label for="shipping_method_0_flat_rate1">
-                                  {{ ship.name }}
-                                </label>
+                              <li
+                                v-if="ship.status == 1"
+                                class="d-flex justify-content-between"
+                              >
+                                <table class="shop_table shop_table_responsive">
+                                  <tbody>
+                                    <tr class="order-total">
+                                      <th>
+                                        <input
+                                          type="radio"
+                                          name="shipping_method[0]"
+                                          data-index="0"
+                                          id="shipping_method_0_flat_rate1"
+                                          :value="ship.id"
+                                          class="shipping_method"
+                                          v-model="shippingCost"
+                                        />
+                                        <label
+                                          for="shipping_method_0_flat_rate1"
+                                        >
+                                          {{ ship.name }}
+                                        </label>
+                                      </th>
+                                      <td data-title="Total">
+                                        <strong>
+                                          <span
+                                            class="woocommerce-Price-amount amount"
+                                            v-if="currency"
+                                          >
+                                            {{ shippingCostPrice }}
+                                            {{ currency.sympl }}
+                                          </span>
+                                        </strong>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               </li>
                             </div>
                           </ul>
@@ -1011,6 +1033,7 @@
 
 <script>
 import axios from 'axios'
+
 // import StripePayment from '../components/StripePayment.vue'
 import { defineAsyncComponent } from 'vue'
 export default {
@@ -1030,6 +1053,7 @@ export default {
         address: '',
       },
       shippingCost: 'exprese',
+      shippingCostPrice: 0,
       haveCoppon: false,
       countries: null,
       governments: null,
@@ -1041,6 +1065,7 @@ export default {
       newAddress: false,
       shippingMethods: null,
       needAddress: false,
+      newData: [],
     }
   },
   computed: {
@@ -1063,7 +1088,7 @@ export default {
     this.getPayments()
     this.checkCard()
     this.getShippingMethod()
-    console.log(process.env.LOCALE)
+    this.SeperateOrderByPublisher()
   },
   methods: {
     checkCard() {
@@ -1118,6 +1143,7 @@ export default {
         this.addresses = data.data.data
         if (this.addresses.length) {
           this.selectedAddress = this.addresses[0].id
+          // this.getShippingCost()
         }
       })
     },
@@ -1169,6 +1195,19 @@ export default {
         this.$toast.success(this.$t('misc.cart is empty'))
       }
     },
+    getShippingCost() {
+      this.axios
+        .get(`user/address/${this.selectedAddress}/details`)
+        .then((data) => {
+          console.log(data.data.data)
+
+          // this.axios.get('/user/orders/getShippingRate?publisher_Country_Code=jo&publisher_City=amaan&currency&shipping_id')
+        })
+    },
+    SeperateOrderByPublisher() {
+      // let publishers = this.cart.map((element) => element.book.publisher)
+    },
+
     login() {
       this.$store.commit('login_Menu')
     },

@@ -12,7 +12,7 @@
         <ul
           class="topbar__nav--right nav mb-0 justify-content-center justify-content-md-between"
         >
-          <li class="nav-item">
+          <li class="nav-item" v-if="!isLoggedIn">
             <a
               role="button"
               @click="login"
@@ -20,6 +20,19 @@
             >
               <i class="flaticon-user-1 flaticon-sent mr-2 font-size-3"></i>
               {{ $t('buttons.Login') }}
+            </a>
+          </li>
+          <li class="nav-item" v-else>
+            <a
+              role="button"
+              @click="logout"
+              class="nav-link p-2 link-black-100 d-flex align-items-center"
+            >
+              <i
+                class="fa-solid fa-right-from-bracket font-size-3"
+                :class="$i18n.locale == 'ar' ? 'ml-2' : 'mr-2'"
+              ></i>
+              {{ $t('misc.Logout') }}
             </a>
           </li>
           <li class="nav-item">
@@ -128,6 +141,12 @@ export default {
     login() {
       this.$store.commit('login_Menu')
     },
+    logout() {
+      this.$store.dispatch('logout')
+      setTimeout(() => {
+        window.location.reload()
+      }, 300)
+    },
   },
   computed: {
     locale() {
@@ -138,6 +157,9 @@ export default {
       } else {
         return 'France'
       }
+    },
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn
     },
     currency() {
       return this.$store.getters.currency

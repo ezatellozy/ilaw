@@ -53,7 +53,7 @@
                             id="country"
                             required=""
                             v-model="form.country"
-                            @change="updateGovernment(form.country)"
+                            @change="getCities(form.country)"
                             class="form-select rounded-0 height-4 px-4"
                           >
                             <option value="" disabled>
@@ -69,7 +69,7 @@
                           </select>
                         </div>
                       </div>
-                      <div class="form-group mb-4">
+                      <!-- <div class="form-group mb-4">
                         <div class="js-form-message js-focus-state">
                           <label
                             id="signinEmailLabel"
@@ -98,7 +98,7 @@
                             </option>
                           </select>
                         </div>
-                      </div>
+                      </div> -->
                       <div class="form-group mb-4">
                         <div class="js-form-message js-focus-state">
                           <label
@@ -120,10 +120,10 @@
                             </option>
                             <option
                               v-for="city in cities"
-                              :key="city.id"
-                              :value="city.id"
+                              :key="city"
+                              :value="city"
                             >
-                              {{ city.name }}
+                              {{ city }}
                             </option>
                           </select>
                         </div>
@@ -223,8 +223,6 @@ export default {
   mounted() {
     this.getAddress()
     this.getCountries()
-    // this.getGovernment()
-    // this.getCities()
   },
   methods: {
     getAddress() {
@@ -235,38 +233,23 @@ export default {
           this.form.address = reasult.address
           this.form.postal_code = reasult.postal_code
           this.form.phone = reasult.phone
-          this.form.governorate = reasult.governorate
           this.form.city = reasult.city
           this.form.country = reasult.country
         })
         .finally(() => {
-          this.getGovernment(this.form.country)
-          this.getCities(this.form.governorate)
+          // this.getGovernment(this.form.country)
+          this.getCities(this.form.country)
         })
     },
     getCountries() {
-      axios.get('countries', { headers: { value: 'id' } }).then((res) => {
+      axios.get('countries', { headers: { value: 'iso' } }).then((res) => {
         this.countries = res.data.data
-      })
-    },
-    getGovernment(id) {
-      axios.get(`countries/${id}/governorates`).then((res) => {
-        this.governments = res.data.data
-      })
-    },
-    updateGovernment(id) {
-      this.governments = null
-      this.cities = null
-      this.form.governorate = ''
-      this.form.city = ''
-      axios.get(`countries/${id}/governorates`).then((res) => {
-        this.governments = res.data.data
       })
     },
     getCities(id) {
       this.cities = ''
-      axios.get(`countries/63/governorates/${id}/cities`).then((res) => {
-        this.cities = res.data.data
+      axios.get(`aramex_api/getCountryCities/${id}`).then((res) => {
+        this.cities = res.data.Cities.string
       })
     },
     openFrmEdit() {

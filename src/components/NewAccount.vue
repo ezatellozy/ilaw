@@ -93,103 +93,6 @@
           </div>
         </div>
       </div>
-
-      <!-- <div class="form-group mb-4">
-        <div class="js-form-message js-focus-state">
-          <label id="signinEmailLabel" class="form-label" for="address">
-            {{ $t('misc.address') }}
-          </label>
-          <input
-            type="text"
-            class="form-control rounded-0 height-4 px-4"
-            name="address"
-            id="address"
-            :placeholder="$t('misc.address')"
-            v-model="form.address"
-          />
-          <div v-for="error of v$.address.$errors" :key="error.$uid">
-            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
-          </div>
-        </div>
-      </div> -->
-
-      <!-- <div class="form-group mb-4">
-        <div class="js-form-message js-focus-state">
-          <label id="signinEmailLabel" class="form-label" for="country">
-            {{ $t('misc.Country') }}
-          </label>
-          <select
-            name="country"
-            id="country"
-            v-model="form.country"
-            @change="getGovernment($event)"
-            class="form-select rounded-0 height-4 px-4"
-          >
-            <option value="" disabled>{{ $t('misc.Select country') }}</option>
-            <option
-              v-for="country in countries"
-              :key="country.id"
-              :value="country.id"
-            >
-              {{ country.name }}
-            </option>
-          </select>
-          <div v-for="error of v$.country.$errors" :key="error.$uid">
-            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
-          </div>
-        </div>
-      </div> -->
-      <!-- <div class="form-group mb-4">
-        <div class="js-form-message js-focus-state">
-          <label id="signinEmailLabel" class="form-label" for="governorate">
-            {{ $t('misc.Governorate') }}
-          </label>
-          <select
-            v-model="form.governorate"
-            name="governorate"
-            id="governorate"
-            :disabled="!governments"
-            @change="getCities($event)"
-            class="form-select rounded-0 height-4 px-4"
-          >
-            <option value="" disabled>
-              {{ $t('misc.Select government') }}
-            </option>
-            <option
-              v-for="government in governments"
-              :key="government.id"
-              :value="government.id"
-            >
-              {{ government.name }}
-            </option>
-          </select>
-          <div v-for="error of v$.governorate.$errors" :key="error.$uid">
-            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
-          </div>
-        </div>
-      </div> -->
-      <!-- <div class="form-group mb-4">
-        <div class="js-form-message js-focus-state">
-          <label id="signinEmailLabel" class="form-label" for="city">
-            {{ $t('misc.City') }}
-          </label>
-          <select
-            v-model="form.city"
-            name="city"
-            id="city"
-            :disabled="!cities"
-            class="form-select rounded-0 height-4 px-4"
-          >
-            <option value="" disabled>{{ $t('misc.Select city') }}</option>
-            <option v-for="city in cities" :key="city.id" :value="city.id">
-              {{ city.name }}
-            </option>
-          </select>
-          <div v-for="error of v$.city.$errors" :key="error.$uid">
-            <div class="error-msg">{{ $t(`misc.${error.$message}`) }}</div>
-          </div>
-        </div>
-      </div> -->
       <div class="form-group mb-4">
         <div class="js-form-message js-focus-state">
           <label class="form-label" for="Password">
@@ -226,7 +129,6 @@
           </div>
         </div>
       </div>
-
       <div class="error-msg mb-4">{{ registerErr }}</div>
       <div class="mb-4d75">
         <button type="submit" class="btn btn-block py-3 rounded-0 btn-dark">

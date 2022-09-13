@@ -18,9 +18,7 @@
           <span class="text-gray-600 font-size-2">
             {{ address.city.name }}
           </span>
-          <span class="text-gray-600 font-size-2">
-            {{ address.governorate.name }}
-          </span>
+
           <span class="text-gray-600 font-size-2">
             {{ address.country.name }}
           </span>

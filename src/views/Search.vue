@@ -546,7 +546,13 @@ export default {
           const min = this.rate.reduce((a, b) => Math.min(a, b))
           this.rates = min
         }
-        url = `books?${this.$route.params.id}&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}`
+        url = `books?section=${
+          this.$route.params.id == 'all' ? '' : this.$route.params.id
+        }&name=${
+          this.$route.params.name == 'queryall' ? '' : this.$route.params.name
+        }&publisher=${this.publisher}&writer=${this.writer}&language=${
+          this.language
+        }&type=${this.type}&rate=${this.rates}`
       }
       this.$nextTick(() => {
         this.axios.get(`${url}`).then((data) => {

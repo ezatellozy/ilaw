@@ -231,7 +231,11 @@
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      {{ $t('misc.All Categories') }}
+                      {{
+                        this.categoryName
+                          ? this.categoryName
+                          : $t('misc.All Categories')
+                      }}
                     </button>
                     <ul
                       class="dropdown-menu category"
@@ -242,7 +246,7 @@
                           class="dropdown-item fw-bold"
                           href="#"
                           role="button"
-                          @click="categoryId = category.id"
+                          @click="setCategoryId(category.id)"
                         >
                           {{ category.name }}
                         </a>
@@ -250,7 +254,7 @@
                           <li
                             v-for="sub in category.subs"
                             :key="sub.id"
-                            @click="categoryId = sub.id"
+                            @click="setCategoryId(sub.id)"
                           >
                             <a class="text-black" role="button" href="#">
                               {{ sub.name }}
@@ -277,13 +281,13 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link
-                to="/account/accountDetails"
+              <a
+                href="/account/accountDetails"
                 class="nav-link btn text-white"
                 v-if="isLoggedIn"
               >
                 <i class="glph-icon flaticon-user font-size-4"></i>
-              </router-link>
+              </a>
               <button
                 class="nav-link btn text-white"
                 @click="openUserMenu"
@@ -346,9 +350,11 @@ export default {
     return {
       contact_data: [],
       navShow: null,
+      categoryName: '',
       categoriesSideMenu: false,
       miniCart: false,
       cartMenu: false,
+      routerName: '',
       lang: this.$store.state.locale,
       locales: [
         { value: 'en', text: 'English' },
@@ -358,8 +364,10 @@ export default {
       searchInput: '',
     }
   },
+
   mounted() {
     this.getSettings()
+    this.getCategoryName()
   },
   computed: {
     userAccount() {
@@ -400,8 +408,33 @@ export default {
     },
     search() {
       this.$router.push(
-        `/search/name=${this.searchInput}&section=${this.categoryId}&`,
+        `/search/${this.searchInput ? this.searchInput : 'queryall'}/${
+          this.categoryId ? this.categoryId : 'all'
+        }`,
       )
+    },
+    setCategoryId(id) {
+      this.categoryId = id
+      this.axios.get(`/sections/${id}/details`).then((data) => {
+        this.categoryName = data.data.data.name
+      })
+    },
+    getCategoryName() {
+      setTimeout(() => {
+        if (this.routerName == 'shop' || this.routerName == 'search') {
+          if (
+            this.$route.params.id != 'all' ||
+            this.$route.params.id != 'queryall'
+          ) {
+            this.setCategoryId(this.$route.params.id)
+          }
+        }
+      }, 500)
+    },
+  },
+  watch: {
+    $route() {
+      this.routerName = this.$route.name
     },
   },
 }

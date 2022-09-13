@@ -67,7 +67,7 @@ const routes = [
     component: Shop,
   },
   {
-    path: '/search/:id',
+    path: '/search/:name/:id',
     name: 'search',
     component: Search,
   },

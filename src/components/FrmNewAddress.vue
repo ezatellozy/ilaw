@@ -53,7 +53,7 @@
                             id="country"
                             required=""
                             v-model="form.country"
-                            @change="getGovernment($event)"
+                            @change="getCities($event)"
                             class="form-select rounded-0 height-4 px-4"
                           >
                             <option value="" disabled>
@@ -69,7 +69,7 @@
                           </select>
                         </div>
                       </div>
-                      <div class="form-group mb-4">
+                      <!-- <div class="form-group mb-4">
                         <div class="js-form-message js-focus-state">
                           <label
                             id="signinEmailLabel"
@@ -99,7 +99,7 @@
                             </option>
                           </select>
                         </div>
-                      </div>
+                      </div> -->
                       <div class="form-group mb-4">
                         <div class="js-form-message js-focus-state">
                           <label
@@ -122,10 +122,10 @@
                             </option>
                             <option
                               v-for="city in cities"
-                              :key="city.id"
-                              :value="city.id"
+                              :key="city"
+                              :value="city"
                             >
-                              {{ city.name }}
+                              {{ city }}
                             </option>
                           </select>
                         </div>
@@ -202,11 +202,18 @@
 <script>
 import axios from 'axios'
 // import { useStore } from 'vuex'
-import { inject } from 'vue'
-import { reactive } from 'vue'
+import Cookie from 'js-cookie'
+
 export default {
   data() {
     return {
+      form: {
+        postal_code: '',
+        phone: '',
+        country: '',
+        address: '',
+        city: '',
+      },
       signIn: true,
       signUp: false,
       forgotPassword: false,
@@ -217,6 +224,7 @@ export default {
   },
   mounted() {
     this.getCountries()
+    this.setCountry()
   },
   methods: {
     openFrmNew() {
@@ -229,63 +237,65 @@ export default {
       this[event] = true
     },
     getCountries() {
-      axios.get('countries', { headers: { value: 'id' } }).then((res) => {
+      axios.get('countries', { headers: { value: 'iso' } }).then((res) => {
         this.countries = res.data.data
       })
     },
-
-    getGovernment(e) {
-      this.governments = null
-      axios.get(`countries/${e.target.value}/governorates`).then((res) => {
-        this.governments = res.data.data
-      })
+    setCountry() {
+      this.form.country = this.countryId
+      this.getCities()
     },
+    // getGovernment(e) {
+    //   this.governments = null
+    //   let url = ''
+    //   if (e == undefined) {
+    //     url = `countries/${this.countryId}/governorates`
+    //   } else {
+    //     this.cities = null
+    //     this.accountDetails.governorate = ''
+    //     this.accountDetails.city = ''
+    //     url = `countries/${e.target.value}/governorates`
+    //   }
+    //   axios.get(`${url}`).then((res) => {
+    //     this.governments = res.data.data
+    //   })
+    // },
     getCities(e) {
       this.cities = null
-      axios
-        .get(
-          `countries/${this.countryId}/governorates/${e.target.value}/cities`,
-        )
-        .then((res) => {
-          this.cities = res.data.data
-        })
+      let url = ''
+      if (e == undefined) {
+        url = `aramex_api/getCountryCities/${this.countryId}`
+      } else {
+        this.form.city = ''
+        url = `aramex_api/getCountryCities/${e.target.value}`
+      }
+      axios.get(`${url}`).then((res) => {
+        this.cities = res.data.Cities.string
+      })
     },
-  },
-  setup() {
-    // const store = useStore()
-    const toast = inject('toast')
-    const form = reactive({
-      postal_code: '',
-      phone: '',
-      country: '',
-      address: '',
-      governorate: '',
-      city: '',
-    })
-    function addNewAddress() {
+    addNewAddress() {
       axios
-        .post('user/address/create', form)
+        .post('user/address/create', this.form)
         .then((data) => {
           if (data.data.status == 'faild') {
-            toast.error(data.data.message)
+            this.$toast.error(data.data.message)
             return
           }
-          toast.success(data.data.message)
+          this.$toast.success(data.data.message)
           setTimeout(() => {
             window.location.reload()
           }, 300)
         })
         .catch((err) => {
           console.log('Error', err)
-          toast.error(err.message)
+          this.$toast.error(err.message)
         })
-    }
-
-    return {
-      form,
-      addNewAddress,
-      // countries,
-    }
+    },
+  },
+  computed: {
+    countryId() {
+      return Cookie.get('countryCode')
+    },
   },
 }
 </script>

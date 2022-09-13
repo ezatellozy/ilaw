@@ -52,7 +52,7 @@
             />
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
           <div class="form-group mb-4">
             <div class="js-form-message js-focus-state">
               <label id="signinEmailLabel" class="form-label" for="country">
@@ -62,7 +62,7 @@
                 name="country"
                 id="country"
                 v-model="accountDetails.country"
-                @change="getGovernment($event)"
+                @change="getCities($event)"
                 class="form-select rounded-0 height-4"
               >
                 <option value="" disabled>
@@ -79,7 +79,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
           <div class="form-group mb-4">
             <div class="js-form-message js-focus-state">
               <label id="signinEmailLabel" class="form-label" for="governorate">
@@ -105,8 +105,8 @@
               </select>
             </div>
           </div>
-        </div>
-        <div class="col-md-4">
+        </div> -->
+        <div class="col-md-6" v-if="cities">
           <div class="form-group mb-4">
             <div class="js-form-message js-focus-state">
               <label id="signinEmailLabel" class="form-label" for="city">
@@ -119,8 +119,8 @@
                 class="form-select rounded-0 height-4"
               >
                 <option value="" disabled>{{ $t('misc.Select city') }}</option>
-                <option v-for="city in cities" :key="city.id" :value="city.id">
-                  {{ city.name }}
+                <option v-for="city in cities" :key="city" :value="city">
+                  {{ city }}
                 </option>
               </select>
             </div>
@@ -272,18 +272,15 @@ export default {
         country: '',
         phone: '',
         email: '',
-        governorate: '',
         city: '',
         address: '',
         language: '',
       },
-
       oldPassword: '',
       password: '',
       cPassword: '',
       profileErr: '',
       countries: null,
-      governments: null,
       cities: null,
       test: true,
     }
@@ -291,53 +288,49 @@ export default {
   mounted() {
     this.getProfile()
     this.getCountries()
+    this.getCities()
   },
   methods: {
     getCountries() {
-      axios.get('countries', { headers: { value: 'id' } }).then((res) => {
+      axios.get('countries', { headers: { value: 'iso' } }).then((res) => {
         this.countries = res.data.data
       })
     },
-    getGovernment(e) {
-      this.governments = null
-      let url = ''
-      if (e == undefined) {
-        url = `countries/${this.countryId}/governorates`
-      } else {
-        this.cities = null
-        this.accountDetails.governorate = ''
-        this.accountDetails.city = ''
-        url = `countries/${e.target.value}/governorates`
-      }
-      axios.get(`${url}`).then((res) => {
-        this.governments = res.data.data
-      })
-    },
     getCities(e) {
+      console.log(e)
       this.cities = null
       let url = ''
       if (e == undefined) {
-        url = `countries/${this.countryId}/governorates/${this.governmentId}/cities`
+        url = `aramex_api/getCountryCities/${this.countryId}`
       } else {
-        url = `countries/${this.countryId}/governorates/${e.target.value}/cities`
+        this.accountDetails.city = ''
+        url = `aramex_api/getCountryCities/${e.target.value}`
       }
       axios.get(`${url}`).then((res) => {
-        this.cities = res.data.data
+        this.cities = res.data.Cities.string
       })
     },
     getProfile() {
-      axios.get('user/my-profile').then((data) => {
-        let result = data.data.data
-        this.accountDetails.name = result.name
-        this.accountDetails.userName = result.userName
-        this.accountDetails.country = result.country.id
-        this.accountDetails.phone = result.phone
-        this.accountDetails.email = result.email
-        this.accountDetails.governorate = result.governorate.id
-        this.accountDetails.city = result.city.id
-        this.accountDetails.address = result.address
-        this.accountDetails.language = result.language
-      })
+      axios
+        .get('user/my-profile')
+        .then((data) => {
+          let result = data.data.data
+          this.accountDetails.name = result.name
+          this.accountDetails.userName = result.userName
+          this.accountDetails.country = result.country.country_code
+          this.accountDetails.phone = result.phone
+          this.accountDetails.email = result.email
+          this.accountDetails.city = result.city.id
+          this.accountDetails.address = result.address
+          this.accountDetails.language = result.language
+          console.log(result.city.id)
+        })
+        .finally(() => {
+          if (this.accountDetails.country == '') {
+            this.accountDetails.country = this.countryId
+            this.getCities()
+          }
+        })
     },
     updateProfile() {
       axios
@@ -388,23 +381,21 @@ export default {
   },
   computed: {
     countryId() {
-      return this.accountDetails.country
-    },
-    governmentId() {
-      return this.accountDetails.governorate
+      return this.accountDetails.country || Cookie.get('countryCode')
     },
   },
   watch: {
     countryId: function (n) {
       if (n) {
-        this.getGovernment()
-      }
-    },
-    governmentId: function (n) {
-      if (n) {
+        this.accountDetails.country = this.countryId
         this.getCities()
       }
     },
+    // governmentId: function (n) {
+    //   if (n) {
+    //     this.getCities()
+    //   }
+    // },
   },
   validations() {
     return {
