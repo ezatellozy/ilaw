@@ -128,7 +128,7 @@
                       <input
                         id="typeOfListingRadio1"
                         type="radio"
-                        v-model="item.bookType"
+                        v-model="item.book_type"
                         value="hardcopy"
                         name="typeOfListingRadio1"
                         class="custom-control-input checkbox-outline__input"
@@ -166,7 +166,7 @@
                         type="radio"
                         value="pdfCopy"
                         name="typeOfListingRadio1"
-                        v-model="item.bookType"
+                        v-model="item.book_type"
                         class="custom-control-input checkbox-outline__input"
                       />
                       <label
@@ -241,7 +241,7 @@
                             min="1"
                             max="100"
                             name="quantity"
-                            v-model="item.qty"
+                            v-model="item.quntity"
                             title="Qty"
                           />
                           <button class="js-plus text-dark" @click="qtyPlus">
@@ -845,10 +845,11 @@ export default {
     return {
       book: null,
       item: {
-        qty: 1,
-        bookType: 'pdfCopy',
+        quntity: 1,
+        book_type: 'pdfCopy',
         price: 0,
         totalPrice: 0,
+        book_id: '',
         book: null,
       },
       writer: null,
@@ -922,18 +923,18 @@ export default {
     getBook() {
       axios.get(`books/${this.$route.params.id}/details`).then((data) => {
         this.book = data.data.data
-
         this.item.book = data.data.data
+        this.item.book_id = data.data.data.id
       })
     },
     qtyPlus() {
-      this.item.qty++
+      this.item.quntity++
     },
     qtyMinus() {
-      if (this.item.qty > 1) this.item.qty--
+      if (this.item.quntity > 1) this.item.quntity--
     },
     addToCart() {
-      if (this.item.bookType == 'pdfCopy') {
+      if (this.item.book_type == 'pdfCopy') {
         if (this.item.book.pdfCopy.price.offer) {
           this.item.price = this.item.book.pdfCopy.price.offer
         } else {
@@ -947,7 +948,7 @@ export default {
         }
       }
 
-      this.item.totalPrice = this.item.price * this.item.qty
+      this.item.total = this.item.price * this.item.quntity
 
       this.$store.commit('addToCart', this.item)
       this.$toast.success(this.$t('misc.addSuccess'))
@@ -964,51 +965,6 @@ export default {
     currency() {
       return this.$store.getters.currency
     },
-  },
-  setup() {
-    // const route = useRoute()
-    // const store = useStore()
-    // const toast = inject('toast')
-    // const { t } = useI18n()
-    // let book
-    // onMounted(() => {
-    //   getBook()
-    // })
-    // function getBook() {
-    //   axios.get(`books/${route.params.id}/details`).then((data) => {
-    //    book = data.data.data
-    //   })
-    // }
-    // console.log(book)
-    // const item = reactive({
-    //   // id: route.params.id,
-    //   qty: 1,
-    //   bookType: 'pdf',
-    //   price: 0,
-    //   totalPrice: 0,
-    //   // ...book,
-    // })
-    // function qtyPlus() {
-    //   item.qty++
-    // }
-    // function qtyMinus() {
-    //   if (item.qty > 1) item.qty--
-    // }
-    // function addToCart() {
-    //   if (item.bookType == 'pdf') {
-    //     item.price = item.pdf_price
-    //   } else {
-    //     item.price = item.hardcopy_price
-    //   }
-    //   item.totalPrice = item.price * item.qty
-    //   store.commit('addToCart', item)
-    //   toast.success(t('misc.addSuccess'))
-    // }
-    // function addToWashList() {
-    //   store.commit('addToWashlist', item)
-    //   toast.success(t('misc.addSuccess'))
-    // }
-    // return { item, qtyPlus, qtyMinus, addToCart, addToWashList }
   },
 }
 </script>

@@ -153,7 +153,7 @@
                   <input
                     id="typeOfListingRadio1"
                     type="radio"
-                    v-model="item.bookType"
+                    v-model="item.book_type"
                     value="hardcopy"
                     name="typeOfListingRadio1"
                     class="custom-control-input checkbox-outline__input"
@@ -191,7 +191,7 @@
                     type="radio"
                     value="pdfCopy"
                     name="typeOfListingRadio1"
-                    v-model="item.bookType"
+                    v-model="item.book_type"
                     class="custom-control-input checkbox-outline__input"
                   />
                   <label
@@ -266,7 +266,7 @@
                         min="1"
                         max="100"
                         name="quantity"
-                        v-model="item.qty"
+                        v-model="item.quntity"
                         title="Qty"
                       />
                       <button class="js-plus text-dark" @click="qtyPlus">
@@ -333,24 +333,25 @@ export default {
 
     const item = reactive({
       // id: route.params.id,
-      qty: 1,
-      bookType: 'pdfCopy',
+      quntity: 1,
+      book_type: 'pdfCopy',
       price: 0,
       totalPrice: 0,
+      book_id: props.book.id,
       book: props.book,
     })
 
     function qtyPlus() {
-      item.qty++
+      item.quntity++
     }
     function qtyMinus() {
-      if (item.qty > 1) item.qty--
+      if (item.quntity > 1) item.quntity--
     }
     function closemodal() {
       emit('closemodal')
     }
     function addToCart() {
-      if (item.bookType == 'pdfCopy') {
+      if (item.book_type == 'pdfCopy') {
         if (item.book.pdfCopy.price.offer) {
           item.price = item.book.pdfCopy.price.offer
         } else {
@@ -364,7 +365,7 @@ export default {
         }
       }
 
-      item.totalPrice = item.price * item.qty
+      item.totalPrice = item.price * item.quntity
 
       store.commit('addToCart', item)
       toast.success(t('misc.addSuccess'))

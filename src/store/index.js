@@ -36,10 +36,10 @@ export default createStore({
     status: (state) => state.status,
     settings: (state) => state.settings,
     totalPrice: (state) => {
-      return `${state.cart.reduce((a, b) => a + b.totalPrice, 0)}`
+      return `${state.cart.reduce((a, b) => +a + +b.totalPrice, 0)}`
     },
     totalQuantity: (state) => {
-      return state.cart.reduce((a, b) => a + b.qty, 0)
+      return state.cart.reduce((a, b) => +a + +b.quntity, 0)
     },
     userId: (state) => {
       if (state.user) {
@@ -53,13 +53,26 @@ export default createStore({
     washlist: (state) => state.washlist,
   },
   mutations: {
+    updateUser(state, payload) {
+      state.user = payload
+    },
     addToCart(state, product) {
+      if (state.token) {
+        let obj = { cart: [] }
+          obj.cart.push(product)
+        axios.post('/user/orders/cart/add', obj).then((data) => {
+          state.cart = data.data.data.items
+      
+          updateLocaleStorage(data.data.data.items)
+        })
+        return
+      }
       let item = state.cart.filter((i) => i.book.id === product.book.id)
       if (item.length) {
-        let cItem = item.filter((i) => i.bookType === product.bookType)
+        let cItem = item.filter((i) => i.book_type === product.book_type)
         if (cItem.length) {
-          item = item.find((e) => e.bookType === product.bookType)
-          item.qty += product.qty
+          item = item.find((e) => e.book_type === product.book_type)
+          item.quntity += product.quntity
           item.totalPrice += product.totalPrice
         } else {
           state.cart.push({ ...product })
@@ -68,14 +81,15 @@ export default createStore({
         state.cart.push({ ...product })
       }
       updateLocaleStorage(state.cart)
+
     },
     addToCartByOne(state, product) {
       let item = state.cart.filter((i) => i.book.id === product.book.id)
       if (item.length) {
-        let cItem = item.filter((i) => i.bookType === product.bookType)
+        let cItem = item.filter((i) => i.book_type === product.book_type)
         if (cItem.length) {
-          item = item.find((e) => e.bookType === product.bookType)
-          item.qty += 1
+          item = item.find((e) => e.book_type === product.book_type)
+          item.quntity += 1
           item.totalPrice += +product.price
         } else {
           state.cart.push({ ...product })
@@ -86,26 +100,39 @@ export default createStore({
       updateLocaleStorage(state.cart)
     },
     removeItem(state, product) {
+      console.log(product)
+      if (state.token) {
+        axios.get(`/user/orders/cart/removeItem/${product.id}`).then((data) => {
+          updateLocaleStorage(data.data.data.items)
+          state.cart = data.data.data.items
+        }) 
+        return
+      }
       let item = state.cart.filter((el) => el.book.id !== product.book.id)
       let cItem = state.cart.filter((el) => el.id == product.id)
-      let removed = cItem.filter((el) => el.bookType != product.bookType)
+      let removed = cItem.filter((el) => el.book_type != product.book_type)
       let newItems = []
       newItems.push(...item, ...removed)
       updateLocaleStorage(newItems)
       state.cart = JSON.parse(localStorage.getItem('cart'))
     },
+    cart(state, cart) {
+      state.cart = cart
+    },
     removeItemByOne(state, product) {
       let item = state.cart.filter((i) => i.book.id === product.book.id)
       if (item.length) {
-        let cItem = item.filter((i) => i.bookType === product.bookType)
+        let cItem = item.filter((i) => i.book_type === product.book_type)
         if (cItem.length) {
-          item = item.find((e) => e.bookType === product.bookType)
-          item.qty -= 1
+          item = item.find((e) => e.book_type === product.book_type)
+          item.quntity -= 1
           item.totalPrice -= +product.price
-          if (item.qty < 1) {
+          if (item.quntity < 1) {
             let item = state.cart.filter((el) => el.id !== product.id)
             let cItem = state.cart.filter((el) => el.id == product.id)
-            let removed = cItem.filter((el) => el.bookType != product.bookType)
+            let removed = cItem.filter(
+              (el) => el.book_type != product.book_type,
+            )
             let newItems = []
             newItems.push(...item, ...removed)
             updateLocaleStorage(newItems)
@@ -187,6 +214,7 @@ export default createStore({
             }
             // const token = resp.data.access_token
             const user = resp.data.data
+            context.commit('updateUser', user)
             Cookies.set('token', 'successed')
             localStorage.setItem('user', JSON.stringify(user))
             const lang = user.language
@@ -198,11 +226,50 @@ export default createStore({
             } else {
               Cookies.set('locale', 'fr')
             }
+
+            if (context.state.cart.length) {
+              let obj = { cart: [] }
+
+              context.state.cart.forEach((element) => {
+                obj.cart.push(element)
+              })
+              axios
+                .post('/user/orders/cart/add', obj, {
+                  headers: {
+                    user: JSON.parse(localStorage.getItem('user')).id,
+                  },
+                })
+                .then(() => {
+                  axios.get('/user/orders/cart/myCart',{
+                    headers: {
+                      user: JSON.parse(localStorage.getItem('user')).id,
+                    },
+                  }).then((data) => {
+                    console.log(data.data.data)
+                    updateLocaleStorage(data.data.data.items)
+                    setTimeout(() => {
+                      window.location.reload()
+                    }, 300)
+                  })
+                })
+            } else {
+              axios.get('/user/orders/cart/myCart', {
+                headers: {
+                  user: JSON.parse(localStorage.getItem('user')).id,
+                },
+              }).then((data) => {
+                console.log(data.data.data.items)
+                updateLocaleStorage(data.data.data.items)
+                setTimeout(() => {
+                  window.location.reload()
+                }, 300)
+              })
+            }
+
+
+
             toast.success(resp.data.message)
             context.commit('auth_success')
-            setTimeout(() => {
-              window.location.reload()
-            }, 300)
 
             resolve(resp)
           })
@@ -257,6 +324,7 @@ export default createStore({
       return new Promise((resolve, reject) => {
         commit('logout')
         localStorage.removeItem('user')
+        localStorage.removeItem('cart')
         this.state.user = {}
         Cookies.remove('token')
         resolve()

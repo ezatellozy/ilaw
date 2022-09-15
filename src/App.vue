@@ -52,11 +52,6 @@ export default {
       })
     },
     getSettings() {
-      // if (!localStorage.getItem('currency')) {
-      //   setTimeout(() => {
-      //     window.location.reload()
-      //   }, 1000)
-      // }
       this.axios.get('settings').then((data) => {
         this.$store.commit('settings', data.data.data)
       })
@@ -72,6 +67,9 @@ export default {
 </script>
 
 <style lang="scss">
+.checkout label {
+  font-size: 16px !important;
+}
 .btn-face {
   margin: 0 5px;
   background: #1877f2;

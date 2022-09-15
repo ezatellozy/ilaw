@@ -9,7 +9,7 @@
       <span class="font-size-22">{{ $t('misc.Hello') }} {{ user }}</span>
       <span class="font-size-2">
         (
-        <bdi>{{ $t('misc.not') }}</bdi>
+        <bdi v-if="user">{{ $t('misc.not') }}</bdi>
         {{ user }}?
         <a role="button" @click="logout" class="link-black-100" href="#">
           {{ $t('misc.Logout') }}

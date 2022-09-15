@@ -1,12 +1,32 @@
 <template>
-  <div id="content" class="site-content space-bottom-3">
+  <div id="content" class="site-content space-bottom-3 checkout">
     <div class="col-full container">
-      <div class="log border text-center mt-4 py-4 fs-4" v-if="!isLoggedIn">
-        <p>
-          {{ $t('misc.you must') }}
-          <a role="button" @click="login" href="#">{{ $t('buttons.Login') }}</a>
-          {{ $t('misc.to continue') }}
-        </p>
+      <div
+        class="log border text-center mt-4 py-4 px-4 fs-4"
+        v-if="!isLoggedIn"
+      >
+        <div class="row">
+          <div class="col-md-6">
+            <header class="border-bottom px-4 px-md-6 py-4">
+              <h2 class="font-size-3 mb-0 d-flex align-items-center">
+                <i class="flaticon-resume font-size-5 ml-3"></i>
+                {{ $t('buttons.Login') }}
+              </h2>
+            </header>
+            <div class="p-4">
+              <Login checkout="true" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <header class="border-bottom px-4 px-md-6 py-4">
+              <h2 class="font-size-3 mb-0 d-flex align-items-center">
+                <i class="flaticon-resume font-size-5 ml-3"></i>
+                {{ $t('misc.New Account') }}
+              </h2>
+            </header>
+            <NewAccount checkout="true" />
+          </div>
+        </div>
       </div>
 
       <div id="primary" class="content-area" v-else>
@@ -750,35 +770,6 @@
                           </div>
                         </div>
                       </transition>
-
-                      <!-- <div
-                      class="px-4 pt-5 bg-white border border-top-0 mt-n-one"
-                    >
-                      <div class="woocommerce-additional-fields">
-                        <h3 class="mb-4 font-size-3">Additional information</h3>
-                        <div
-                          class="woocommerce-additional-fields__field-wrapper"
-                        >
-                          <p
-                            class="col-12 mb-4d75 px-0 form-row notes"
-                            id="order_comments_field"
-                            data-priority=""
-                          >
-                            <label for="order_comments" class="form-label">
-                              Order notes (optional)
-                            </label>
-                            <textarea
-                              name="order_comments"
-                              class="input-text form-control"
-                              id="order_comments"
-                              placeholder="Notes about your order, e.g. special notes for delivery."
-                              rows="8"
-                              cols="5"
-                            ></textarea>
-                          </p>
-                        </div>
-                      </div>
-                    </div> -->
                     </div>
 
                     <h3 id="order_review_heading" class="d-none">
@@ -788,6 +779,7 @@
                     <div
                       id="order_review"
                       class="col-md-6 col-lg-5 col-xl-4 woocommerce-checkout-review-order"
+                      v-if="cart"
                     >
                       <b-accordion free>
                         <b-accordion-item
@@ -810,13 +802,15 @@
                             <tbody>
                               <tr
                                 class="cart_item"
-                                v-for="item in cart"
+                                v-for="item in cart.items"
                                 :key="item.id"
                               >
                                 <td class="product-name">
-                                  {{ item.book.name }}&nbsp;
+                                  {{ item.book.name }}
+
+                                  &nbsp;
                                   <strong class="product-quantity">
-                                    × {{ item.qty }}
+                                    × {{ item.quntity }}
                                   </strong>
                                 </td>
                                 <td class="product-total">
@@ -882,7 +876,7 @@
                                     <span
                                       class="woocommerce-Price-currencySymbol"
                                     >
-                                      {{ totalPrice }}
+                                      {{ cart.total }}
                                     </span>
                                     {{ currency.sympl }}
                                   </span>
@@ -940,14 +934,81 @@
                           <table class="shop_table shop_table_responsive">
                             <tbody>
                               <tr class="order-total">
-                                <th>{{ $t('misc.total') }}</th>
-                                <td data-title="Total">
+                                <th class="py-2">{{ $t('misc.total') }}</th>
+                                <td class="py-2">
                                   <strong>
                                     <span
                                       class="woocommerce-Price-amount amount"
-                                      v-if="currency"
                                     >
-                                      {{ totalPrice }} {{ currency.sympl }}
+                                      <span
+                                        class="woocommerce-Price-currencySymbol"
+                                        v-if="currency"
+                                      >
+                                        {{ cart.total }} {{ currency.sympl }}
+                                      </span>
+                                    </span>
+                                  </strong>
+                                </td>
+                              </tr>
+                              <tr class="order-total">
+                                <th class="py-2">{{ $t('misc.discount') }}</th>
+                                <td class="py-2">
+                                  <strong>
+                                    <span
+                                      class="woocommerce-Price-amount amount"
+                                    >
+                                      <span
+                                        class="woocommerce-Price-currencySymbol"
+                                        v-if="currency"
+                                      >
+                                        {{ cart.discount }} {{ currency.sympl }}
+                                      </span>
+                                    </span>
+                                    <!-- <button
+                                      class="btn text-danger"
+                                      v-if="cart.discount"
+                                      @click="removeCoupon"
+                                    >
+                                      <i class="fa-solid fa-xmark"></i>
+                                      {{ $t('misc.delete') }}
+                                    </button> -->
+                                  </strong>
+                                </td>
+                              </tr>
+                              <tr class="order-total">
+                                <th class="py-2">
+                                  {{ $t('misc.shipping cost') }}
+                                </th>
+                                <td class="py-2">
+                                  <strong>
+                                    <span
+                                      class="woocommerce-Price-amount amount"
+                                    >
+                                      <span
+                                        class="woocommerce-Price-currencySymbol"
+                                        v-if="currency"
+                                      >
+                                        {{ shippingCostPrice }}
+                                        {{ currency.sympl }}
+                                      </span>
+                                    </span>
+                                  </strong>
+                                </td>
+                              </tr>
+                              <tr class="order-total">
+                                <th class="py-2">{{ $t('misc.net price') }}</th>
+                                <td class="py-2">
+                                  <strong>
+                                    <span
+                                      class="woocommerce-Price-amount amount"
+                                    >
+                                      <span
+                                        class="woocommerce-Price-currencySymbol"
+                                        v-if="currency"
+                                      >
+                                        {{ cart.netTotal + shippingCostPrice }}
+                                        {{ currency.sympl }}
+                                      </span>
                                     </span>
                                   </strong>
                                 </td>
@@ -989,7 +1050,7 @@
                                 </div>
                               </li>
 
-                              <li class="wc_payment_method payment_method_cod">
+                              <!-- <li class="wc_payment_method payment_method_cod">
                                 <input
                                   id="payment_method_cod"
                                   type="radio"
@@ -1002,7 +1063,7 @@
                                 <label for="payment_method_bacs">
                                   {{ $t('misc.Cash on delivery') }}
                                 </label>
-                              </li>
+                              </li> -->
                             </ul>
                           </div>
                         </b-accordion-item>
@@ -1036,11 +1097,17 @@ import axios from 'axios'
 
 // import StripePayment from '../components/StripePayment.vue'
 import { defineAsyncComponent } from 'vue'
+
+import NewAccount from '@/components/NewAccount.vue'
+import Login from '@/components/Login.vue'
+
 export default {
   components: {
     StripePayment: defineAsyncComponent(() =>
       import('../components/StripePayment.vue'),
     ),
+    NewAccount,
+    Login,
   },
   data() {
     return {
@@ -1052,8 +1119,10 @@ export default {
         phone: '',
         address: '',
       },
+      newAccount: false,
       shippingCost: 'exprese',
       shippingCostPrice: 0,
+      cart: null,
       haveCoppon: false,
       countries: null,
       governments: null,
@@ -1069,14 +1138,8 @@ export default {
     }
   },
   computed: {
-    cart() {
-      return this.$store.getters.cart
-    },
     currency() {
       return this.$store.getters.currency
-    },
-    totalPrice() {
-      return this.$store.getters.totalPrice
     },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn
@@ -1086,18 +1149,24 @@ export default {
     this.getCountries()
     this.getAddresses()
     this.getPayments()
-    this.checkCard()
     this.getShippingMethod()
     this.SeperateOrderByPublisher()
+    if (this.isLoggedIn) {
+      this.getCart()
+    }
   },
   methods: {
     checkCard() {
       let found
-      this.cart.forEach((element) => {
-        found = element.bookType == 'hardcopy'
-      })
-      if (found) {
-        this.needAddress = true
+
+      if (this.cart) {
+        this.cart.items.forEach((element) => {
+          found = element.book_type == 'hardcopy'
+
+          if (found) {
+            this.needAddress = true
+          }
+        })
       }
     },
     getCountries() {
@@ -1143,7 +1212,7 @@ export default {
         this.addresses = data.data.data
         if (this.addresses.length) {
           this.selectedAddress = this.addresses[0].id
-          // this.getShippingCost()
+          this.getShippingCost()
         }
       })
     },
@@ -1158,54 +1227,34 @@ export default {
       })
     },
     placeOrder() {
-      const cart = JSON.parse(localStorage.getItem('cart'))
-      if (cart) {
-        let items = []
-        cart.forEach((element) => {
-          items.push({
-            book_id: element.book.id,
-            book_type: element.bookType,
-            quntity: element.qty,
-            price: element.price,
+      if (this.cart) {
+        this.axios.post('/user/orders/create').then((data) => {
+          this.$toast.success(data.data.message)
+          this.$nextTick(() => {
+            this.getCart()
           })
         })
-        let payment_method_id = this.paymentMethod
-        let shipping_address_id = this.selectedAddress
-        let shipping_method = this.shippingCost
-        if (this.needAddress && this.addresses.length == 0) {
-          this.$toast.error(this.$t('misc.you must select your address'))
-          this.newAddress = true
-          return
-        }
-        this.axios
-          .post('/user/orders/create', {
-            items,
-            payment_method_id,
-            shipping_address_id,
-            shipping_method,
-          })
-          .then((data) => {
-            this.$toast.success(data.data.message)
-            localStorage.removeItem('cart')
-            setTimeout(() => {
-              window.location.reload()
-            }, 300)
-          })
-      } else {
-        this.$toast.success(this.$t('misc.cart is empty'))
       }
     },
     getShippingCost() {
       this.axios
-        .get(`user/address/${this.selectedAddress}/details`)
+        .get(`/user/orders/getShippingRate?${this.selectedAddress}`)
         .then((data) => {
-          console.log(data.data.data)
-
-          // this.axios.get('/user/orders/getShippingRate?publisher_Country_Code=jo&publisher_City=amaan&currency&shipping_id')
+          this.shippingCostPrice = data.data.data
         })
     },
     SeperateOrderByPublisher() {
       // let publishers = this.cart.map((element) => element.book.publisher)
+    },
+    getCart() {
+      this.axios
+        .get('/user/orders/cart/myCart')
+        .then((data) => {
+          this.cart = data.data.data
+        })
+        .finally(() => {
+          this.checkCard()
+        })
     },
 
     login() {
@@ -1226,6 +1275,7 @@ export default {
   opacity: 0;
   transform: translateY(-10px);
 }
+
 .coppon-enter-active,
 .coppon-leave-active {
   transition: all 0.6s;
@@ -1238,6 +1288,10 @@ export default {
 
 .showcoupon {
   color: #f75454;
+}
+.newAccount {
+  max-width: 750px;
+  margin: auto;
 }
 
 .radio-check {

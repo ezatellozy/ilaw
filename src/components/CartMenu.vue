@@ -82,7 +82,7 @@
                         </a>
                       </div>
                       <div class="font-size-2 mb-1 text-truncate">
-                        <p class="text-gray-700 my-2">{{ item.bookType }}</p>
+                        <p class="text-gray-700 my-2">{{ item.book_type }}</p>
                       </div>
                       <div
                         class="price d-flex align-items-center font-weight-medium font-size-3"
@@ -91,7 +91,7 @@
                           class="woocommerce-Price-amount amount"
                           v-if="currency"
                         >
-                          {{ item.qty }}
+                          {{ item.quntity }}
                           <bdi>x</bdi>
                           <span class="woocommerce-Price-currencySymbol">
                             {{ item.price }}
@@ -151,6 +151,7 @@ export default {
       this.$store.commit('removeItem', item)
     },
   },
+  mounted() {},
 
   computed: {
     totalQuantity() {
@@ -164,6 +165,9 @@ export default {
     },
     cart() {
       return this.$store.getters.cart
+    },
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn
     },
   },
 }

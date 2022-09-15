@@ -28,7 +28,7 @@
           class="form-control rounded-0 height-4 px-4"
           name="password"
           id="signinPassword"
-          placeholder=""
+          :placeholder="$t('placeholder.Enter Your Password')"
           aria-label=""
           required=""
           v-model="form.password"
@@ -76,18 +76,18 @@
     </div>
     <div class="d-flex justify-content-center mb-4">
       <div class="text-center btn-google">
-        <a class="btn fs-4 text-uppercase btn-outline" href="#">
+        <a class="btn text-uppercase btn-outline" href="#">
           <span><i class="fa-brands fa-google"></i></span>
         </a>
       </div>
       <div class="text-center btn-face">
-        <a class="btn fs-4 text-uppercase btn-outline" href="#">
+        <a class="btn text-uppercase btn-outline" href="#">
           <i class="fa-brands fa-facebook"></i>
         </a>
       </div>
     </div>
   </form>
-  <div class="mb-4d75">
+  <div class="mb-4d75" v-if="!checkout">
     <button
       class="js-animation-link btn btn-block py-3 rounded-0 btn-outline-dark font-weight-medium"
       @click="setting('signUpUser')"
@@ -95,7 +95,7 @@
       {{ $t('misc.New Account') }}
     </button>
   </div>
-  <div class="mb-4d75">
+  <div class="mb-4d75" v-if="!checkout">
     <a
       target="_blank"
       :href="PublisherLogin"
@@ -105,7 +105,7 @@
     </a>
   </div>
 
-  <div class="mb-4d75">
+  <div class="mb-4d75" v-if="!checkout">
     <a
       target="_blank"
       :href="PublisherRegister"
@@ -126,6 +126,7 @@
 import { useStore } from 'vuex'
 import { reactive, ref } from 'vue'
 export default {
+  props: ['checkout'],
   computed: {
     loginMessage() {
       return this.$store.getters.status

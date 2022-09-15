@@ -1,5 +1,5 @@
 <template>
-  <header class="border-bottom px-4 px-md-6 py-4">
+  <header class="border-bottom px-4 px-md-6 py-4" v-if="!checkout">
     <h2 class="font-size-3 mb-0 d-flex align-items-center">
       <i
         class="flaticon-resume font-size-5"
@@ -130,7 +130,7 @@
         </div>
       </div>
       <div class="error-msg mb-4">{{ registerErr }}</div>
-      <div class="mb-4d75">
+      <div class="mb-4d75" v-if="!checkout">
         <button type="submit" class="btn btn-block py-3 rounded-0 btn-dark">
           {{ $t('misc.Create account') }}
         </button>
@@ -149,7 +149,7 @@
             </a>
           </div>
         </div>
-        <div class="text-center mb-4">
+        <div class="text-center mb-4" v-if="!checkout">
           <span class="small text-muted">
             {{ $t('misc.Already have an account?') }}
           </span>
@@ -178,7 +178,7 @@ import {
 } from '@vuelidate/validators'
 import axios from 'axios'
 export default {
-  props: ['urlRoute'],
+  props: ['urlRoute', 'checkout'],
   data() {
     return {
       countries: null,
