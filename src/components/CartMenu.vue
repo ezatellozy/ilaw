@@ -101,7 +101,15 @@
                       </div>
                     </div>
                     <div class="mt-3 ml-3">
+                      <div
+                        class="spinner-border text-danger"
+                        role="status"
+                        v-if="loading"
+                      >
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
                       <a
+                        v-else
                         role="button"
                         href="#"
                         @click="removeItem(item)"
@@ -148,7 +156,7 @@ export default {
       this.$emit('closeMenu')
     },
     removeItem(item) {
-      this.$store.commit('removeItem', item)
+      this.$store.dispatch('removeItem', item)
     },
   },
   mounted() {},
@@ -162,6 +170,9 @@ export default {
     },
     currency() {
       return this.$store.getters.currency
+    },
+    loading() {
+      return this.$store.getters.loading
     },
     cart() {
       return this.$store.getters.cart
@@ -198,5 +209,9 @@ export default {
 .bookimg {
   width: 200px;
   height: 200px;
+}
+.spinner-border {
+  width: 1rem;
+  height: 1rem;
 }
 </style>

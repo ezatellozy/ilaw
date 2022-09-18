@@ -103,7 +103,7 @@ export default {
         alert('Stripe V3 library not loaded!')
       } else {
         const stripe = window.Stripe(
-          'pk_test_51LD4NMCFpxZuZ7GgdEHTVS4ZeguXdH79wvjEa9Fpy68KVD9pwkgJ4iwa3k9vK7M2nvY2giHrXGYoLPWjZJjSStRm0078bwyXVe',
+          'pk_test_51LD4NMCFpxZuZ7GgNPGY3aKFzMLXWGhog8vVVdtYBUFgYFgdbUrCZqkervSM9XmuHVQU546nACdxEj0anqvhCvkq00YsoK9vLX',
         )
         this.stripe = stripe
 
@@ -184,25 +184,53 @@ export default {
       //     //send the token to your server
       //     //clear the inputs
       //   }
-      this.stripe
-        .createPaymentMethod({
-          type: 'card',
-          card: this.cardNumber,
-          billing_details: {
-            name: 'Jenny Rosen',
-          },
-        })
-        .then((result) => {
-          console.log(result)
-        })
-      console.log(this.stripe)
-      let amount = 1000
-      this.stripe.paymentIntents({
-        amount,
-        currency: 'usd',
-        payment_method_types: ['card'],
-        metadata: { uid: 'some_userID' },
+
+      this.stripe.createToken(this.cardNumber).then((result) => {
+        if (result.error) {
+          this.stripeValidationError = result.error.message
+        } else if (result.token) {
+          console.log('token', result.token)
+
+          // let user = this.stripe.customers.create({
+          //   email: 'xxxx@gmail.com',
+          //   payment_method: result.token.id,
+          // })
+          // console.log(this.stripe)
+          // this.stripe.createPaymentMethod({
+          //   amount: 25 * 100, // $25
+          //   currency: 'usd',
+          //   // customer: user,
+          // })
+        }
       })
+
+      //  this.stripe
+      //   .createPaymentMethod({
+      //     type: 'card',
+      //     card: this.cardNumber,
+      //     billing_details: {
+      //       name: 'Jenny Rosen',
+      //     },
+      //   })
+      //   .then((result) => {
+      //     console.log(result)
+
+      //     const stripe = require('stripe')('sk_test_xxxxxxxxxxxxxxxxxxxxx');
+      //     let user =  stripe.customers.create({ email: 'ezat@gmail.com', payment_method: token });
+      //      stripe.paymentIntents.create({
+      //       amount: 25 * 100, // $25
+      //       currency: 'usd',
+      //       customer: user
+      //     })
+      //   })
+      // console.log(this.stripe)
+      // let amount = 1000
+      // this.stripe.updatePaymentIntent({
+      //   amount,
+      //   currency: 'usd',
+      //   payment_method_types: ['card'],
+      //   metadata: { uid: 'some_userID' },
+      // })
       // this.stripe
       //   .retrievePaymentIntent(
       //     'pi_1EnkCdCLU6thghKmdb4hLYsy_secret_QSwO5XeANoP2d6gJXOlV8i6pH',

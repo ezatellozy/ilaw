@@ -25,6 +25,7 @@
     "company name": "Company name",
     "cardNumber": "Card number",
     "Exp Year": "Exp Year",
+    "Exp date": "Exp date",
     "Exp Month": "Exp Month",
     "Place order": "Place order",
     "cvv": "CVV"

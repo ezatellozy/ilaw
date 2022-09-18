@@ -24,6 +24,7 @@ export default createStore({
     cart: JSON.parse(localStorage.getItem('cart')) || [],
     phoneStatus: '',
     emailStatus: '',
+    loading:false,
     usernamestatus: '',
     washlist: JSON.parse(localStorage.getItem('washlist')) || [],
     token: Cookies.get('token') || null,
@@ -35,6 +36,7 @@ export default createStore({
     currency: (state) => state.currency,
     status: (state) => state.status,
     settings: (state) => state.settings,
+    loading: (state) => state.loading,
     totalPrice: (state) => {
       return `${state.cart.reduce((a, b) => +a + +b.totalPrice, 0)}`
     },
@@ -56,6 +58,10 @@ export default createStore({
     updateUser(state, payload) {
       state.user = payload
     },
+    setLoading(state, payload) {
+      state.loading = payload
+    },
+
     addToCart(state, product) {
       if (state.token) {
         let obj = { cart: [] }
@@ -99,23 +105,7 @@ export default createStore({
       }
       updateLocaleStorage(state.cart)
     },
-    removeItem(state, product) {
-      console.log(product)
-      if (state.token) {
-        axios.get(`/user/orders/cart/removeItem/${product.id}`).then((data) => {
-          updateLocaleStorage(data.data.data.items)
-          state.cart = data.data.data.items
-        }) 
-        return
-      }
-      let item = state.cart.filter((el) => el.book.id !== product.book.id)
-      let cItem = state.cart.filter((el) => el.id == product.id)
-      let removed = cItem.filter((el) => el.book_type != product.book_type)
-      let newItems = []
-      newItems.push(...item, ...removed)
-      updateLocaleStorage(newItems)
-      state.cart = JSON.parse(localStorage.getItem('cart'))
-    },
+
     cart(state, cart) {
       state.cart = cart
     },
@@ -229,7 +219,6 @@ export default createStore({
 
             if (context.state.cart.length) {
               let obj = { cart: [] }
-
               context.state.cart.forEach((element) => {
                 obj.cart.push(element)
               })
@@ -245,7 +234,6 @@ export default createStore({
                       user: JSON.parse(localStorage.getItem('user')).id,
                     },
                   }).then((data) => {
-                    console.log(data.data.data)
                     updateLocaleStorage(data.data.data.items)
                     setTimeout(() => {
                       window.location.reload()
@@ -258,8 +246,10 @@ export default createStore({
                   user: JSON.parse(localStorage.getItem('user')).id,
                 },
               }).then((data) => {
-                console.log(data.data.data.items)
-                updateLocaleStorage(data.data.data.items)
+                if (data.data.data.items) {
+                 
+                  updateLocaleStorage(data.data.data.items)
+               }
                 setTimeout(() => {
                   window.location.reload()
                 }, 300)
@@ -280,7 +270,25 @@ export default createStore({
           })
       })
     },
-
+    removeItem(context, product) {
+      context.commit('setLoading', true)
+      if (context.state.token) {
+        axios.get(`/user/orders/cart/removeItem/${product.id}`).then((data) => {
+          updateLocaleStorage(data.data.data.items)
+          context.state.cart = data.data.data.items
+        }).finally(() => {
+          context.commit('setLoading', false)
+        })
+        return
+      }
+      let item = context.state.cart.filter((el) => el.book.id !== product.book.id)
+      let cItem = context.state.cart.filter((el) => el.id == product.id)
+      let removed = cItem.filter((el) => el.book_type != product.book_type)
+      let newItems = []
+      newItems.push(...item, ...removed)
+      updateLocaleStorage(newItems)
+      context.state.cart = JSON.parse(localStorage.getItem('cart'))
+    },
     register(context, [user, url]) {
       return new Promise((resolve, reject) => {
         context.commit('auth_request')
@@ -331,6 +339,12 @@ export default createStore({
         console.log(reject)
       })
     },
+    // getCart(context) {
+    //   this.axios.get('/user/orders/cart/myCart').then((data) => {
+    //     context.commit('cart' ,data.data.data)
+      
+    //   })
+    // }
   },
   modules: {},
 })

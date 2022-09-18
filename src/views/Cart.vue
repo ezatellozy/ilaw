@@ -200,7 +200,17 @@
                                 </span>
                               </td>
                               <td class="product-remove">
+                                <div
+                                  class="spinner-border text-danger"
+                                  role="status"
+                                  v-if="loading"
+                                >
+                                  <span class="visually-hidden">
+                                    Loading...
+                                  </span>
+                                </div>
                                 <a
+                                  v-else
                                   href="#"
                                   role="button"
                                   @click="removeItem(item)"
@@ -360,7 +370,7 @@
                   href="/checkout"
                   class="checkout-button button text-center alt wc-forward btn btn-dark btn-block rounded-0 py-4"
                 >
-                  {{ $t('misc.select addresses') }}
+                  {{ $t('misc.next') }}
                 </a>
               </div>
             </div>
@@ -393,19 +403,27 @@ export default {
     }
   },
   computed: {
-    // cart() {
-    //   return this.$store.getters.cart
-    // },
     currency() {
       return this.$store.getters.currency
     },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn
     },
+    loading() {
+      return this.$store.getters.loading
+    },
+  },
+  watch: {
+    loading(val) {
+      if (val) {
+        this.getCart()
+      }
+    },
   },
   methods: {
-    removeItem(item) {
-      this.$store.commit('removeItem', item)
+    async removeItem(item) {
+      this.$store.dispatch('removeItem', item)
+
       this.$nextTick(() => {
         this.getCart()
       })
