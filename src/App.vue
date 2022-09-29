@@ -12,6 +12,14 @@
     </router-view>
 
     <Footer :categories="categories" />
+    <teleport to="body">
+      <Popup
+        v-if="popup"
+        @close-popup="closePopup"
+        :mode="popupMode"
+        :msg="message"
+      />
+    </teleport>
   </div>
 </template>
 
@@ -22,6 +30,7 @@ import Navbar from './components/Navbar.vue'
 
 import Footer from './components/Footer.vue'
 import Cookies from 'js-cookie'
+
 export default {
   components: { MainHeader, Navbar, Footer, Breadcrumb },
   data() {
@@ -56,12 +65,26 @@ export default {
         this.$store.commit('settings', data.data.data)
       })
     },
+    closePopup() {
+      this.$store.commit('closePopup')
+    },
   },
 
   mounted() {
     this.getSettings()
     this.getCountryCode()
     this.getMainGategories()
+  },
+  computed: {
+    popup() {
+      return this.$store.getters.popup
+    },
+    message() {
+      return this.$store.getters.message
+    },
+    popupMode() {
+      return this.$store.getters.popupMode
+    },
   },
 }
 </script>

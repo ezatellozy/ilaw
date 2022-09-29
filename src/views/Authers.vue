@@ -18,7 +18,9 @@
         <div class="author__body text-center mb-2">
           <!-- <h2 class="author__name h6 mb-0">{{ cardtitle }}</h2> -->
           <div class="text-gray-700 font-size-2 text-center">
-            {{ writer.name }}
+            <router-link :to="`/author/${writer.id}`">
+              {{ writer.name }}
+            </router-link>
           </div>
         </div>
       </div>

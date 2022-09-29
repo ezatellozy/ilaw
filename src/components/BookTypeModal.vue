@@ -1,4 +1,12 @@
 <template>
+  <teleport to="body">
+    <Popup
+      v-if="popup"
+      @close-popup="closePopup"
+      mode="success"
+      :msg="message"
+    />
+  </teleport>
   <div
     class="modal d-block bookinfoModal"
     :class="$i18n.locale == 'ar' ? 'is-rtl' : ''"
@@ -307,17 +315,12 @@
 
 <script>
 import { reactive } from 'vue'
-import { inject } from 'vue'
+// import { inject } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
 export default {
   props: ['book'],
   emits: ['closemodal'],
-  //   methods: {
-  //     closemodal() {
-  //       this.$emit('closemodal')
-  //     },
-  //   },
   computed: {
     cartQuantity() {
       return this.$store.getters.totalQuantity
@@ -325,12 +328,19 @@ export default {
     currency() {
       return this.$store.getters.currency
     },
+    popup() {
+      return this.$store.getters.popup
+    },
+    message() {
+      return this.$store.getters.message
+    },
+    popupMode() {
+      return this.$store.getters.popupMode
+    },
   },
   setup(props, { emit }) {
     const store = useStore()
-    const toast = inject('toast')
     const { t } = useI18n()
-
     const item = reactive({
       // id: route.params.id,
       quntity: 1,
@@ -368,11 +378,24 @@ export default {
       item.totalPrice = item.price * item.quntity
 
       store.commit('addToCart', item)
-      toast.success(t('misc.addSuccess'))
+      store.commit('message', t('misc.addSuccess'))
+      store.commit('popupMode', 'success')
+      store.commit('popup')
+
       emit('closemodal')
     }
+    function closePopup() {
+      store.commit('closePopup')
+    }
+    return {
+      item,
+      qtyPlus,
 
-    return { item, qtyPlus, qtyMinus, addToCart, closemodal }
+      qtyMinus,
+      addToCart,
+      closemodal,
+      closePopup,
+    }
   },
 }
 </script>

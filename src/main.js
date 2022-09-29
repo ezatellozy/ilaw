@@ -6,6 +6,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import BaseCard from '@/components/ui/BaseCard.vue'
+import Popup from '@/components/ui/Popup.vue'
 import './style/main.scss'
 // import './style/theme.scss'
 import BootstrapVue3 from 'bootstrap-vue-3'
@@ -75,6 +76,7 @@ app.config.globalProperties.PublisherRegister = PublisherRegister
 
 app.component('FontAwesomeIcon', FontAwesomeIcon)
 app.component('BaseCard', BaseCard)
+app.component('Popup', Popup)
 app.use(BootstrapVue3)
 app.use(VueAxios, axios)
 app.use(store)

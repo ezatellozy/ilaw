@@ -37,343 +37,382 @@
             </h1>
           </header>
 
-          <div class="row pb-8">
-            <div id="primary" class="content-area col-lg-8 mb-4 mb-lg-0">
-              <main id="main" class="site-main">
-                <div class="page type-page status-publish hentry">
-                  <!-- .entry-header -->
-                  <div class="entry-content">
-                    <div class="woocommerce">
-                      <form
-                        class="woocommerce-cart-form table-responsive"
-                        @submit.prevent
-                      >
-                        <table
-                          class="shop_table shop_table_responsive cart woocommerce-cart-form__contents"
-                        >
-                          <thead>
-                            <tr>
-                              <th class="product-name">
-                                {{ $t('misc.Product') }}
-                              </th>
-                              <th class="product-price">
-                                {{ $t('misc.Price') }}
-                              </th>
-                              <th class="product-quantity">
-                                {{ $t('misc.Quantity') }}
-                              </th>
-                              <th class="product-subtotal">
-                                {{ $t('misc.total') }}
-                              </th>
-                              <th class="product-remove">&nbsp;</th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            <tr
-                              class="woocommerce-cart-form__cart-item cart_item"
-                              v-for="item in cart.items"
-                              :key="item.id"
+          <div class="row pb-8" v-if="cart">
+            <div v-if="cart.items">
+              <div v-if="cart.items.length">
+                <div class="row">
+                  <div id="primary" class="content-area col-lg-8 mb-4 mb-lg-0">
+                    <main id="main" class="site-main">
+                      <div class="page type-page status-publish hentry">
+                        <!-- .entry-header -->
+                        <div class="entry-content">
+                          <div class="woocommerce">
+                            <form
+                              class="woocommerce-cart-form table-responsive"
+                              @submit.prevent
                             >
-                              <td class="product-name" data-title="Product">
-                                <div class="d-flex align-items-center">
-                                  <a :href="`/book/${item.book.id}`">
-                                    <img
-                                      :src="item.book.photo"
-                                      class="attachment-shop_thumbnail size-shop_thumbnail wp-post-image"
-                                      alt=""
-                                    />
-                                  </a>
-                                  <div
-                                    class="m-w-200-lg-down"
-                                    :class="
-                                      $i18n.locale == 'ar' ? 'mr-3' : 'ml-3'
-                                    "
-                                  >
-                                    <a :href="`/book/${item.book.id}`">
-                                      {{ item.book.name }}
-                                    </a>
-                                    <a
-                                      :href="`/author/${item.book.writer.id}`"
-                                      class="text-gray-700 font-size-2 d-block"
-                                      tabindex="0"
-                                    >
-                                      {{ item.book.writer.name }}
-                                    </a>
-                                  </div>
-                                </div>
-                              </td>
-
-                              <td class="product-price" data-title="Price">
-                                <span
-                                  class="woocommerce-Price-amount amount"
-                                  v-if="currency"
-                                >
-                                  <span
-                                    class="woocommerce-Price-currencySymbol"
-                                  >
-                                    {{ item.price }}
-                                  </span>
-                                  {{ currency.sympl }}
-                                </span>
-                              </td>
-
-                              <td
-                                class="product-quantity"
-                                data-title="Quantity"
+                              <table
+                                class="shop_table shop_table_responsive cart woocommerce-cart-form__contents"
                               >
-                                <div class="quantity d-flex align-items-center">
-                                  <!-- Quantity -->
-                                  <div class="border px-3 width-120">
-                                    <div class="js-quantity">
-                                      <div class="d-flex align-items-center">
-                                        <label
-                                          class="screen-reader-text sr-only"
-                                        >
-                                          {{ $t('misc.Quantity') }}
-                                        </label>
-                                        <a
-                                          class="js-minus text-dark"
-                                          href="javascript:;"
-                                          role="button"
-                                          @click="removeItemByOne(item)"
-                                        >
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            width="10px"
-                                            height="1px"
-                                          >
-                                            <path
-                                              fill-rule="evenodd"
-                                              fill="rgb(22, 22, 25)"
-                                              d="M-0.000,-0.000 L10.000,-0.000 L10.000,1.000 L-0.000,1.000 L-0.000,-0.000 Z"
-                                            />
-                                          </svg>
-                                        </a>
-                                        <input
-                                          type="number"
-                                          class="input-text qty text js-result form-control text-center border-0"
-                                          step="1"
-                                          min="1"
-                                          max="100"
-                                          name="quantity"
-                                          :value="item.quntity"
-                                          title="Qty"
-                                        />
-                                        <a
-                                          class="js-plus text-dark"
-                                          role="button"
-                                          @click="addToCart(item)"
-                                        >
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            width="10px"
-                                            height="10px"
-                                          >
-                                            <path
-                                              fill-rule="evenodd"
-                                              fill="rgb(22, 22, 25)"
-                                              d="M10.000,5.000 L6.000,5.000 L6.000,10.000 L5.000,10.000 L5.000,5.000 L-0.000,5.000 L-0.000,4.000 L5.000,4.000 L5.000,-0.000 L6.000,-0.000 L6.000,4.000 L10.000,4.000 L10.000,5.000 Z"
-                                            />
-                                          </svg>
-                                        </a>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!-- End Quantity -->
-                                </div>
-                              </td>
+                                <thead>
+                                  <tr>
+                                    <th class="product-name">
+                                      {{ $t('misc.Product') }}
+                                    </th>
+                                    <th class="product-price">
+                                      {{ $t('misc.Price') }}
+                                    </th>
+                                    <th class="product-quantity">
+                                      {{ $t('misc.Quantity') }}
+                                    </th>
+                                    <th class="product-subtotal">
+                                      {{ $t('misc.total') }}
+                                    </th>
+                                    <th class="product-remove">&nbsp;</th>
+                                  </tr>
+                                </thead>
 
-                              <td class="product-subtotal">
+                                <tbody>
+                                  <tr
+                                    class="woocommerce-cart-form__cart-item cart_item"
+                                    v-for="item in cart.items"
+                                    :key="item.id"
+                                  >
+                                    <td
+                                      class="product-name"
+                                      data-title="Product"
+                                    >
+                                      <div class="d-flex align-items-center">
+                                        <a :href="`/book/${item.book.id}`">
+                                          <img
+                                            :src="item.book.photo"
+                                            class="attachment-shop_thumbnail size-shop_thumbnail wp-post-image"
+                                            alt=""
+                                          />
+                                        </a>
+                                        <div
+                                          class="m-w-200-lg-down"
+                                          :class="
+                                            $i18n.locale == 'ar'
+                                              ? 'mr-3'
+                                              : 'ml-3'
+                                          "
+                                        >
+                                          <a :href="`/book/${item.book.id}`">
+                                            {{ item.book.name }}
+                                          </a>
+                                          <a
+                                            :href="`/author/${item.book.writer.id}`"
+                                            class="text-gray-700 font-size-2 d-block"
+                                            tabindex="0"
+                                          >
+                                            {{ item.book.writer.name }}
+                                          </a>
+                                        </div>
+                                      </div>
+                                    </td>
+
+                                    <td
+                                      class="product-price"
+                                      data-title="Price"
+                                    >
+                                      <span
+                                        class="woocommerce-Price-amount amount"
+                                        v-if="currency"
+                                      >
+                                        <span
+                                          class="woocommerce-Price-currencySymbol"
+                                        >
+                                          {{ item.price }}
+                                        </span>
+                                        {{ currency.sympl }}
+                                      </span>
+                                    </td>
+
+                                    <td
+                                      class="product-quantity"
+                                      data-title="Quantity"
+                                    >
+                                      <div
+                                        class="quantity d-flex align-items-center"
+                                      >
+                                        <!-- Quantity -->
+                                        <div class="border px-3 width-120">
+                                          <div class="js-quantity">
+                                            <div
+                                              class="d-flex align-items-center"
+                                            >
+                                              <label
+                                                class="screen-reader-text sr-only"
+                                              >
+                                                {{ $t('misc.Quantity') }}
+                                              </label>
+                                              <button
+                                                class="js-minus bg-transparent text-dark p-0 border-0"
+                                                role="button"
+                                                :disabled="loading1"
+                                                @click="removeItemByOne(item)"
+                                              >
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                  width="10px"
+                                                  height="1px"
+                                                >
+                                                  <path
+                                                    fill-rule="evenodd"
+                                                    fill="rgb(22, 22, 25)"
+                                                    d="M-0.000,-0.000 L10.000,-0.000 L10.000,1.000 L-0.000,1.000 L-0.000,-0.000 Z"
+                                                  />
+                                                </svg>
+                                              </button>
+                                              <input
+                                                type="number"
+                                                class="input-text qty text js-result form-control text-center border-0"
+                                                step="1"
+                                                min="1"
+                                                max="100"
+                                                name="quantity"
+                                                :value="item.quntity"
+                                                title="Qty"
+                                              />
+                                              <button
+                                                class="js-plus bg-transparent p-0 border-0 text-dark"
+                                                role="button"
+                                                @click="addItemByOne(item)"
+                                                :disabled="loading1"
+                                              >
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                  width="10px"
+                                                  height="10px"
+                                                >
+                                                  <path
+                                                    fill-rule="evenodd"
+                                                    fill="rgb(22, 22, 25)"
+                                                    d="M10.000,5.000 L6.000,5.000 L6.000,10.000 L5.000,10.000 L5.000,5.000 L-0.000,5.000 L-0.000,4.000 L5.000,4.000 L5.000,-0.000 L6.000,-0.000 L6.000,4.000 L10.000,4.000 L10.000,5.000 Z"
+                                                  />
+                                                </svg>
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <!-- End Quantity -->
+                                      </div>
+                                    </td>
+
+                                    <td class="product-subtotal">
+                                      <span
+                                        class="woocommerce-Price-amount amount"
+                                        v-if="currency"
+                                      >
+                                        <span
+                                          class="woocommerce-Price-currencySymbol"
+                                        >
+                                          {{ item.totalPrice }}
+                                        </span>
+                                        {{ currency.sympl }}
+                                      </span>
+                                    </td>
+                                    <td class="product-remove">
+                                      <div
+                                        class="spinner-border text-danger"
+                                        role="status"
+                                        v-if="loading"
+                                      >
+                                        <span class="visually-hidden">
+                                          Loading...
+                                        </span>
+                                      </div>
+                                      <a
+                                        v-else
+                                        href="#"
+                                        role="button"
+                                        @click="removeItem(item)"
+                                        class="remove"
+                                        aria-label="Remove this item"
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                                          width="15px"
+                                          height="15px"
+                                        >
+                                          <path
+                                            fill-rule="evenodd"
+                                            fill="rgb(22, 22, 25)"
+                                            d="M15.011,13.899 L13.899,15.012 L7.500,8.613 L1.101,15.012 L-0.012,13.899 L6.387,7.500 L-0.012,1.101 L1.101,-0.012 L7.500,6.387 L13.899,-0.012 L15.011,1.101 L8.613,7.500 L15.011,13.899 Z"
+                                          />
+                                        </svg>
+                                      </a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </form>
+                          </div>
+                        </div>
+                        <!-- .entry-content -->
+                      </div>
+                    </main>
+                  </div>
+                  <div
+                    id="secondary"
+                    class="sidebar cart-collaterals order-1 col-lg-4"
+                    role="complementary"
+                  >
+                    <b-accordion>
+                      <b-accordion-item
+                        :title="$t('misc.Cart Totals')"
+                        visible
+                        v-if="cart.coupon_code == ''"
+                      >
+                        <table class="shop_table shop_table_responsive">
+                          <tbody>
+                            <tr class="cart-subtotal">
+                              <th>{{ $t('misc.Subtotal:') }}</th>
+                              <td data-title="Subtotal">
                                 <span
                                   class="woocommerce-Price-amount amount"
                                   v-if="currency"
                                 >
-                                  <span
-                                    class="woocommerce-Price-currencySymbol"
-                                  >
-                                    {{ item.totalPrice }}
-                                  </span>
-                                  {{ currency.sympl }}
+                                  {{ cart.total }} {{ currency.sympl }}
                                 </span>
-                              </td>
-                              <td class="product-remove">
-                                <div
-                                  class="spinner-border text-danger"
-                                  role="status"
-                                  v-if="loading"
-                                >
-                                  <span class="visually-hidden">
-                                    Loading...
-                                  </span>
-                                </div>
-                                <a
-                                  v-else
-                                  href="#"
-                                  role="button"
-                                  @click="removeItem(item)"
-                                  class="remove"
-                                  aria-label="Remove this item"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    width="15px"
-                                    height="15px"
-                                  >
-                                    <path
-                                      fill-rule="evenodd"
-                                      fill="rgb(22, 22, 25)"
-                                      d="M15.011,13.899 L13.899,15.012 L7.500,8.613 L1.101,15.012 L-0.012,13.899 L6.387,7.500 L-0.012,1.101 L1.101,-0.012 L7.500,6.387 L13.899,-0.012 L15.011,1.101 L8.613,7.500 L15.011,13.899 Z"
-                                    />
-                                  </svg>
-                                </a>
                               </td>
                             </tr>
                           </tbody>
                         </table>
-                      </form>
+                      </b-accordion-item>
+
+                      <b-accordion-item
+                        :title="$t('misc.Coupon')"
+                        visible
+                        v-if="!cart.coupon_code"
+                      >
+                        <div
+                          class="coupon"
+                          :class="
+                            $i18n.locale == 'ar'
+                              ? 'd-flex justify-content-between '
+                              : ''
+                          "
+                        >
+                          <label for="coupon_code">
+                            {{ $t('misc.Coupon') }}
+                          </label>
+                          <input
+                            type="text"
+                            name="coupon_code"
+                            class="input-text"
+                            v-model="coupon"
+                            id="coupon_code"
+                            :placeholder="$t('misc.Coupon code')"
+                            autocomplete="off"
+                          />
+                          <input
+                            type="submit"
+                            class="button"
+                            name="apply_coupon"
+                            @click="applyCoupon"
+                            :disabled="coupon == ''"
+                            :value="$t('buttons.Apply coupon')"
+                          />
+                        </div>
+                        <p class="errMsg" v-if="errMsg">{{ errMsg }}</p>
+                      </b-accordion-item>
+                    </b-accordion>
+                    <div class="border border-gray-900 bg-white mb-5">
+                      <div class="p-4d875 border">
+                        <table class="shop_table shop_table_responsive">
+                          <tbody>
+                            <tr class="order-total">
+                              <th class="py-2">{{ $t('misc.total') }}</th>
+                              <td class="py-2">
+                                <strong>
+                                  <span class="woocommerce-Price-amount amount">
+                                    <span
+                                      class="woocommerce-Price-currencySymbol"
+                                      v-if="currency"
+                                    >
+                                      {{ cart.total }} {{ currency.sympl }}
+                                    </span>
+                                  </span>
+                                </strong>
+                              </td>
+                            </tr>
+                            <tr class="order-total">
+                              <th class="py-2">{{ $t('misc.discount') }}</th>
+                              <td class="py-2">
+                                <strong>
+                                  <span class="woocommerce-Price-amount amount">
+                                    <span
+                                      class="woocommerce-Price-currencySymbol"
+                                      v-if="currency"
+                                    >
+                                      {{ cart.discount }} {{ currency.sympl }}
+                                    </span>
+                                  </span>
+                                  <button
+                                    class="btn text-danger"
+                                    v-if="cart.discount"
+                                    @click="removeCoupon"
+                                  >
+                                    <i class="fa-solid fa-xmark"></i>
+                                    {{ $t('misc.delete') }}
+                                  </button>
+                                </strong>
+                              </td>
+                            </tr>
+                            <tr class="order-total">
+                              <th class="py-2">{{ $t('misc.net price') }}</th>
+                              <td class="py-2">
+                                <strong>
+                                  <span class="woocommerce-Price-amount amount">
+                                    <span
+                                      class="woocommerce-Price-currencySymbol"
+                                      v-if="currency"
+                                    >
+                                      {{ cart.netTotal }} {{ currency.sympl }}
+                                    </span>
+                                  </span>
+                                </strong>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="wc-proceed-to-checkout">
+                      <a
+                        href="/checkout"
+                        class="checkout-button button text-center alt wc-forward btn btn-dark btn-block rounded-0 py-4"
+                      >
+                        {{ $t('misc.next') }}
+                      </a>
                     </div>
                   </div>
-                  <!-- .entry-content -->
-                </div>
-              </main>
-            </div>
-            <div
-              id="secondary"
-              class="sidebar cart-collaterals order-1 col-lg-4"
-              role="complementary"
-            >
-              <b-accordion>
-                <b-accordion-item
-                  :title="$t('misc.Cart Totals')"
-                  visible
-                  v-if="cart.coupon_code == ''"
-                >
-                  <table class="shop_table shop_table_responsive">
-                    <tbody>
-                      <tr class="cart-subtotal">
-                        <th>{{ $t('misc.Subtotal:') }}</th>
-                        <td data-title="Subtotal">
-                          <span
-                            class="woocommerce-Price-amount amount"
-                            v-if="currency"
-                          >
-                            {{ cart.total }} {{ currency.sympl }}
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </b-accordion-item>
-
-                <b-accordion-item
-                  :title="$t('misc.Coupon')"
-                  visible
-                  v-if="!cart.coupon_code"
-                >
-                  <div
-                    class="coupon"
-                    :class="
-                      $i18n.locale == 'ar'
-                        ? 'd-flex justify-content-between '
-                        : ''
-                    "
-                  >
-                    <label for="coupon_code">{{ $t('misc.Coupon') }}</label>
-                    <input
-                      type="text"
-                      name="coupon_code"
-                      class="input-text"
-                      v-model="coupon"
-                      id="coupon_code"
-                      :placeholder="$t('misc.Coupon code')"
-                      autocomplete="off"
-                    />
-                    <input
-                      type="submit"
-                      class="button"
-                      name="apply_coupon"
-                      @click="applyCoupon"
-                      :disabled="coupon == ''"
-                      :value="$t('buttons.Apply coupon')"
-                    />
-                  </div>
-                  <p class="errMsg" v-if="errMsg">{{ errMsg }}</p>
-                </b-accordion-item>
-              </b-accordion>
-              <div class="border border-gray-900 bg-white mb-5">
-                <div class="p-4d875 border">
-                  <table class="shop_table shop_table_responsive">
-                    <tbody>
-                      <tr class="order-total">
-                        <th class="py-2">{{ $t('misc.total') }}</th>
-                        <td class="py-2">
-                          <strong>
-                            <span class="woocommerce-Price-amount amount">
-                              <span
-                                class="woocommerce-Price-currencySymbol"
-                                v-if="currency"
-                              >
-                                {{ cart.total }} {{ currency.sympl }}
-                              </span>
-                            </span>
-                          </strong>
-                        </td>
-                      </tr>
-                      <tr class="order-total">
-                        <th class="py-2">{{ $t('misc.discount') }}</th>
-                        <td class="py-2">
-                          <strong>
-                            <span class="woocommerce-Price-amount amount">
-                              <span
-                                class="woocommerce-Price-currencySymbol"
-                                v-if="currency"
-                              >
-                                {{ cart.discount }} {{ currency.sympl }}
-                              </span>
-                            </span>
-                            <button
-                              class="btn text-danger"
-                              v-if="cart.discount"
-                              @click="removeCoupon"
-                            >
-                              <i class="fa-solid fa-xmark"></i>
-                              {{ $t('misc.delete') }}
-                            </button>
-                          </strong>
-                        </td>
-                      </tr>
-                      <tr class="order-total">
-                        <th class="py-2">{{ $t('misc.net price') }}</th>
-                        <td class="py-2">
-                          <strong>
-                            <span class="woocommerce-Price-amount amount">
-                              <span
-                                class="woocommerce-Price-currencySymbol"
-                                v-if="currency"
-                              >
-                                {{ cart.netTotal }} {{ currency.sympl }}
-                              </span>
-                            </span>
-                          </strong>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
                 </div>
               </div>
-              <div class="wc-proceed-to-checkout">
+              <div v-else>
+                <p>{{ $t('misc.cart is empty') }}</p>
                 <a
-                  href="/checkout"
-                  class="checkout-button button text-center alt wc-forward btn btn-dark btn-block rounded-0 py-4"
+                  href="/"
+                  class="btn btn-block py-4 rounded-0 btn-outline-dark mb-4"
                 >
-                  {{ $t('misc.next') }}
+                  {{ $t('buttons.Continue shopping') }}
                 </a>
               </div>
             </div>
+          </div>
+          <div v-else>
+            <p>{{ $t('misc.cart is empty') }}</p>
+            <a
+              href="/"
+              class="btn btn-block py-4 rounded-0 btn-outline-dark mb-4"
+            >
+              {{ $t('buttons.Continue shopping') }}
+            </a>
           </div>
         </div>
       </div>
@@ -395,6 +434,7 @@ export default {
       coupon: '',
       errMsg: '',
       cart: [],
+      loading1: false,
     }
   },
   mounted() {
@@ -428,11 +468,29 @@ export default {
         this.getCart()
       })
     },
-    addToCart(item) {
-      this.$store.commit('addToCartByOne', item)
-    },
+
     removeItemByOne(item) {
-      this.$store.commit('removeItemByOne', item)
+      this.loading1 = true
+      this.axios
+        .post(`/user/orders/cart/editItem/${item.id}`, { action: 'decrease' })
+        .then(() => {
+          if (item.quantity == 1) {
+            return
+          }
+        })
+        .finally(() => {
+          this.$nextTick(() => this.getCart())
+          this.loading1 = false
+        })
+    },
+    addItemByOne(item) {
+      this.loading1 = true
+      this.axios
+        .post(`/user/orders/cart/editItem/${item.id}`, { action: 'increase' })
+        .finally(() => {
+          this.$nextTick(() => this.getCart())
+          this.loading1 = false
+        })
     },
     applyCoupon() {
       this.axios

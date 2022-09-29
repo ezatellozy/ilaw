@@ -69,37 +69,6 @@
                           </select>
                         </div>
                       </div>
-                      <!-- <div class="form-group mb-4">
-                        <div class="js-form-message js-focus-state">
-                          <label
-                            id="signinEmailLabel"
-                            class="form-label"
-                            for="governorate"
-                          >
-                            {{ $t('misc.Governorate') }}
-                          </label>
-                          <select
-                            v-model="form.governorate"
-                            name="governorate"
-                            id="governorate"
-                            :disabled="!governments"
-                            required=""
-                            @change="getCities($event)"
-                            class="form-select rounded-0 height-4 px-4"
-                          >
-                            <option value="" disabled>
-                              {{ $t('misc.Select government') }}
-                            </option>
-                            <option
-                              v-for="government in governments"
-                              :key="government.id"
-                              :value="government.id"
-                            >
-                              {{ government.name }}
-                            </option>
-                          </select>
-                        </div>
-                      </div> -->
                       <div class="form-group mb-4">
                         <div class="js-form-message js-focus-state">
                           <label

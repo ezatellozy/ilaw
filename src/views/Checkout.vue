@@ -41,8 +41,8 @@
               </h4>
             </header>
             <!-- .entry-header -->
-            <div class="entry-content">
-              <div class="woocommerce d-block">
+            <div class="entry-content" v-if="cart">
+              <div class="woocommerce d-block" v-if="cart.items.length">
                 <div>
                   <form
                     name="checkout"
@@ -51,447 +51,427 @@
                     :class="needAddress ? '' : 'justify-content-center'"
                   >
                     <div
-                      class="col2-set col-md-6 col-lg-7 col-xl-8 mb-6 mb-md-0"
-                      id="customer_details"
-                      v-if="needAddress"
+                      class="col2-set col-md-7 col-lg-7 col-xl-8 mb-6 mb-md-0"
                     >
-                      <div
-                        class="addresses px-4 py-3 bg-white border"
-                        v-if="addresses"
-                      >
-                        <h2 class="fs-4 mb-3">
-                          {{ $t('misc.shipping addresses') }}
-                        </h2>
-                        <form>
-                          <div
-                            class="radio-check alert mb-2 alert-info"
-                            v-for="address in addresses"
-                            :key="address.id"
-                          >
-                            <input
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault1"
-                              :value="address.id"
-                              v-model="selectedAddress"
-                              @change="getShippingCost"
-                            />
-                            <label
-                              class="form-check-label d-block"
-                              for="flexRadioDefault1"
-                            >
-                              <bdi>{{ address.country.name }}</bdi>
-                              -
-                              <bdi>{{ address.address }}</bdi>
-                              -
-                              <bdi>{{ $t('misc.phonenumber') }} :</bdi>
-                              <bdi>{{ address.phone }}</bdi>
-                            </label>
-                          </div>
-                        </form>
-
-                        <button
-                          type="button"
-                          class="d-block btn"
-                          @click="newAddress = !newAddress"
-                        >
-                          <font-awesome-icon :icon="['fas', 'plus']" />
-                          <bdi class="mx-2">{{ $t('misc.New Address') }}</bdi>
-                        </button>
-                      </div>
-                      <transition name="fade">
+                      <div class="" id="customer_details" v-if="needAddress">
                         <div
-                          class="px-4 pt-5 bg-white border"
-                          v-if="addresses || newAddress"
+                          class="addresses px-4 py-3 bg-white border"
+                          v-if="addresses"
                         >
-                          <div
-                            class="woocommerce-billing-fields"
-                            v-if="addresses.length == 0 || newAddress"
-                          >
-                            <h3 class="mb-4 font-size-3">
-                              {{ $t('misc.Billing details') }}
-                            </h3>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label
-                                  id="signinEmailLabel"
-                                  class="form-label d-block"
-                                  for="country"
-                                >
-                                  {{ $t('misc.Country') }}
-                                </label>
-                                <select
-                                  name="country"
-                                  id="country"
-                                  required=""
-                                  v-model="form.country"
-                                  @change="getGovernment($event)"
-                                  class="form-select form-control rounded-0 height-4 px-4"
-                                >
-                                  <option value="" disabled>
-                                    {{ $t('misc.Select country') }}
-                                  </option>
-                                  <option
-                                    v-for="country in countries"
-                                    :key="country.id"
-                                    :value="country.id"
-                                  >
-                                    {{ country.name }}
-                                  </option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label
-                                  id="signinEmailLabel"
-                                  class="form-label d-block"
-                                  for="governorate"
-                                >
-                                  {{ $t('misc.Governorate') }}
-                                </label>
-                                <select
-                                  v-model="form.governorate"
-                                  name="governorate"
-                                  id="governorate"
-                                  :disabled="!governments"
-                                  required=""
-                                  @change="getCities($event)"
-                                  class="form-select form-control rounded-0 height-4 px-4"
-                                >
-                                  <option value="" disabled>
-                                    {{ $t('misc.Select government') }}
-                                  </option>
-                                  <option
-                                    v-for="government in governments"
-                                    :key="government.id"
-                                    :value="government.id"
-                                  >
-                                    {{ government.name }}
-                                  </option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label
-                                  id="signinEmailLabel"
-                                  class="form-label d-block"
-                                  for="city"
-                                >
-                                  {{ $t('misc.City') }}
-                                </label>
-                                <select
-                                  v-model="form.city"
-                                  name="city"
-                                  id="city"
-                                  required=""
-                                  :disabled="!cities"
-                                  class="form-select form-control rounded-0 height-4 px-4"
-                                >
-                                  <option value="" disabled>
-                                    {{ $t('misc.Select city') }}
-                                  </option>
-                                  <option
-                                    v-for="city in cities"
-                                    :key="city.id"
-                                    :value="city.id"
-                                  >
-                                    {{ city.name }}
-                                  </option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label class="form-label d-block" for="address">
-                                  {{ $t('misc.address') }}
-                                </label>
-                                <input
-                                  type="text"
-                                  class="form-control rounded-0 height-4 px-4"
-                                  name="address"
-                                  id="address"
-                                  :placeholder="
-                                    $t('placeholder.Enter Your Address')
-                                  "
-                                  required=""
-                                  v-model="form.address"
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label class="form-label d-block" for="city">
-                                  {{ $t('inputs.phone') }}
-                                </label>
-                                <input
-                                  type="phone"
-                                  class="form-control rounded-0 height-4 px-4"
-                                  :placeholder="
-                                    $t('placeholder.Please enter your phone')
-                                  "
-                                  v-model="form.phone"
-                                  required=""
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label
-                                  class="form-label d-block"
-                                  for="postalcode"
-                                >
-                                  {{ $t('inputs.Postal code') }}
-                                </label>
-                                <input
-                                  type="text"
-                                  class="form-control rounded-0 height-4 px-4"
-                                  name="postal code"
-                                  id="postalcode"
-                                  :placeholder="$t('inputs.Postal code')"
-                                  required=""
-                                  v-model="form.postal_code"
-                                />
-                              </div>
-                            </div>
-
-                            <div class="mb-4d75">
-                              <button
-                                type="submit"
-                                class="btn btn-block py-3 rounded-0 btn-dark"
-                              >
-                                {{ $t('buttons.Add New Address') }}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </transition>
-                    </div>
-                    <div
-                      class="col2-set col-md-6 col-lg-7 col-xl-8 mb-6 mb-md-0"
-                      id="customer_details"
-                    >
-                      <div
-                        class="payments px-4 py-3 bg-white border"
-                        v-if="paymentMethods"
-                      >
-                        <h2 class="fs-4 mb-3">
-                          {{ $t('misc.PaymentMethod') }}
-                        </h2>
-                        <form>
-                          <div
-                            class="radio-check alert mb-2 alert-info"
-                            v-for="paymentMethod in paymentMethods"
-                            :key="paymentMethod.id"
-                          >
-                            <input
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault1"
-                              :value="paymentMethod.id"
-                              v-model="selectedAddress"
-                              @change="getShippingCost"
-                            />
-                            <label
-                              class="form-check-label d-block"
-                              for="flexRadioDefault1"
+                          <h2 class="fs-4 mb-3">
+                            {{ $t('misc.shipping addresses') }}
+                          </h2>
+                          <form>
+                            <div
+                              class="radio-check alert mb-2 alert-info"
+                              v-for="address in addresses"
+                              :key="address.id"
                             >
-                              <div class="d-flex">
-                                <bdi>{{ $t('inputs.name') }} :</bdi>
-                                <bdi>{{ paymentMethod.name }}</bdi>
-                              </div>
-                              <div class="d-flex">
-                                <bdi>{{ $t('inputs.cardNumber') }} :</bdi>
-                                <bdi>{{ paymentMethod.card_number }}</bdi>
-                              </div>
-                              <div class="d-flex">
-                                <bdi>{{ $t('inputs.Exp date') }}</bdi>
-                                <bdi>{{ paymentMethod.card_date }}</bdi>
-                              </div>
-                            </label>
-                          </div>
-                        </form>
-
-                        <button
-                          type="button"
-                          class="d-block btn"
-                          @click="newPayment = !newPayment"
-                        >
-                          <font-awesome-icon :icon="['fas', 'plus']" />
-                          <bdi class="mx-2">
-                            {{ $t('misc.NewPaymentmethod') }}
-                          </bdi>
-                        </button>
-                      </div>
-                      <transition name="fade">
-                        <div
-                          class="px-4 pt-5 bg-white border"
-                          v-if="newPayment"
-                        >
-                          <div
-                            class="woocommerce-billing-fields"
-                            v-if="addresses.length == 0 || newAddress"
-                          >
-                            <h3 class="mb-4 font-size-3">
-                              {{ $t('misc.Billing details') }}
-                            </h3>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label
-                                  id="signinEmailLabel"
-                                  class="form-label d-block"
-                                  for="country"
-                                >
-                                  {{ $t('misc.Country') }}
-                                </label>
-                                <select
-                                  name="country"
-                                  id="country"
-                                  required=""
-                                  v-model="form.country"
-                                  @change="getGovernment($event)"
-                                  class="form-select form-control rounded-0 height-4 px-4"
-                                >
-                                  <option value="" disabled>
-                                    {{ $t('misc.Select country') }}
-                                  </option>
-                                  <option
-                                    v-for="country in countries"
-                                    :key="country.id"
-                                    :value="country.id"
-                                  >
-                                    {{ country.name }}
-                                  </option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label
-                                  id="signinEmailLabel"
-                                  class="form-label d-block"
-                                  for="governorate"
-                                >
-                                  {{ $t('misc.Governorate') }}
-                                </label>
-                                <select
-                                  v-model="form.governorate"
-                                  name="governorate"
-                                  id="governorate"
-                                  :disabled="!governments"
-                                  required=""
-                                  @change="getCities($event)"
-                                  class="form-select form-control rounded-0 height-4 px-4"
-                                >
-                                  <option value="" disabled>
-                                    {{ $t('misc.Select government') }}
-                                  </option>
-                                  <option
-                                    v-for="government in governments"
-                                    :key="government.id"
-                                    :value="government.id"
-                                  >
-                                    {{ government.name }}
-                                  </option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label
-                                  id="signinEmailLabel"
-                                  class="form-label d-block"
-                                  for="city"
-                                >
-                                  {{ $t('misc.City') }}
-                                </label>
-                                <select
-                                  v-model="form.city"
-                                  name="city"
-                                  id="city"
-                                  required=""
-                                  :disabled="!cities"
-                                  class="form-select form-control rounded-0 height-4 px-4"
-                                >
-                                  <option value="" disabled>
-                                    {{ $t('misc.Select city') }}
-                                  </option>
-                                  <option
-                                    v-for="city in cities"
-                                    :key="city.id"
-                                    :value="city.id"
-                                  >
-                                    {{ city.name }}
-                                  </option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label class="form-label d-block" for="address">
-                                  {{ $t('misc.address') }}
-                                </label>
-                                <input
-                                  type="text"
-                                  class="form-control rounded-0 height-4 px-4"
-                                  name="address"
-                                  id="address"
-                                  :placeholder="
-                                    $t('placeholder.Enter Your Address')
-                                  "
-                                  required=""
-                                  v-model="form.address"
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label class="form-label d-block" for="city">
-                                  {{ $t('inputs.phone') }}
-                                </label>
-                                <input
-                                  type="phone"
-                                  class="form-control rounded-0 height-4 px-4"
-                                  :placeholder="
-                                    $t('placeholder.Please enter your phone')
-                                  "
-                                  v-model="form.phone"
-                                  required=""
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group mb-4">
-                              <div class="js-form-message js-focus-state">
-                                <label
-                                  class="form-label d-block"
-                                  for="postalcode"
-                                >
-                                  {{ $t('inputs.Postal code') }}
-                                </label>
-                                <input
-                                  type="text"
-                                  class="form-control rounded-0 height-4 px-4"
-                                  name="postal code"
-                                  id="postalcode"
-                                  :placeholder="$t('inputs.Postal code')"
-                                  required=""
-                                  v-model="form.postal_code"
-                                />
-                              </div>
-                            </div>
-
-                            <div class="mb-4d75">
-                              <button
-                                type="submit"
-                                class="btn btn-block py-3 rounded-0 btn-dark"
+                              <input
+                                type="radio"
+                                name="flexRadioDefault"
+                                id="flexRadioDefault1"
+                                :value="address.id"
+                                v-model="selectedAddress"
+                                @change="
+                                  {
+                                    getShippingCost, checkDisabled
+                                  }
+                                "
+                              />
+                              <label
+                                class="form-check-label d-block"
+                                for="flexRadioDefault1"
                               >
-                                {{ $t('buttons.Add New Address') }}
-                              </button>
+                                <bdi>{{ address.country.name }}</bdi>
+                                -
+                                <bdi>{{ address.address }}</bdi>
+                                -
+                                <bdi>{{ $t('misc.phonenumber') }} :</bdi>
+                                <bdi>{{ address.phone }}</bdi>
+                              </label>
+                            </div>
+                          </form>
+
+                          <button
+                            type="button"
+                            class="d-block btn"
+                            @click="newAddress = !newAddress"
+                          >
+                            <font-awesome-icon :icon="['fas', 'plus']" />
+                            <bdi class="mx-2">{{ $t('misc.New Address') }}</bdi>
+                          </button>
+                        </div>
+                        <transition name="fade">
+                          <div
+                            class="px-4 pt-5 bg-white border"
+                            v-if="addresses || newAddress"
+                          >
+                            <div
+                              class="woocommerce-billing-fields"
+                              v-if="addresses.length == 0 || newAddress"
+                            >
+                              <h3 class="mb-4 font-size-3">
+                                {{ $t('misc.Billing details') }}
+                              </h3>
+                              <div class="form-group mb-4">
+                                <div class="js-form-message js-focus-state">
+                                  <label
+                                    id="signinEmailLabel"
+                                    class="form-label d-block"
+                                    for="country"
+                                  >
+                                    {{ $t('misc.Country') }}
+                                  </label>
+                                  <select
+                                    name="country"
+                                    id="country"
+                                    required=""
+                                    v-model="form.country"
+                                    @change="getCities($event)"
+                                    class="form-select form-control rounded-0 height-4 px-4"
+                                  >
+                                    <option value="" disabled>
+                                      {{ $t('misc.Select country') }}
+                                    </option>
+                                    <option
+                                      v-for="country in countries"
+                                      :key="country.id"
+                                      :value="country.id"
+                                    >
+                                      {{ country.name }}
+                                    </option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="form-group mb-4">
+                                <div class="js-form-message js-focus-state">
+                                  <label
+                                    id="signinEmailLabel"
+                                    class="form-label d-block"
+                                    for="city"
+                                  >
+                                    {{ $t('misc.City') }}
+                                  </label>
+                                  <select
+                                    v-model="form.city"
+                                    name="city"
+                                    id="city"
+                                    required=""
+                                    :disabled="!cities"
+                                    class="form-select form-control rounded-0 height-4 px-4"
+                                  >
+                                    <option value="" disabled>
+                                      {{ $t('misc.Select city') }}
+                                    </option>
+                                    <option
+                                      v-for="city in cities"
+                                      :key="city"
+                                      :value="city"
+                                    >
+                                      {{ city }}
+                                    </option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="form-group mb-4">
+                                <div class="js-form-message js-focus-state">
+                                  <label
+                                    class="form-label d-block"
+                                    for="address"
+                                  >
+                                    {{ $t('misc.address') }}
+                                  </label>
+                                  <input
+                                    type="text"
+                                    class="form-control rounded-0 height-4 px-4"
+                                    name="address"
+                                    id="address"
+                                    :placeholder="
+                                      $t('placeholder.Enter Your Address')
+                                    "
+                                    required=""
+                                    v-model="form.address"
+                                  />
+                                </div>
+                              </div>
+                              <div class="form-group mb-4">
+                                <div class="js-form-message js-focus-state">
+                                  <label class="form-label d-block" for="city">
+                                    {{ $t('inputs.phone') }}
+                                  </label>
+                                  <input
+                                    type="phone"
+                                    class="form-control rounded-0 height-4 px-4"
+                                    :placeholder="
+                                      $t('placeholder.Please enter your phone')
+                                    "
+                                    v-model="form.phone"
+                                    required=""
+                                  />
+                                </div>
+                              </div>
+                              <div class="form-group mb-4">
+                                <div class="js-form-message js-focus-state">
+                                  <label
+                                    class="form-label d-block"
+                                    for="postalcode"
+                                  >
+                                    {{ $t('inputs.Postal code') }}
+                                  </label>
+                                  <input
+                                    type="text"
+                                    class="form-control rounded-0 height-4 px-4"
+                                    name="postal code"
+                                    id="postalcode"
+                                    :placeholder="$t('inputs.Postal code')"
+                                    required=""
+                                    v-model="form.postal_code"
+                                  />
+                                </div>
+                              </div>
+
+                              <div class="mb-4d75">
+                                <button
+                                  type="submit"
+                                  class="btn btn-block py-3 rounded-0 btn-dark"
+                                >
+                                  {{ $t('buttons.Add New Address') }}
+                                </button>
+                              </div>
                             </div>
                           </div>
+                        </transition>
+                        <div v-if="addressMsg">
+                          <p class="errMsg">
+                            {{ $t(`misc.${addressMsg}`) }}
+                          </p>
                         </div>
-                      </transition>
+                      </div>
+                      <div class="" id="customer_details">
+                        <div
+                          class="payments px-4 py-3 bg-white border"
+                          v-if="paymentMethods"
+                        >
+                          <h2 class="fs-4 mb-3">
+                            {{ $t('misc.PaymentMethod') }}
+                          </h2>
+                          <form>
+                            <div
+                              class="radio-check alert mb-2 alert-info"
+                              v-for="paymentMethod in paymentMethods"
+                              :key="paymentMethod.id"
+                            >
+                              <input
+                                type="radio"
+                                name="flexRadioDefault"
+                                id="flexRadioDefault1"
+                                :value="paymentMethod.id"
+                                v-model="selectedPayment"
+                                @change="checkDisabled"
+                              />
+                              <label
+                                class="form-check-label d-block"
+                                for="flexRadioDefault1"
+                              >
+                                <div class="d-flex flex-wrap mb-2">
+                                  <bdi>{{ $t('inputs.name') }} :</bdi>
+                                  <bdi>{{ paymentMethod.name }}</bdi>
+                                </div>
+                                <div class="d-flex flex-wrap mb-2">
+                                  <bdi>{{ $t('inputs.cardNumber') }} :</bdi>
+                                  <bdi>
+                                    {{ changeStr(paymentMethod.card_number) }}
+                                  </bdi>
+                                </div>
+                                <div class="d-flex flex-wrap mb-2">
+                                  <bdi>{{ $t('inputs.Exp date') }}</bdi>
+                                  <bdi>{{ paymentMethod.card_date }}</bdi>
+                                </div>
+                              </label>
+                            </div>
+                          </form>
+
+                          <button
+                            type="button"
+                            class="d-block btn"
+                            @click="newPayment = !newPayment"
+                          >
+                            <font-awesome-icon :icon="['fas', 'plus']" />
+                            <bdi class="mx-2">
+                              {{ $t('misc.NewPaymentmethod') }}
+                            </bdi>
+                          </button>
+                        </div>
+                        <transition name="fade">
+                          <div
+                            class="px-4 pt-5 bg-white border"
+                            v-if="newPayment"
+                          >
+                            <div
+                              class="woocommerce-billing-fields"
+                              v-if="paymentMethods.length == 0 || newPayment"
+                            >
+                              <h3 class="mb-4 font-size-3">
+                                {{ $t('misc.NewPaymentmethod') }}
+                              </h3>
+                              <div id="new-address">
+                                <div class="">
+                                  <div class="form-group mb-4">
+                                    <div class="js-form-message js-focus-state">
+                                      <label
+                                        class="form-label"
+                                        for="holder name"
+                                      >
+                                        {{ $t('inputs.name') }}
+                                      </label>
+                                      <input
+                                        type="text"
+                                        class="form-control rounded-0 height-4 px-4"
+                                        name="holder name"
+                                        id="holder name"
+                                        :placeholder="
+                                          $t('placeholder.card holder name')
+                                        "
+                                        required=""
+                                        v-model="paymentForm.name"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div class="form-group mb-4">
+                                    <div class="js-form-message js-focus-state">
+                                      <label
+                                        class="form-label"
+                                        for="cardNumber"
+                                      >
+                                        {{ $t('inputs.cardNumber') }}
+                                      </label>
+                                      <input
+                                        type="number"
+                                        class="form-control rounded-0 height-4 px-4"
+                                        name="cardNumber"
+                                        id="cardNumber"
+                                        :placeholder="$t('inputs.cardNumber')"
+                                        required=""
+                                        v-model="paymentForm.card_number"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div class="form-group mb-4">
+                                    <div class="row">
+                                      <div class="col-6">
+                                        <div
+                                          class="js-form-message js-focus-state"
+                                        >
+                                          <label
+                                            class="form-label"
+                                            for="Exp Year"
+                                          >
+                                            {{ $t('inputs.Exp Year') }}
+                                          </label>
+                                          <input
+                                            id="Exp Year"
+                                            type="number"
+                                            class="form-control rounded-0 height-4"
+                                            :placeholder="
+                                              $t('placeholder.Exp Year')
+                                            "
+                                            v-model="paymentForm.card_year"
+                                            required=""
+                                          />
+                                        </div>
+                                      </div>
+                                      <div class="col-6">
+                                        <div
+                                          class="js-form-message js-focus-state"
+                                        >
+                                          <label
+                                            class="form-label"
+                                            for="Exp Month"
+                                          >
+                                            {{ $t('inputs.Exp Month') }}
+                                          </label>
+                                          <input
+                                            id="Exp Month"
+                                            type="number"
+                                            class="form-control rounded-0 height-4"
+                                            :placeholder="
+                                              $t('placeholder.Exp Month')
+                                            "
+                                            v-model="paymentForm.card_month"
+                                            required=""
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="form-group mb-4">
+                                    <div class="row">
+                                      <div class="col-6">
+                                        <div
+                                          class="js-form-message js-focus-state"
+                                        >
+                                          <label class="form-label" for="cvv">
+                                            {{ $t('inputs.cvv') }}
+                                          </label>
+                                          <input
+                                            id="cvv"
+                                            type="number"
+                                            class="form-control rounded-0 height-4"
+                                            :placeholder="$t('placeholder.cvv')"
+                                            v-model="paymentForm.card_cvv"
+                                            required=""
+                                          />
+                                        </div>
+                                      </div>
+                                      <div class="col-6">
+                                        <div
+                                          class="js-form-message js-focus-state"
+                                        >
+                                          <label
+                                            id="signinEmailLabel"
+                                            class="form-label"
+                                            for="primary"
+                                          >
+                                            {{ $t('misc.primary') }}
+                                          </label>
+                                          <select
+                                            name="primary"
+                                            id="primary"
+                                            required=""
+                                            v-model="paymentForm.primary"
+                                            class="form-select rounded-0 height-4 px-4"
+                                          >
+                                            <option value="0">
+                                              {{ $t('misc.none') }}
+                                            </option>
+                                            <option value="1">
+                                              {{ $t('misc.primary') }}
+                                            </option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="mb-4d75">
+                                    <button
+                                      type="button"
+                                      @click="addNewPayment"
+                                      class="btn btn-block py-3 rounded-0 btn-dark"
+                                    >
+                                      {{ $t('misc.NewPaymentmethod') }}
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </transition>
+                        <p class="errMsg">
+                          {{ errMsg }}
+                        </p>
+                      </div>
                     </div>
 
                     <h3 id="order_review_heading" class="d-none">
@@ -500,7 +480,7 @@
 
                     <div
                       id="order_review"
-                      class="col-md-6 col-lg-5 col-xl-4 woocommerce-checkout-review-order"
+                      class="col-md-5 col-lg-5 col-xl-4 woocommerce-checkout-review-order"
                       v-if="cart"
                     >
                       <b-accordion free>
@@ -717,6 +697,9 @@
                                   </strong>
                                 </td>
                               </tr>
+                              <p v-if="shippingErrMsg" class="errMsg">
+                                {{ shippingErrMsg }}
+                              </p>
                               <tr class="order-total">
                                 <th class="py-2">{{ $t('misc.net price') }}</th>
                                 <td class="py-2">
@@ -764,21 +747,6 @@
                                   </label>
                                 </div>
                               </li>
-
-                              <!-- <li class="wc_payment_method payment_method_cod">
-                                <input
-                                  id="payment_method_cod"
-                                  type="radio"
-                                  class="input-radio"
-                                  name="payment_method"
-                                  value="cash"
-                                  v-model="paymentMethod"
-                                />
-
-                                <label for="payment_method_bacs">
-                                  {{ $t('misc.Cash on delivery') }}
-                                </label>
-                              </li> -->
                             </ul>
                           </div>
                         </b-accordion-item>
@@ -786,19 +754,44 @@
 
                       <div class="form-row place-order">
                         <button
-                          :disabled="paymentMethod != 'cash'"
+                          :disabled="!this.disabledValue || loading"
                           name="woocommerce_checkout_place_order"
                           type="button"
                           class="button alt btn btn-dark btn-block rounded-0 py-4"
                           @click="placeOrder"
                         >
-                          {{ $t('buttons.Place order') }}
+                          <div class="text-center" v-if="loading">
+                            <div class="spinner-border" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                            </div>
+                          </div>
+                          <span v-else>
+                            {{ $t('buttons.Place order') }}
+                          </span>
                         </button>
                       </div>
                     </div>
                   </form>
                 </div>
               </div>
+              <div v-else class="text-center">
+                <p>{{ $t('misc.cart is empty') }}</p>
+                <a
+                  href="/"
+                  class="btn btn-block py-4 rounded-0 btn-outline-dark mb-4"
+                >
+                  {{ $t('buttons.Continue shopping') }}
+                </a>
+              </div>
+            </div>
+            <div v-else class="text-center">
+              <p>{{ $t('misc.cart is empty') }}</p>
+              <a
+                href="/"
+                class="btn btn-block py-4 rounded-0 btn-outline-dark mb-4"
+              >
+                {{ $t('buttons.Continue shopping') }}
+              </a>
             </div>
           </article>
         </main>
@@ -809,9 +802,10 @@
 
 <script>
 import axios from 'axios'
-
+import { reactive, inject } from 'vue'
 import NewAccount from '@/components/NewAccount.vue'
 import Login from '@/components/Login.vue'
+import Cookie from 'js-cookie'
 
 export default {
   components: {
@@ -828,6 +822,7 @@ export default {
         phone: '',
         address: '',
       },
+      loading: false,
       newAccount: false,
       shippingCost: 'exprese',
       shippingCostPrice: 0,
@@ -840,11 +835,16 @@ export default {
       paymentMethod: 'online',
       addresses: null,
       selectedAddress: '',
+      selectedPayment: '',
       newAddress: false,
       newPayment: false,
       shippingMethods: null,
       needAddress: false,
       newData: [],
+      addressMsg: '',
+      errMsg: '',
+      shippingErrMsg: '',
+      disabledValue: '',
     }
   },
   computed: {
@@ -854,16 +854,30 @@ export default {
     isLoggedIn() {
       return this.$store.getters.isLoggedIn
     },
+    countryId() {
+      return Cookie.get('countryCode')
+    },
+    popup() {
+      return this.$store.getters.popup
+    },
+    message() {
+      return this.$store.getters.message
+    },
+    popupMode() {
+      return this.$store.getters.popupMode
+    },
   },
   mounted() {
     this.getCountries()
     this.getAddresses()
     this.getPayments()
     this.getShippingMethod()
+    this.checkDisabled()
     this.SeperateOrderByPublisher()
     if (this.isLoggedIn) {
       this.getCart()
     }
+    this.setCountry()
   },
   methods: {
     checkCard() {
@@ -880,25 +894,27 @@ export default {
       }
     },
     getCountries() {
-      axios.get('countries', { headers: { value: 'id' } }).then((res) => {
+      axios.get('countries', { headers: { value: 'iso' } }).then((res) => {
         this.countries = res.data.data
       })
     },
-    getGovernment(e) {
-      this.governments = null
-      axios.get(`countries/${e.target.value}/governorates`).then((res) => {
-        this.governments = res.data.data
-      })
+    setCountry() {
+      this.form.country = this.countryId
+      this.getCities()
     },
+
     getCities(e) {
       this.cities = null
-      axios
-        .get(
-          `countries/${this.countryId}/governorates/${e.target.value}/cities`,
-        )
-        .then((res) => {
-          this.cities = res.data.data
-        })
+      let url = ''
+      if (e == undefined) {
+        url = `aramex_api/getCountryCities/${this.countryId}`
+      } else {
+        this.form.city = ''
+        url = `aramex_api/getCountryCities/${e.target.value}`
+      }
+      axios.get(`${url}`).then((res) => {
+        this.cities = res.data.Cities.string
+      })
     },
     addNewAddress() {
       axios
@@ -917,20 +933,37 @@ export default {
           this.$toast.error(err.message)
         })
     },
+    changeStr(str) {
+      let arr = str.split('').splice(str.length - 5)
+      arr[0] = 'xxxxxxxxx'
+
+      return arr.join('')
+    },
     getAddresses() {
-      this.axios.get('user/address').then((data) => {
-        this.addresses = data.data.data
-        if (this.addresses.length) {
-          this.selectedAddress = this.addresses[0].id
-          this.getShippingCost()
-        }
-      })
+      this.axios
+        .get('user/address')
+        .then((data) => {
+          this.addresses = data.data.data
+          if (this.addresses.length) {
+            this.selectedAddress = this.addresses[0].id
+
+            this.getShippingCost()
+          }
+        })
+        .finally(() => this.checkDisabled())
     },
     getPayments() {
-      this.axios.get('/user/paymentMethods').then((data) => {
-        this.paymentMethods = data.data.data
-        console.log(this.paymentMethods)
-      })
+      this.axios
+        .get('/user/paymentMethods')
+        .then((data) => {
+          this.paymentMethods = data.data.data
+          this.paymentMethods.forEach((el) => {
+            if (el.primary == 1) {
+              this.selectedPayment = el.id
+            }
+          })
+        })
+        .finally(() => this.checkDisabled())
     },
     getShippingMethod() {
       this.axios.get('/settings').then((data) => {
@@ -938,21 +971,61 @@ export default {
       })
     },
     placeOrder() {
+      this.loading = true
       if (this.cart) {
-        this.axios.post('/user/orders/create').then((data) => {
-          this.$toast.success(data.data.message)
-          this.$nextTick(() => {
-            this.getCart()
+        this.axios
+          .post('/user/orders/create', {
+            payment_method_id: this.selectedPayment,
+            shipping_total: this.shippingCostPrice,
           })
-        })
+          .then((data) => {
+            this.errMsg = ''
+            if (data.data.status == 'faild') {
+              this.$store.commit('message', data.data.message)
+              this.$store.commit('popupMode', 'danger')
+              this.$store.commit('popup')
+              this.loading = false
+              return
+            }
+
+
+            this.checkDisabled()
+            this.$nextTick(() => {
+              this.getCart()
+            })
+            localStorage.removeItem('cart')
+            window.location.href = '/account/orders'
+          })
+          .finally(() => (this.loading = false))
       }
     },
     getShippingCost() {
       this.axios
-        .get(`/user/orders/getShippingRate?${this.selectedAddress}`)
+        .get(`/user/orders/getShippingRate?shipping_id=${this.selectedAddress}`)
         .then((data) => {
-          this.shippingCostPrice = data.data.data
+          if (data.data.message == 0) {
+            this.shippingCostPrice = 0
+          }
+
+          if (data.data.data.status == 'faild') {
+            this.shippingCostPrice = 0
+            this.shippingErrMsg = data.data.data.message
+            return
+          }
+          this.shippingCostPrice = data.data.data.message
         })
+    },
+    checkDisabled() {
+      this.disabledValue = true
+      if (this.disabledValue) {
+        if (this.selectedAddress == '' && this.needAddress) {
+          this.disabledValue = false
+          return
+        } else if (this.selectedPayment == 0) {
+          this.disabledValue = false
+          return
+        }
+      }
     },
     SeperateOrderByPublisher() {
       // let publishers = this.cart.map((element) => element.book.publisher)
@@ -972,10 +1045,41 @@ export default {
       this.$store.commit('login_Menu')
     },
   },
-  watch: {
-    paymentMethod(val) {
-      console.log(val)
-    },
+
+  setup() {
+    // const store = useStore()
+    const toast = inject('toast')
+    const paymentForm = reactive({
+      name: '',
+      card_number: '',
+      card_cvv: '',
+      card_month: '',
+      card_year: '',
+      primary: '0',
+    })
+    function addNewPayment() {
+      axios
+        .post('user/paymentMethods/create', paymentForm)
+        .then((data) => {
+          if (data.data.status == 'faild') {
+            toast.error(data.data.message)
+            return
+          }
+          toast.success(data.data.message)
+          setTimeout(() => {
+            window.location.reload()
+          }, 300)
+        })
+        .catch((err) => {
+          toast.error(err.message)
+        })
+    }
+
+    return {
+      paymentForm,
+      addNewPayment,
+      // countries,
+    }
   },
 }
 </script>
@@ -1027,5 +1131,13 @@ export default {
   .woocommerce-info {
     text-align: right;
   }
+}
+.errMsg {
+  text-align: center;
+  color: red;
+}
+.spinner-border {
+  width: 1rem;
+  height: 1rem;
 }
 </style>

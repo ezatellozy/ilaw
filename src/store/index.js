@@ -24,7 +24,10 @@ export default createStore({
     cart: JSON.parse(localStorage.getItem('cart')) || [],
     phoneStatus: '',
     emailStatus: '',
-    loading:false,
+    loading: false,
+    popup: false,
+    message: '',
+    popupMode: '',
     usernamestatus: '',
     washlist: JSON.parse(localStorage.getItem('washlist')) || [],
     token: Cookies.get('token') || null,
@@ -34,6 +37,9 @@ export default createStore({
     isPublisher: (state) => !!state.publisher,
     loginMenu: (state) => state.loginMenu,
     currency: (state) => state.currency,
+    popup: (state) => state.popup,
+    popupMode: (state) => state.popupMode,
+    message: (state) => state.message,
     status: (state) => state.status,
     settings: (state) => state.settings,
     loading: (state) => state.loading,
@@ -65,10 +71,10 @@ export default createStore({
     addToCart(state, product) {
       if (state.token) {
         let obj = { cart: [] }
-          obj.cart.push(product)
+        obj.cart.push(product)
         axios.post('/user/orders/cart/add', obj).then((data) => {
           state.cart = data.data.data.items
-      
+
           updateLocaleStorage(data.data.data.items)
         })
         return
@@ -87,7 +93,6 @@ export default createStore({
         state.cart.push({ ...product })
       }
       updateLocaleStorage(state.cart)
-
     },
     addToCartByOne(state, product) {
       let item = state.cart.filter((i) => i.book.id === product.book.id)
@@ -108,6 +113,19 @@ export default createStore({
 
     cart(state, cart) {
       state.cart = cart
+    },
+    popup(state) {
+      state.popup = true
+      setTimeout(() => (state.popup = false), 2000)
+    },
+    closePopup(state) {
+      state.popup = false
+    },
+    popupMode(state, popupMode) {
+      state.popupMode = popupMode
+    },
+    message(state, message) {
+      state.message = message
     },
     removeItemByOne(state, product) {
       let item = state.cart.filter((i) => i.book.id === product.book.id)
@@ -229,34 +247,35 @@ export default createStore({
                   },
                 })
                 .then(() => {
-                  axios.get('/user/orders/cart/myCart',{
-                    headers: {
-                      user: JSON.parse(localStorage.getItem('user')).id,
-                    },
-                  }).then((data) => {
-                    updateLocaleStorage(data.data.data.items)
-                    setTimeout(() => {
-                      window.location.reload()
-                    }, 300)
-                  })
+                  axios
+                    .get('/user/orders/cart/myCart', {
+                      headers: {
+                        user: JSON.parse(localStorage.getItem('user')).id,
+                      },
+                    })
+                    .then((data) => {
+                      updateLocaleStorage(data.data.data.items)
+                      setTimeout(() => {
+                        window.location.reload()
+                      }, 300)
+                    })
                 })
             } else {
-              axios.get('/user/orders/cart/myCart', {
-                headers: {
-                  user: JSON.parse(localStorage.getItem('user')).id,
-                },
-              }).then((data) => {
-                if (data.data.data.items) {
-                 
-                  updateLocaleStorage(data.data.data.items)
-               }
-                setTimeout(() => {
-                  window.location.reload()
-                }, 300)
-              })
+              axios
+                .get('/user/orders/cart/myCart', {
+                  headers: {
+                    user: JSON.parse(localStorage.getItem('user')).id,
+                  },
+                })
+                .then((data) => {
+                  if (data.data.data.items) {
+                    updateLocaleStorage(data.data.data.items)
+                  }
+                  setTimeout(() => {
+                    window.location.reload()
+                  }, 300)
+                })
             }
-
-
 
             toast.success(resp.data.message)
             context.commit('auth_success')
@@ -273,21 +292,28 @@ export default createStore({
     removeItem(context, product) {
       context.commit('setLoading', true)
       if (context.state.token) {
-        axios.get(`/user/orders/cart/removeItem/${product.id}`).then((data) => {
-          updateLocaleStorage(data.data.data.items)
-          context.state.cart = data.data.data.items
-        }).finally(() => {
-          context.commit('setLoading', false)
-        })
+        axios
+          .get(`/user/orders/cart/removeItem/${product.id}`)
+          .then((data) => {
+            updateLocaleStorage(data.data.data.items)
+            context.state.cart = data.data.data.items
+          })
+          .finally(() => {
+            context.commit('setLoading', false)
+            context.dispatch('getCart')
+          })
         return
       }
-      let item = context.state.cart.filter((el) => el.book.id !== product.book.id)
+      let item = context.state.cart.filter(
+        (el) => el.book.id !== product.book.id,
+      )
       let cItem = context.state.cart.filter((el) => el.id == product.id)
       let removed = cItem.filter((el) => el.book_type != product.book_type)
       let newItems = []
       newItems.push(...item, ...removed)
       updateLocaleStorage(newItems)
       context.state.cart = JSON.parse(localStorage.getItem('cart'))
+      context.commit('setLoading', false)
     },
     register(context, [user, url]) {
       return new Promise((resolve, reject) => {
@@ -339,12 +365,19 @@ export default createStore({
         console.log(reject)
       })
     },
-    // getCart(context) {
-    //   this.axios.get('/user/orders/cart/myCart').then((data) => {
-    //     context.commit('cart' ,data.data.data)
-      
-    //   })
-    // }
+    getCart() {
+      axios
+        .get('/user/orders/cart/myCart', {
+          headers: {
+            user: JSON.parse(localStorage.getItem('user')).id,
+          },
+        })
+        .then((data) => {
+          if (data.data.data.items) {
+            updateLocaleStorage(data.data.data.items)
+          }
+        })
+    },
   },
   modules: {},
 })

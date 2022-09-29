@@ -1,4 +1,12 @@
 <template>
+  <teleport to="body">
+    <Popup
+      v-if="popup"
+      @close-popup="closePopup"
+      :mode="popupMode"
+      :msg="message"
+    />
+  </teleport>
   <div class="map w-100" v-if="contact_data">
     <div v-if="contact_data.map" v-html="contact_data.map" class="iframe"></div>
   </div>
@@ -288,8 +296,9 @@
 <script>
 import Cookie from 'js-cookie'
 import Loading from '../components/Loading.vue'
+import Popup from '@/components/ui/Popup.vue'
 export default {
-  components: { Loading },
+  components: { Loading, Popup },
   data() {
     return {
       contact: {
@@ -330,7 +339,10 @@ export default {
           },
         })
         .then((data) => {
-          this.$toast.success(data.data.message)
+          this.$store.commit('message', data.data.message)
+          this.$store.commit('popupMode', 'success')
+          this.$store.commit('popup')
+
           this.loading = false
           this.contact.email = ''
           this.contact.name = ''
@@ -342,7 +354,9 @@ export default {
           this.contact.country = ''
         })
     },
-
+    closePopup() {
+      this.$store.commit('closePopup')
+    },
     getCountries() {
       this.axios.get('countries', { headers: { value: 'id' } }).then((res) => {
         this.countries = res.data.data
@@ -361,27 +375,15 @@ export default {
     address() {
       return this.$store.getters.settings.contact_data
     },
-    // phone() {
-    //   return this.$store.getters.settings.contact_data.phone
-    // },
-    // mobile() {
-    //   return this.$store.getters.settings.contact_data.mobile
-    // },
-    // instgram() {
-    //   return this.$store.getters.settings.contact_data.instgram
-    // },
-    // facebook() {
-    //   return this.$store.getters.settings.contact_data.facebook
-    // },
-    // youtube() {
-    //   return this.$store.getters.settings.contact_data.youtube
-    // },
-    // twitter() {
-    //   return this.$store.getters.settings.contact_data.twitter
-    // },
-    // mapAddessLink() {
-    //   return this.$store.getters.settings.contact_data.map
-    // },
+    popup() {
+      return this.$store.getters.popup
+    },
+    message() {
+      return this.$store.getters.message
+    },
+    popupMode() {
+      return this.$store.getters.popupMode
+    },
   },
 }
 </script>

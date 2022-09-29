@@ -162,15 +162,14 @@
                 </span>
 
                 <span class="text-gray-600 font-size-2">
-                  {{ order.address.city.name }}
+                  <!-- {{ order.address }} -->
+                  <!-- {{ order }} -->
+                  <!-- {{ order.address.city.name }} -->
                   <bdi>/</bdi>
                 </span>
+
                 <span class="text-gray-600 font-size-2">
-                  {{ order.address.governorate.name }}
-                  <bdi>/</bdi>
-                </span>
-                <span class="text-gray-600 font-size-2">
-                  {{ order.address.country.name }}
+                  <!-- {{ order.address.country.name }} -->
                 </span>
               </address>
             </div>
@@ -197,6 +196,7 @@ export default {
         .get(`/user/orders/${this.$route.params.id}/details`)
         .then((data) => {
           this.order = data.data.data
+          console.table(this.order)
         })
     },
     print() {
