@@ -59,9 +59,8 @@
       </div>
       <a
         role="button"
-        target="_blank"
+        @click="setting('forgotPassword')"
         class="js-animation-link btn text-dark font-size-2 t-d-u link-muted font-weight-medium"
-        :href="globalResetPassword"
       >
         {{ $t('misc.Forgot Password?') }}
       </a>

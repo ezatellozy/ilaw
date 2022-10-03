@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { createToaster } from '@meforma/vue-toaster'
+import i18n from '../i18n'
 
 // import { inject } from 'vue'
 const toast = createToaster()
@@ -25,6 +26,7 @@ export default createStore({
     phoneStatus: '',
     emailStatus: '',
     loading: false,
+    pageLoading: false,
     popup: false,
     message: '',
     popupMode: '',
@@ -43,6 +45,7 @@ export default createStore({
     status: (state) => state.status,
     settings: (state) => state.settings,
     loading: (state) => state.loading,
+    pageLoading: (state) => state.pageLoading,
     totalPrice: (state) => {
       return `${state.cart.reduce((a, b) => +a + +b.totalPrice, 0)}`
     },
@@ -59,6 +62,7 @@ export default createStore({
     emailstatus: (state) => state.emailStatus,
     phoneStatus: (state) => state.phoneStatus,
     washlist: (state) => state.washlist,
+    washlistLength: (state) => state.washlist.length,
   },
   mutations: {
     updateUser(state, payload) {
@@ -66,6 +70,9 @@ export default createStore({
     },
     setLoading(state, payload) {
       state.loading = payload
+    },
+    pageLoading(state, payload) {
+      state.pageLoading = payload
     },
 
     addToCart(state, product) {
@@ -127,48 +134,7 @@ export default createStore({
     message(state, message) {
       state.message = message
     },
-    removeItemByOne(state, product) {
-      let item = state.cart.filter((i) => i.book.id === product.book.id)
-      if (item.length) {
-        let cItem = item.filter((i) => i.book_type === product.book_type)
-        if (cItem.length) {
-          item = item.find((e) => e.book_type === product.book_type)
-          item.quntity -= 1
-          item.totalPrice -= +product.price
-          if (item.quntity < 1) {
-            let item = state.cart.filter((el) => el.id !== product.id)
-            let cItem = state.cart.filter((el) => el.id == product.id)
-            let removed = cItem.filter(
-              (el) => el.book_type != product.book_type,
-            )
-            let newItems = []
-            newItems.push(...item, ...removed)
-            updateLocaleStorage(newItems)
-            state.cart = JSON.parse(localStorage.getItem('cart'))
-          }
-        } else {
-          state.cart.push({ ...product })
-        }
-      } else {
-        state.cart.push({ ...product })
-      }
-      updateLocaleStorage(state.cart)
-    },
-    addToWashlist(state, product) {
-      let item = state.washlist.filter((i) => i.id === product.id)
-      if (item.length) {
-        return
-      } else {
-        state.washlist.push({ ...product })
-      }
-      updateWashlistStorage(state.washlist)
-    },
-    removeItemWashlist(state, product) {
-      let item = state.washlist.filter((el) => el.id !== product.id)
 
-      updateWashlistStorage(item)
-      state.washlist = JSON.parse(localStorage.getItem('washlist'))
-    },
     auth_request(state) {
       state.status = 'loading'
     },
@@ -210,6 +176,7 @@ export default createStore({
     login(context, user) {
       return new Promise((resolve, reject) => {
         context.commit('auth_request')
+        context.commit('pageLoading', true)
         axios({
           url: '/user/login',
           data: { email: user.email, password: user.password },
@@ -218,6 +185,7 @@ export default createStore({
           .then((resp) => {
             if (resp.data.status == 'faild') {
               context.commit('auth_error', resp.data.message)
+              context.commit('pageLoading', false)
               return
             }
             // const token = resp.data.access_token
@@ -255,9 +223,61 @@ export default createStore({
                     })
                     .then((data) => {
                       updateLocaleStorage(data.data.data.items)
-                      setTimeout(() => {
-                        window.location.reload()
-                      }, 300)
+                      if (context.state.washlist.length) {
+                        let itemsCount = 0
+                        context.state.washlist.forEach((el) => {
+                          axios
+                            .post(
+                              '/user/favorites/create',
+                              { book_id: el.id },
+                              {
+                                headers: {
+                                  user: JSON.parse(localStorage.getItem('user'))
+                                    .id,
+                                },
+                              },
+                            )
+                            .then(() => {
+                              itemsCount++
+                              if (itemsCount == context.state.washlist.length) {
+                                axios
+                                  .get('/user/favorites', {
+                                    headers: {
+                                      user: JSON.parse(
+                                        localStorage.getItem('user'),
+                                      ).id,
+                                    },
+                                  })
+                                  .then((data) => {
+                                    updateWashlistStorage(data.data.data)
+                                    context.commit('pageLoading', false)
+                                    setTimeout(() => {
+                                      window.location.reload()
+                                    }, 300)
+                                  })
+                              }
+                            })
+                        })
+                      } else {
+                        axios
+                          .get('/user/favorites', {
+                            headers: {
+                              user: JSON.parse(localStorage.getItem('user')).id,
+                            },
+                          })
+                          .then((data) => {
+                            if (data.data.data) {
+                              updateWashlistStorage(data.data.data)
+                              setTimeout(() => {
+                                window.location.reload()
+                              }, 300)
+                              return
+                            }
+                            setTimeout(() => {
+                              window.location.reload()
+                            }, 300)
+                          })
+                      }
                     })
                 })
             } else {
@@ -270,10 +290,62 @@ export default createStore({
                 .then((data) => {
                   if (data.data.data.items) {
                     updateLocaleStorage(data.data.data.items)
+                    if (context.state.washlist.length) {
+                      let itemsCount = 0
+                      context.state.washlist.forEach((el) => {
+                        axios
+                          .post(
+                            '/user/favorites/create',
+                            { book_id: el.id },
+                            {
+                              headers: {
+                                user: JSON.parse(localStorage.getItem('user'))
+                                  .id,
+                              },
+                            },
+                          )
+                          .then(() => {
+                            itemsCount++
+                            if (itemsCount == context.state.washlist.length) {
+                              axios
+                                .get('/user/favorites', {
+                                  headers: {
+                                    user: JSON.parse(
+                                      localStorage.getItem('user'),
+                                    ).id,
+                                  },
+                                })
+                                .then((data) => {
+                                  updateWashlistStorage(data.data.data)
+                                  context.commit('pageLoading', false)
+                                  setTimeout(() => {
+                                    window.location.reload()
+                                  }, 300)
+                                })
+                            }
+                          })
+                      })
+                    } else {
+                      axios
+                        .get('/user/favorites', {
+                          headers: {
+                            user: JSON.parse(localStorage.getItem('user')).id,
+                          },
+                        })
+                        .then((data) => {
+                          if (data.data.data) {
+                            updateWashlistStorage(data.data.data)
+                            setTimeout(() => {
+                              window.location.reload()
+                            }, 300)
+                            return
+                          }
+                          setTimeout(() => {
+                            window.location.reload()
+                          }, 300)
+                        })
+                    }
                   }
-                  setTimeout(() => {
-                    window.location.reload()
-                  }, 300)
                 })
             }
 
@@ -314,6 +386,19 @@ export default createStore({
       updateLocaleStorage(newItems)
       context.state.cart = JSON.parse(localStorage.getItem('cart'))
       context.commit('setLoading', false)
+    },
+    removeItemWashlist(context, product) {
+      context.commit('setLoading', true)
+      axios.get(`/user/favorites/${product.fav_id}/delete`).then((data) => {
+        if (data.data.status == 'success') {
+          let item = context.state.washlist.filter(
+            (el) => el.fav_id !== product.fav_id,
+          )
+          updateWashlistStorage(item)
+          context.state.washlist = JSON.parse(localStorage.getItem('washlist'))
+          context.commit('setLoading', false)
+        }
+      })
     },
     register(context, [user, url]) {
       return new Promise((resolve, reject) => {
@@ -359,6 +444,7 @@ export default createStore({
         commit('logout')
         localStorage.removeItem('user')
         localStorage.removeItem('cart')
+        localStorage.removeItem('washlist')
         this.state.user = {}
         Cookies.remove('token')
         resolve()
@@ -377,6 +463,73 @@ export default createStore({
             updateLocaleStorage(data.data.data.items)
           }
         })
+    },
+    addToWashlist(context, product) {
+      let item = context.state.washlist.filter((i) => i.id === product.id)
+      if (item.length) {
+        if (context.state.token) {
+          axios
+            .post(
+              '/user/favorites/create',
+              { book_id: product.id },
+              {
+                headers: {
+                  user: JSON.parse(localStorage.getItem('user')).id,
+                },
+              },
+            )
+            .then((data) => {
+              context.commit('message', data.data.message)
+              context.commit('popupMode', 'success')
+              context.commit('popup')
+              axios
+                .get('/user/favorites', {
+                  headers: {
+                    user: JSON.parse(localStorage.getItem('user')).id,
+                  },
+                })
+                .then((data) => {
+                  updateWashlistStorage(data.data.data)
+                })
+            })
+          return
+        }
+        return
+      } else {
+        if (context.state.token) {
+          axios
+            .post(
+              '/user/favorites/create',
+              { book_id: product.id },
+              {
+                headers: {
+                  user: JSON.parse(localStorage.getItem('user')).id,
+                },
+              },
+            )
+            .then((data) => {
+              context.commit('message', data.data.message)
+              context.commit('popupMode', 'success')
+              context.commit('popup')
+              axios
+                .get('/user/favorites', {
+                  headers: {
+                    user: JSON.parse(localStorage.getItem('user')).id,
+                  },
+                })
+                .then((data) => {
+                  updateWashlistStorage(data.data.data)
+                })
+            })
+          return
+        }
+        context.state.washlist.push({ ...product })
+
+        context.commit('message', i18n.global.t('misc.addSuccess'))
+        context.commit('popupMode', 'success')
+        context.commit('popup')
+      }
+      updateWashlistStorage(context.state.washlist)
     },
   },
   modules: {},

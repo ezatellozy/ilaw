@@ -94,19 +94,19 @@
           >
             <div class="text-yellow-darker mr-2">
               <small
-                :class="items.reviewsTotal == 0 ? 'far' : 'fas'"
+                :class="items.reviewsTotal > 0 ? 'fas' : 'far'"
                 class="fa-star"
               ></small>
               <small
-                :class="items.reviewsTotal > 1 ? 'fas' : 'far'"
+                :class="items.reviewsTotal >= 1 ? 'fas' : 'far'"
                 class="fa-star"
               ></small>
               <small
-                :class="items.reviewsTotal > 2 ? 'fas' : 'far'"
+                :class="items.reviewsTotal >= 2 ? 'fas' : 'far'"
                 class="fa-star"
               ></small>
               <small
-                :class="items.reviewsTotal > 3 ? 'fas' : 'far'"
+                :class="items.reviewsTotal >= 3 ? 'fas' : 'far'"
                 class="fa-star"
               ></small>
               <small
@@ -114,7 +114,7 @@
                 class="fa-star"
               ></small>
             </div>
-            <div class="">{{ items.reviewsTotal }}</div>
+            <div class="">{{ (items.reviewsTotal.toFixed(2)) }}</div>
           </div>
         </div>
         <div class="product__hover d-flex align-items-center">
@@ -146,9 +146,9 @@
 </template>
 
 <script>
-import { inject } from 'vue'
+// import { inject } from 'vue'
 import { useStore } from 'vuex'
-import { useI18n } from 'vue-i18n'
+// import { useI18n } from 'vue-i18n'
 import BookTypeModal from './BookTypeModal.vue'
 
 export default {
@@ -176,12 +176,12 @@ export default {
   },
   setup() {
     const store = useStore()
-    const toast = inject('toast')
-    const { t } = useI18n()
+    // const toast = inject('toast')
+    // const { t } = useI18n()
 
     function addToWashList(item) {
-      store.commit('addToWashlist', item)
-      toast.success(t('misc.addSuccess'))
+      store.dispatch('addToWashlist', item)
+      // toast.success(t('misc.addSuccess'))
     }
     return { addToWashList }
   },

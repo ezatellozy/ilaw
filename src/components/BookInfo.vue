@@ -24,19 +24,19 @@
                 <div class="font-size-2 mb-4">
                   <span class="text-yellow-darker">
                     <span
-                      :class="book.reviewsTotal > 1 ? 'fas' : 'far'"
+                      :class="book.reviewsTotal > 0 ? 'fas' : 'far'"
                       class="fa-star"
                     ></span>
                     <span
-                      :class="book.reviewsTotal > 1 ? 'fas' : 'far'"
+                      :class="book.reviewsTotal >= 2 ? 'fas' : 'far'"
                       class="fa-star"
                     ></span>
                     <span
-                      :class="book.reviewsTotal > 2 ? 'fas' : 'far'"
+                      :class="book.reviewsTotal >= 3 ? 'fas' : 'far'"
                       class="fa-star"
                     ></span>
                     <span
-                      :class="book.reviewsTotal > 3 ? 'fas' : 'far'"
+                      :class="book.reviewsTotal >= 4 ? 'fas' : 'far'"
                       class="fa-star"
                     ></span>
                     <span
@@ -44,7 +44,7 @@
                       class="fa-star"
                     ></span>
                   </span>
-                  <span class="ml-3">({{ book.reviewsTotal }})</span>
+                  <span class="ml-3">({{ book.reviewsTotal.toFixed(2) }})</span>
                   <router-link :to="`/author/${book.writer.id}`">
                     <span class="ml-3 font-weight-medium text-black">
                       <bdi>{{ $t('misc.By') }}</bdi>
@@ -354,7 +354,7 @@
                   :class="tabs.review ? 'active' : ''"
                   @click="activeTab('review')"
                 >
-                  {{ $t('misc.Reviews') }} (0)
+                  {{ $t('misc.Reviews') }} {{ book.reviewsCount }}
                 </a>
               </li>
             </ul>
@@ -460,7 +460,7 @@
                       <div class="col-md-6 mb-6 mb-md-0">
                         <div class="d-flex align-items-center mb-4">
                           <span class="font-size-15 font-weight-bold">
-                            {{ book.reviewsTotal }}
+                            {{ book.reviewsTotal.toFixed(2) }}
                           </span>
                           <div class="ml-3 h6 mb-0">
                             <span class="font-weight-normal">
@@ -468,23 +468,23 @@
                             </span>
                             <div class="text-yellow-darker">
                               <small
-                                :class="book.reviewsCount == 0 ? 'far' : 'fas'"
+                                :class="book.reviewsTotal > 0 ? 'fas' : 'far'"
                                 class="fa-star"
                               ></small>
                               <small
-                                :class="book.reviewsCount > 1 ? 'fas' : 'far'"
+                                :class="book.reviewsTotal >= 1 ? 'fas' : 'far'"
                                 class="fa-star"
                               ></small>
                               <small
-                                :class="book.reviewsCount > 2 ? 'fas' : 'far'"
+                                :class="book.reviewsTotal >= 2 ? 'fas' : 'far'"
                                 class="fa-star"
                               ></small>
                               <small
-                                :class="book.reviewsCount > 3 ? 'fas' : 'far'"
+                                :class="book.reviewsTotal >= 3 ? 'fas' : 'far'"
                                 class="fa-star"
                               ></small>
                               <small
-                                :class="book.reviewsCount > 4 ? 'fas' : 'far'"
+                                :class="book.reviewsTotal > 4 ? 'fas' : 'far'"
                                 class="fa-star"
                               ></small>
                             </div>
@@ -494,16 +494,20 @@
                         <div class="d-md-flex">
                           <button
                             type="button"
-                            class="btn btn-outline-dark rounded-0 px-5 mb-3 mb-md-0"
+                            @click="allReview = !allReview"
+                            class="btn rounded-0 px-5 mb-3 mb-md-0"
+                            :class="allReview ? 'btn-dark' : 'btn-outline-dark'"
                           >
                             {{ $t('buttons.See all reviews') }}
                           </button>
                           <button
                             type="button"
-                            class="btn btn-dark rounded-0 px-5"
-                            :class="
-                              $i18n.locale == 'ar' ? ' mr-md-3' : 'ml-md-3 '
-                            "
+                            @click="writeReview = !writeReview"
+                            class="btn rounded-0 px-5"
+                            :class="[
+                              $i18n.locale == 'ar' ? ' mr-md-3' : 'ml-md-3 ',
+                              writeReview ? 'btn-dark' : 'btn-outline-dark',
+                            ]"
                           >
                             {{ $t('buttons.Write a review') }}
                           </button>
@@ -530,15 +534,18 @@
                                   <div
                                     class="progress-bar bg-yellow-darker"
                                     role="progressbar"
-                                    style="width: 100%;"
-                                    aria-valuenow="100"
-                                    aria-valuemin="0"
-                                    aria-valuemax="100"
+                                    :style="`width: ${
+                                      (book.reviewsAnalytics.count_5 /
+                                        book.reviewsCount) *
+                                      100
+                                    }px;`"
                                   ></div>
                                 </div>
                               </div>
                               <div class="col-2">
-                                <span class="text-secondary">205</span>
+                                <span class="text-secondary">
+                                  {{ book.reviewsAnalytics.count_5 }}
+                                </span>
                               </div>
                             </a>
                           </li>
@@ -560,15 +567,18 @@
                                   <div
                                     class="progress-bar bg-yellow-darker"
                                     role="progressbar"
-                                    style="width: 53%;"
-                                    aria-valuenow="53"
-                                    aria-valuemin="0"
-                                    aria-valuemax="100"
+                                    :style="`width: ${
+                                      (book.reviewsAnalytics.count_4 /
+                                        book.reviewsCount) *
+                                      100
+                                    }px;`"
                                   ></div>
                                 </div>
                               </div>
                               <div class="col-2">
-                                <span class="text-secondary">55</span>
+                                <span class="text-secondary">
+                                  {{ book.reviewsAnalytics.count_4 }}
+                                </span>
                               </div>
                             </a>
                           </li>
@@ -590,15 +600,18 @@
                                   <div
                                     class="progress-bar bg-yellow-darker"
                                     role="progressbar"
-                                    style="width: 20%;"
-                                    aria-valuenow="20"
-                                    aria-valuemin="0"
-                                    aria-valuemax="100"
+                                    :style="`width: ${
+                                      (book.reviewsAnalytics.count_3 /
+                                        book.reviewsCount) *
+                                      100
+                                    }px;`"
                                   ></div>
                                 </div>
                               </div>
                               <div class="col-2">
-                                <span class="text-secondary">23</span>
+                                <span class="text-secondary">
+                                  {{ book.reviewsAnalytics.count_3 }}
+                                </span>
                               </div>
                             </a>
                           </li>
@@ -620,15 +633,18 @@
                                   <div
                                     class="progress-bar bg-yellow-darker"
                                     role="progressbar"
-                                    style="width: 0%;"
-                                    aria-valuenow="0"
-                                    aria-valuemin="0"
-                                    aria-valuemax="100"
+                                    :style="`width: ${
+                                      (book.reviewsAnalytics.count_2 /
+                                        book.reviewsCount) *
+                                      100
+                                    }px;`"
                                   ></div>
                                 </div>
                               </div>
                               <div class="col-2">
-                                <span class="text-secondary">0</span>
+                                <span class="text-secondary">
+                                  {{ book.reviewsAnalytics.count_2 }}
+                                </span>
                               </div>
                             </a>
                           </li>
@@ -648,15 +664,18 @@
                                   <div
                                     class="progress-bar bg-yellow-darker"
                                     role="progressbar"
-                                    style="width: 1%;"
-                                    aria-valuenow="1"
-                                    aria-valuemin="0"
-                                    aria-valuemax="100"
+                                    :style="`width: ${
+                                      (book.reviewsAnalytics.count_1 /
+                                        book.reviewsCount) *
+                                      100
+                                    }px;`"
                                   ></div>
                                 </div>
                               </div>
                               <div class="col-2">
-                                <span class="text-secondary">4</span>
+                                <span class="text-secondary">
+                                  {{ book.reviewsAnalytics.count_1 }}
+                                </span>
                               </div>
                             </a>
                           </li>
@@ -664,131 +683,233 @@
                         <!-- End Ratings -->
                       </div>
                     </div>
-                    <div v-if="book.reviews.length">
-                      <h4 class="font-size-3 mb-8">1-5 of 44 reviews</h4>
-
-                      <ul class="list-unstyled mb-8">
-                        <li class="mb-4 pb-5 border-bottom">
-                          <div class="d-flex align-items-center mb-3">
-                            <h6 class="mb-0">
-                              Amazing Story! You will LOVE it
-                            </h6>
-                            <div class="text-yellow-darker ml-3">
-                              <small class="fas fa-star"></small>
-                              <small class="fas fa-star"></small>
-                              <small class="fas fa-star"></small>
-                              <small class="fas fa-star"></small>
-                              <small class="far fa-star"></small>
-                            </div>
+                    <div class="write-review mb-5" v-if="writeReview">
+                      <h4 class="font-size-3 mb-4">
+                        {{ $t('buttons.Write a review') }}
+                      </h4>
+                      <div class="d-flex align-items-center mb-6">
+                        <h6 class="mb-0">
+                          {{ $t('misc.Select a rating(required)') }}
+                        </h6>
+                        <div
+                          class="text-yellow-darker rate d-flex font-size-4"
+                          :class="$i18n.locale == 'ar' ? 'mr-3' : 'ml-3'"
+                        >
+                          <div class="form-group">
+                            <label for="review1">
+                              <small
+                                class="fa-star"
+                                :class="review.review >= 1 ? 'fas' : 'far'"
+                              ></small>
+                            </label>
+                            <input
+                              type="radio"
+                              v-model="review.review"
+                              value="1"
+                              id="review1"
+                            />
                           </div>
-                          <p class="mb-4 text-lh-md">
-                            Such an incredibly complex story! I had to buy it
-                            because there was a waiting list of 30+ at the local
-                            library for this book. Thrilled that I made the
-                            purchase
-                          </p>
-                          <div class="text-gray-600 mb-4">
-                            Staci, February 22, 2020
+                          <div class="form-group">
+                            <label for="review2">
+                              <small
+                                class="fa-star"
+                                :class="review.review >= 2 ? 'fas' : 'far'"
+                              ></small>
+                            </label>
+                            <input
+                              type="radio"
+                              value="2"
+                              v-model="review.review"
+                              id="review2"
+                            />
                           </div>
-                          <ul class="nav">
-                            <li class="mr-7">
-                              <a
-                                href="#"
-                                class="text-gray-600 d-flex align-items-center"
-                              >
-                                <i
-                                  class="text-dark font-size-5 flaticon-like-1"
-                                ></i>
-                                <span class="ml-2">90</span>
-                              </a>
-                            </li>
-                            <li class="mr-7">
-                              <a
-                                href="#"
-                                class="text-gray-600 d-flex align-items-center"
-                              >
-                                <i
-                                  class="text-dark font-size-5 flaticon-dislike"
-                                ></i>
-                                <span class="ml-2">10</span>
-                              </a>
-                            </li>
-                            <li class="mr-7">
-                              <a
-                                href="#"
-                                class="text-gray-600 d-flex align-items-center"
-                              >
-                                <i
-                                  class="text-dark font-size-5 flaticon-flag"
-                                ></i>
-                              </a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <h4 class="font-size-3 mb-4">
-                      {{ $t('buttons.Write a review') }}
-                    </h4>
-                    <div class="d-flex align-items-center mb-6">
-                      <h6 class="mb-0">
-                        {{ $t('misc.Select a rating(required)') }}
-                      </h6>
-                      <div class="text-yellow-darker ml-3 font-size-4">
-                        <small class="far fa-star"></small>
-                        <small class="far fa-star"></small>
-                        <small class="far fa-star"></small>
-                        <small class="far fa-star"></small>
-                        <small class="far fa-star"></small>
+                          <div class="form-group">
+                            <label for="review3">
+                              <small
+                                class="fa-star"
+                                :class="review.review >= 3 ? 'fas' : 'far'"
+                              ></small>
+                            </label>
+                            <input
+                              type="radio"
+                              value="3"
+                              v-model="review.review"
+                              id="review3"
+                            />
+                          </div>
+                          <div class="form-group">
+                            <label for="review4">
+                              <small
+                                class="fa-star"
+                                :class="review.review >= 4 ? 'fas' : 'far'"
+                              ></small>
+                            </label>
+                            <input
+                              type="radio"
+                              value="4"
+                              v-model="review.review"
+                              id="review4"
+                            />
+                          </div>
+                          <div class="form-group">
+                            <label for="review5">
+                              <small
+                                class="fa-star"
+                                :class="review.review >= 5 ? 'fas' : 'far'"
+                              ></small>
+                            </label>
+                            <input
+                              type="radio"
+                              value="5"
+                              v-model="review.review"
+                              id="review5"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="input-errors mx-2"
+                          v-for="error of v$.review.review.$errors"
+                          :key="error.$uid"
+                        >
+                          <div class="error-msg">
+                            {{ $t(`misc.${error.$message}`) }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="js-form-message form-group mb-4">
+                        <label
+                          for="descriptionTextarea"
+                          class="form-label text-dark h6 mb-3"
+                        >
+                          {{
+                            $t(
+                              'misc.Details please! Your review helps other shoppers',
+                            )
+                          }}
+                        </label>
+                        <textarea
+                          id="descriptionTextarea"
+                          class="form-control rounded-0 p-4"
+                          rows="7"
+                          v-model="review.comment"
+                          :placeholder="
+                            $t(
+                              'misc.What did you like or dislike? What should other shoppers know before buying?',
+                            )
+                          "
+                          required
+                        ></textarea>
+                        <div
+                          class="input-errors"
+                          v-for="error of v$.review.comment.$errors"
+                          :key="error.$uid"
+                        >
+                          <div class="error-msg">
+                            {{ $t(`misc.${error.$message}`) }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="d-flex">
+                        <button
+                          type="button"
+                          @click="submitReview"
+                          class="btn btn-dark btn-wide rounded-0 transition-3d-hover"
+                        >
+                          <Loading v-if="loading" />
+                          <span v-else>
+                            {{ $t('misc.Send review') }}
+                          </span>
+                        </button>
                       </div>
                     </div>
-                    <div class="js-form-message form-group mb-4">
-                      <label
-                        for="descriptionTextarea"
-                        class="form-label text-dark h6 mb-3"
-                      >
-                        {{
-                          $t(
-                            'misc.Details please! Your review helps other shoppers',
-                          )
-                        }}
-                      </label>
-                      <textarea
-                        id="descriptionTextarea"
-                        class="form-control rounded-0 p-4"
-                        rows="7"
-                        :placeholder="
-                          $t(
-                            'misc.What did you like or dislike? What should other shoppers know before buying?',
-                          )
-                        "
-                        required
-                      ></textarea>
+                    <div v-if="allReview">
+                      <div v-if="book.reviews.length">
+                        <h4 class="font-size-3 mb-8">
+                          {{ book.reviewsCount }} {{ $t('misc.reviews') }}
+                        </h4>
+
+                        <ul class="list-unstyled mb-8">
+                          <li
+                            class="mb-4 pb-5 border-bottom"
+                            v-for="review in book.reviews"
+                            :key="review.id"
+                          >
+                            <div class="d-flex align-items-center mb-3">
+                              <h6 class="mb-0">
+                                {{ review.user.name }}
+                              </h6>
+                              <div
+                                class="text-yellow-darker"
+                                :class="$i18n.locale == 'ar' ? 'mr-3' : 'ml-3'"
+                              >
+                                <small
+                                  class="fa-star"
+                                  :class="review.rate > 0 ? 'fas' : 'far'"
+                                ></small>
+                                <small
+                                  class="fa-star"
+                                  :class="review.rate >= 2 ? 'fas' : 'far'"
+                                ></small>
+                                <small
+                                  class="fa-star"
+                                  :class="review.rate >= 3 ? 'fas' : 'far'"
+                                ></small>
+                                <small
+                                  class="fa-star"
+                                  :class="review.rate >= 4 ? 'fas' : 'far'"
+                                ></small>
+                                <small
+                                  class="fa-star"
+                                  :class="review.rate > 4 ? 'fas' : 'far'"
+                                ></small>
+                              </div>
+                            </div>
+                            <p class="mb-4 text-lh-md">
+                              {{ review.comment }}
+                            </p>
+                            <div class="text-gray-600 mb-4">
+                              <!-- Staci, February 22, 2020 -->
+                              {{ new Date(review.created_at).toDateString() }}
+                            </div>
+                            <!-- <ul class="nav">
+                              <li class="mr-7">
+                                <a
+                                  href="#"
+                                  class="text-gray-600 d-flex align-items-center"
+                                >
+                                  <i
+                                    class="text-dark font-size-5 flaticon-like-1"
+                                  ></i>
+                                  <span class="ml-2">90</span>
+                                </a>
+                              </li>
+                              <li class="mr-7">
+                                <a
+                                  href="#"
+                                  class="text-gray-600 d-flex align-items-center"
+                                >
+                                  <i
+                                    class="text-dark font-size-5 flaticon-dislike"
+                                  ></i>
+                                  <span class="ml-2">10</span>
+                                </a>
+                              </li>
+                              <li class="mr-7">
+                                <a
+                                  href="#"
+                                  class="text-gray-600 d-flex align-items-center"
+                                >
+                                  <i
+                                    class="text-dark font-size-5 flaticon-flag"
+                                  ></i>
+                                </a>
+                              </li>
+                            </ul> -->
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                    <div class="form-group mb-5">
-                      <label
-                        for="inputCompanyName"
-                        class="form-label text-dark h6 mb-3"
-                      >
-                        {{ $t('misc.Add a title') }}
-                      </label>
-                      <input
-                        id="inputCompanyName"
-                        type="text"
-                        class="form-control rounded-0 px-4"
-                        name="companyName"
-                        :placeholder="$t('misc.3000 characters remaining')"
-                      />
-                    </div>
-                    <div class="d-flex">
-                      <button
-                        type="submit"
-                        class="btn btn-dark btn-wide rounded-0 transition-3d-hover"
-                      >
-                        {{ $t('misc.Send review') }}
-                      </button>
-                    </div>
+
                     <!-- End Mockup Block -->
                   </div>
                 </div>
@@ -829,20 +950,17 @@
 </template>
 
 <script>
+import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 import 'vue3-carousel/dist/carousel.css'
-// import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import BookCard from '@/components/BookCard.vue'
-// import { reactive } from 'vue'
-// import Books from '@/books.json'
-// import { onMounted, inject } from 'vue'
-// import { useRoute } from 'vue-router'
-// import { useStore } from 'vuex'
-// import useI18n from 'vue-i18n'
 import axios from 'axios'
+import Loading from './Loading.vue'
 export default {
-  components: { BookCard },
+  components: { BookCard, Loading },
   data() {
     return {
+      v$: useVuelidate(),
       book: null,
       item: {
         quntity: 1,
@@ -852,6 +970,11 @@ export default {
         book_id: '',
         book: null,
       },
+      review: {
+        comment: '',
+        review: '',
+      },
+      loading: false,
       writer: null,
       publisher: null,
       tabs: {
@@ -861,6 +984,9 @@ export default {
         aboutAuthor: false,
         aboutPublisher: false,
       },
+
+      writeReview: false,
+      allReview: false,
       settings: {
         autoplay: 5000,
         itemsToShow: 1,
@@ -887,6 +1013,14 @@ export default {
             snapAlign: 'center',
           },
         },
+      },
+    }
+  },
+  validations() {
+    return {
+      review: {
+        comment: { required },
+        review: { required },
       },
     }
   },
@@ -954,8 +1088,32 @@ export default {
       this.$toast.success(this.$t('misc.addSuccess'))
     },
     addToWashList() {
-      this.$store.commit('addToWashlist', this.book)
+      this.$store.dispatch('addToWashlist', this.book)
       this.$toast.success(this.$t('misc.addSuccess'))
+    },
+    async submitReview() {
+      const result = await this.v$.$validate()
+
+      if (result) {
+        this.loading = true
+        this.axios
+          .post(`books/${this.$route.params.id}/SubmitReview`, {
+            rate: this.review.review,
+            comment: this.review.comment,
+          })
+          .then((data) => {
+            if (data.data.status == 'success') {
+              this.$store.commit('message', data.data.message)
+              this.$store.commit('popupMode', 'success')
+              this.$store.commit('popup')
+              this.review.review = ''
+              this.review.comment = ''
+              this.writeReview = false
+              return
+            }
+          })
+          .finally(() => (this.loading = false))
+      }
     },
   },
   computed: {
@@ -994,7 +1152,17 @@ export default {
   box-shadow: none;
   outline: none !important;
 }
-
+.rate {
+  .form-group {
+    margin-bottom: 0 !important;
+    label {
+      margin-bottom: 0 !important;
+    }
+  }
+  input[type='radio'] {
+    display: none;
+  }
+}
 a {
   cursor: pointer;
 }

@@ -53,27 +53,21 @@ export default {
   mounted() {
     this.getAuthors()
     this.getPublisher()
-    this.getPartner()
-    this.getBooks()
   },
   methods: {
     getAuthors() {
+      this.$store.commit('pageLoading', true)
       this.axios.get('writers').then((data) => {
         this.authors = data.data.data
+        this.$store.commit('pageLoading', false)
       })
     },
     getPublisher() {
+      this.$store.commit('pageLoading', true)
       this.axios.get('publishers').then((data) => {
         this.publisher = data.data.data
+        this.$store.commit('pageLoading', false)
       })
-    },
-    getPartner() {
-      // this.axios.get('partner/partners').then((data) => {
-      //   this.partners = data.data.data
-      // })
-    },
-    getBooks() {
-      // this.axios.get('')
     },
   },
 }

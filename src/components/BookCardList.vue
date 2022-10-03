@@ -145,7 +145,7 @@ export default {
     const { t } = useI18n()
 
     function addToWashList(item) {
-      store.commit('addToWashlist', item)
+      store.dispatch('addToWashlist', item)
       toast.success(t('misc.addSuccess'))
     }
     return { addToWashList }

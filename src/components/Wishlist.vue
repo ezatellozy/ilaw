@@ -28,33 +28,34 @@
         <tr class="border" v-for="item in washList" :key="item.id">
           <Teleport to="body">
             <BookTypeModal
-              v-if="BookTypeModal"
-              @closemodal="addToCart"
-              :book="item"
+              v-if="currentModal == item.fav_id"
+              @closemodal="currentModal = 0"
+              :book="item.book"
             />
           </Teleport>
           <th class="pl-3 pl-md-5 font-weight-normal align-middle py-6">
             <div
               class="d-flex flex-wrap justify-content-center align-items-center"
+              v-if="item.book"
             >
-              <a class="d-block" :href="`/book/${item.id}`">
+              <a class="d-block" :href="`/book/${item.book.id}`">
                 <img
                   class="img-fluid"
-                  :src="item.photo"
+                  :src="item.book.photo"
                   alt="Image-Description"
                 />
               </a>
               <div class="ml-xl-4">
                 <div class="font-weight-normal">
-                  <a :href="`/book/${item.id}`">{{ item.name }}</a>
+                  <a :href="`/book/${item.book.id}`">{{ item.book.name }}</a>
                 </div>
                 <div class="font-size-2">
                   <a
-                    :href="`author/${item.writer.id}`"
+                    :href="`author/${item.book.writer.id}`"
                     class="text-gray-700"
                     tabindex="0"
                   >
-                    {{ item.writer.name }}
+                    {{ item.book.writer.name }}
                   </a>
                 </div>
               </div>
@@ -65,40 +66,40 @@
               class="woocommerce-Price-currencySymbol d-flex justify-content-around text-center"
               v-if="currency"
             >
-              <div class="pdf" v-if="item.pdfCopy.status != 0">
+              <div class="pdf" v-if="item.book.pdfCopy.status != 0">
                 <h5 class="price">{{ $t('misc.pdf') }}</h5>
-                <span v-if="item.pdfCopy.status == 1">
-                  <span v-if="item.pdfCopy.price.offer">
-                    {{ item.pdfCopy.price.offer }} -
+                <span v-if="item.book.pdfCopy.status == 1">
+                  <span v-if="item.book.pdfCopy.price.offer">
+                    {{ item.book.pdfCopy.price.offer }} -
                   </span>
 
                   <span
                     :class="
-                      item.pdfCopy.price.offer
+                      item.book.pdfCopy.price.offer
                         ? 'text-decoration-line-through'
                         : ''
                     "
                   >
-                    {{ item.pdfCopy.price.original }}
+                    {{ item.book.pdfCopy.price.original }}
                   </span>
                   {{ currency.sympl }}
                 </span>
               </div>
-              <div class="hardCopy" v-if="item.hardCopy.status != 0">
+              <div class="hardCopy" v-if="item.book.hardCopy.status != 0">
                 <h5 class="price">{{ $t('misc.Hardcopy') }}</h5>
-                <span v-if="item.hardCopy.status == 1">
-                  <span v-if="item.hardCopy.price.offer">
-                    {{ item.hardCopy.price.offer }} -
+                <span v-if="item.book.hardCopy.status == 1">
+                  <span v-if="item.book.hardCopy.price.offer">
+                    {{ item.book.hardCopy.price.offer }} -
                   </span>
 
                   <span
                     :class="
-                      item.hardCopy.price.offer
+                      item.book.hardCopy.price.offer
                         ? 'text-decoration-line-through text-gray-700'
                         : ''
                     "
                   >
-                    {{ item.hardCopy.price.original }}
+                    {{ item.book.hardCopy.price.original }}
                   </span>
                   {{ currency.sympl }}
                 </span>
@@ -107,19 +108,25 @@
           </td>
           <td class="align-middle py-5">
             {{
-              item.stock > 0
+              item.book.stock > 0
                 ? `${$t('misc.In Stock')}`
                 : `${$t('misc.unavailable')}`
             }}
           </td>
           <td class="align-middle py-5 text-center">
-            <span class="add-to-cart btn text-primary" @click="addToCart">
+            <span
+              class="add-to-cart btn text-primary"
+              @click="addToCart(item.fav_id)"
+            >
               {{ $t('misc.ADD TO CART') }}
             </span>
             <span>
+              <Loading v-if="loading" />
+
               <i
+                v-else
                 class="fas fa-times ml-2 mt-2 add-to-cart"
-                @click="removefromCard"
+                @click="removefromCard(item)"
               ></i>
             </span>
           </td>
@@ -137,45 +144,36 @@
 import BookTypeModal from './BookTypeModal.vue'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
+import Loading from './Loading.vue'
 // import { useI18n } from 'vue-i18n'
 export default {
-  components: { BookTypeModal },
+  components: { BookTypeModal, Loading },
   data() {
     return {
       BookTypeModal: false,
+      currentModal: 0,
     }
   },
 
   methods: {
-    addToCart() {
-      this.BookTypeModal = !this.BookTypeModal
+    addToCart(id) {
+      this.currentModal = id
     },
-    // addToWashlist() {
-    //   this.BookTypeModal = !this.BookTypeModal
-    // },
   },
   computed: {
-    // washList() {
-    //   return this.$store.getters.washlist
-    // },
     currency() {
       return this.$store.getters.currency
+    },
+    loading() {
+      return this.$store.getters.loading
     },
   },
 
   setup() {
     const store = useStore()
-    // const toast = inject('toast')
-    // const { t } = useI18n()
-
     const washList = computed(() => store.getters.washlist)
-
-    // function addToCard() {
-    //   store.commit('addToCart', item)
-    //   toast.success(t('misc.addSuccess'))
-    // }
-    function removefromCard() {
-      store.commit('removeItemWashlist', washList.value[0])
+    function removefromCard(item) {
+      store.dispatch('removeItemWashlist', item)
     }
     return { washList, removefromCard }
   },

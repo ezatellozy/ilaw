@@ -151,24 +151,26 @@
             </a>
             <ul class="nav d-md-none site-user">
               <li class="nav-item">
-                <a
-                  role="button"
-                  @click="goWashList('wishlist')"
-                  href="#"
-                  class="nav-link text-white"
+                <router-link
+                  to="/account/wishlist"
+                  class="nav-link text-white position-relative"
                 >
+                  <span
+                    class="position-absolute bg-primary-yellow width-16 height-16 rounded-circle d-flex align-items-center justify-content-center text-dark font-size-n9 left-0"
+                  >
+                    {{ washlistLength }}
+                  </span>
                   <i class="glph-icon flaticon-heart font-size-4"></i>
-                </a>
+                </router-link>
               </li>
               <li class="nav-item">
-                <a
-                  role="button"
-                  @click="goWashList('accountDetails')"
+                <router-link
+                  to="/account/accountDetails"
                   class="nav-link btn text-white"
                   v-if="isLoggedIn"
                 >
                   <i class="glph-icon flaticon-user font-size-4"></i>
-                </a>
+                </router-link>
                 <button
                   class="nav-link btn text-white"
                   @click="openUserMenu"
@@ -276,7 +278,15 @@
           </div>
           <ul class="nav d-none site-user d-md-flex">
             <li class="nav-item">
-              <router-link to="/account/wishlist" class="nav-link text-white">
+              <router-link
+                to="/account/wishlist"
+                class="nav-link text-white position-relative"
+              >
+                <span
+                  class="position-absolute bg-primary-yellow width-16 height-16 rounded-circle d-flex align-items-center justify-content-center text-dark font-size-n9 left-0"
+                >
+                  {{ washlistLength }}
+                </span>
                 <i class="glph-icon flaticon-heart font-size-4"></i>
               </router-link>
             </li>
@@ -384,6 +394,9 @@ export default {
     },
     currency() {
       return this.$store.getters.currency
+    },
+    washlistLength() {
+      return this.$store.getters.washlistLength
     },
   },
   methods: {

@@ -36,7 +36,7 @@ export default {
   // justify-content: center;
   // align-items: center;
   // background: #22559db6;
-  z-index: 210;
+  z-index: 1000000;
   .inner-content {
     width: 270px;
     position: relative;

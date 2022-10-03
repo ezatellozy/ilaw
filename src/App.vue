@@ -21,6 +21,7 @@
       />
     </teleport>
   </div>
+  <Loading v-if="loading" />
 </template>
 
 <script>
@@ -30,9 +31,10 @@ import Navbar from './components/Navbar.vue'
 
 import Footer from './components/Footer.vue'
 import Cookies from 'js-cookie'
+import Loading from './views/Loading.vue'
 
 export default {
-  components: { MainHeader, Navbar, Footer, Breadcrumb },
+  components: { MainHeader, Navbar, Footer, Breadcrumb, Loading },
   data() {
     return {
       categories: [],
@@ -84,6 +86,9 @@ export default {
     },
     popupMode() {
       return this.$store.getters.popupMode
+    },
+    loading() {
+      return this.$store.getters.pageLoading
     },
   },
 }

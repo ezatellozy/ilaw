@@ -55,15 +55,17 @@
           </div>
         </div>
       </div>
+      <Loading v-if="loading" />
     </section>
   </div>
 </template>
 
 <script>
 import BookCard from '@/components/BookCard.vue'
+import Loading from '@/views/Loading.vue'
 export default {
   props: ['routeName', 'title'],
-  components: { BookCard },
+  components: { BookCard, Loading },
   data() {
     return {
       books: null,
@@ -74,14 +76,21 @@ export default {
   },
   methods: {
     getBooks() {
+      this.$store.commit('setLoading', true)
       this.axios
         .get(`${this.routeName}`)
         .then((data) => {
           this.books = data.data.data
+          this.$store.commit('setLoading', false)
         })
         .catch((err) => {
           console.log(err)
         })
+    },
+  },
+  computed: {
+    loading() {
+      return this.$store.getters.loading
     },
   },
 }

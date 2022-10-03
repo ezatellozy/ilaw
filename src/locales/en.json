@@ -36,6 +36,7 @@
     "Enter Your Password": "Enter Your Password",
     "Enter Your Email Address": "Enter Your Email Address",
     "Enter Your Address": "Enter Your Address",
+    "Enter code": "Enter code",
     "card holder name": "Card holder name",
     "Exp Year": "Exp Year",
     "Exp Month": "Exp Month",
@@ -65,6 +66,8 @@
     "Select subject": "Select subject",
     "Or": "Or",
     "Ok": "Ok",
+    "code": "Code",
+
     "Sign in with Google": "Sign in with Google",
     "Sign in with Facebook": "Sign in with Facebook",
     "Sign up with Google": "Sign up with Google",
