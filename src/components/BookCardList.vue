@@ -115,9 +115,9 @@
 
 <script>
 import BookTypeModal from './BookTypeModal.vue'
-import { inject } from 'vue'
+// import { inject } from 'vue'
 import { useStore } from 'vuex'
-import { useI18n } from 'vue-i18n'
+// import { useI18n } from 'vue-i18n'
 export default {
   props: ['items'],
   components: { BookTypeModal },
@@ -141,12 +141,12 @@ export default {
   },
   setup() {
     const store = useStore()
-    const toast = inject('toast')
-    const { t } = useI18n()
+    // const toast = inject('toast')
+    // const { t } = useI18n()
 
     function addToWashList(item) {
       store.dispatch('addToWashlist', item)
-      toast.success(t('misc.addSuccess'))
+      // toast.success(t('misc.addSuccess'))
     }
     return { addToWashList }
   },

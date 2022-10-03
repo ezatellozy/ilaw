@@ -7,14 +7,22 @@
             <div
               class="col-md-5 woocommerce-product-gallery woocommerce-product-gallery--with-images images"
             >
-              <figure class="woocommerce-product-gallery__wrapper pt-8 mb-0">
-                <div
-                  class="js-slick-carousel u-slick"
-                  data-pagi-classes="text-center u-slick__pagination my-4"
-                >
-                  <img class="w-100" :src="book.photo" alt="ilaw" />
-                </div>
-              </figure>
+              <div class="main-image">
+                <ProductSwiper
+                  v-if="book"
+                  :products="book"
+                  :current-slide="slide"
+                  :thumbs="thumbs"
+                />
+              </div>
+              <div class="additional-images">
+                <ProductThumnail
+                  v-if="book"
+                  :products="book"
+                  @thumbs="thumbs"
+                  v-model:current-slide="slide"
+                />
+              </div>
             </div>
             <div class="col-md-7 pl-0 summary entry-summary border-left">
               <div class="space-top-2 px-4 px-xl-7 border-bottom pb-5">
@@ -278,9 +286,8 @@
                 <ul class="list-unstyled nav">
                   <li class="mr-6 mb-4 mb-md-0">
                     <a
-                      href="#"
                       role="button"
-                      @click="addToWashList"
+                      @click="addToWashList(book)"
                       class="h-primary"
                     >
                       <i class="flaticon-heart mr-2"></i>
@@ -956,8 +963,10 @@ import 'vue3-carousel/dist/carousel.css'
 import BookCard from '@/components/BookCard.vue'
 import axios from 'axios'
 import Loading from './Loading.vue'
+import ProductSwiper from './ProductSwiper.vue'
+import ProductThumnail from './ProductThumnail.vue'
 export default {
-  components: { BookCard, Loading },
+  components: { BookCard, Loading, ProductSwiper, ProductThumnail },
   data() {
     return {
       v$: useVuelidate(),
@@ -970,6 +979,7 @@ export default {
         book_id: '',
         book: null,
       },
+      slide: 0,
       review: {
         comment: '',
         review: '',
@@ -1082,14 +1092,12 @@ export default {
         }
       }
 
-      this.item.total = this.item.price * this.item.quntity
+      // this.item.total = this.item.price * this.item.quntity
 
       this.$store.commit('addToCart', this.item)
-      this.$toast.success(this.$t('misc.addSuccess'))
     },
     addToWashList() {
       this.$store.dispatch('addToWashlist', this.book)
-      this.$toast.success(this.$t('misc.addSuccess'))
     },
     async submitReview() {
       const result = await this.v$.$validate()
@@ -1115,6 +1123,9 @@ export default {
           .finally(() => (this.loading = false))
       }
     },
+    slideHandler(n) {
+      this.slide = Number(n) - 1
+    },
   },
   computed: {
     cartQuantity() {
@@ -1127,6 +1138,9 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+.product {
+  padding-top: 50px;
+}
 .tabs {
   position: relative;
   margin-bottom: -1px;
@@ -1166,6 +1180,38 @@ export default {
 a {
   cursor: pointer;
 }
+
+.main-image {
+  // height: 100%;
+  width: 100%;
+  margin-bottom: 10px;
+  .swiper {
+    max-height: 512px;
+    // height: 100%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(226, 226, 226, 1);
+    border-radius: 3px;
+  }
+}
+.additional-images {
+  width: 100%;
+  .swiper {
+    max-height: 512px;
+  }
+  .swiper-slide {
+    img {
+      width: 100%;
+      // height: 70px !important;
+      border-width: 1px;
+      border-style: solid;
+      border-color: rgba(226, 226, 226, 1);
+      border-radius: 3px;
+      cursor: pointer;
+    }
+  }
+}
+
 @media (max-width: 575.98px) {
   .products
     .product:not(.product__card):not(.product__list):not(.product__space) {
