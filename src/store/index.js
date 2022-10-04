@@ -75,32 +75,6 @@ export default createStore({
       state.pageLoading = payload
     },
 
-    addToCart(state, product) {
-      if (state.token) {
-        let obj = { cart: [] }
-        obj.cart.push(product)
-        axios.post('/user/orders/cart/add', obj).then((data) => {
-          state.cart = data.data.data.items
-
-          updateLocaleStorage(data.data.data.items)
-        })
-        return
-      }
-      let item = state.cart.filter((i) => i.book.id === product.book.id)
-      if (item.length) {
-        let cItem = item.filter((i) => i.book_type === product.book_type)
-        if (cItem.length) {
-          item = item.find((e) => e.book_type === product.book_type)
-          item.quntity += product.quntity
-          item.totalPrice += product.totalPrice
-        } else {
-          state.cart.push({ ...product })
-        }
-      } else {
-        state.cart.push({ ...product })
-      }
-      updateLocaleStorage(state.cart)
-    },
     addToCartByOne(state, product) {
       let item = state.cart.filter((i) => i.book.id === product.book.id)
       if (item.length) {
@@ -489,6 +463,7 @@ export default createStore({
                   },
                 })
                 .then((data) => {
+                  context.state.washlist = data.data.data
                   updateWashlistStorage(data.data.data)
                 })
             })
@@ -519,6 +494,7 @@ export default createStore({
                 })
                 .then((data) => {
                   updateWashlistStorage(data.data.data)
+                  context.state.washlist = data.data.data
                 })
             })
           return
@@ -530,6 +506,44 @@ export default createStore({
         context.commit('popup')
       }
       updateWashlistStorage(context.state.washlist)
+    },
+    addToCart(context, product) {
+      if (context.state.token) {
+        let obj = { cart: [] }
+        obj.cart.push(product)
+        axios.post('/user/orders/cart/add', obj).then((data) => {
+          context.state.cart = data.data.data.items
+
+          updateLocaleStorage(data.data.data.items)
+
+          context.commit('message', data.data.message)
+          context.commit('popupMode', 'success')
+          context.commit('popup')
+        })
+        return
+      }
+      let item = context.state.cart.filter((i) => i.book.id === product.book.id)
+      if (item.length) {
+        let cItem = item.filter((i) => i.book_type === product.book_type)
+        if (cItem.length) {
+          item = item.find((e) => e.book_type === product.book_type)
+          item.quntity += product.quntity
+          item.totalPrice += product.totalPrice
+        } else {
+          context.state.cart.push({ ...product })
+          updateLocaleStorage(context.state.cart)
+          context.commit('message', i18n.global.t('misc.addSuccess'))
+          context.commit('popupMode', 'success')
+          context.commit('popup')
+        }
+      } else {
+        context.state.cart.push({ ...product })
+        updateLocaleStorage(context.state.cart)
+        context.commit('message', i18n.global.t('misc.addSuccess'))
+        context.commit('popupMode', 'success')
+        context.commit('popup')
+      }
+      updateLocaleStorage(context.state.cart)
     },
   },
   modules: {},

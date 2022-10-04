@@ -377,7 +377,7 @@ export default {
 
       item.totalPrice = item.price * item.quntity
 
-      store.commit('addToCart', item)
+      store.dispatch('addToCart', item)
       store.commit('message', t('misc.addSuccess'))
       store.commit('popupMode', 'success')
       store.commit('popup')

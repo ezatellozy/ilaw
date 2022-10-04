@@ -357,52 +357,18 @@
             <div
               class="shop-control-bar d-lg-flex justify-content-end align-items-center mb-5 text-center text-md-left"
             >
-              <!-- <div class="shop-control-bar__left mb-2 mt-2 m-lg-0">
-                <p class="woocommerce-result-count m-0">
-                  {{ $t('misc.Showing') }}
-                  <bdi>1–12 of 126</bdi>
-                  {{ $t('misc.results') }}
-                </p>
-              </div> -->
               <div class="shop-control-bar__right d-md-flex align-items-center">
                 <!-- <form
-                  class="woocommerce-ordering ml-2 mb-4 m-md-0"
-                  method="get"
-                >
-                  <select
-                    class="form-select border-0 border-bottom shadow-none outline-none py-2"
-                    name="orderby"
-                    aria-label="Default select example"
-                  >
-                    <option value="popularity">
-                      {{ $t('misc.Sort by popularity') }}
-                    </option>
-                    <option value="default" selected>
-                      {{ $t('misc.Default sorting') }}
-                    </option>
-                    <option value="date">
-                      {{ $t('misc.Sort by newness') }}
-                    </option>
-                    <option value="price">
-                      {{ $t('misc.Sort by price: low to high ') }}
-                    </option>
-                    <option value="price-desc">
-                      {{ $t('misc.Sort by price: high to low') }}
-                    </option>
-                  </select>
-          
-                </form> -->
-
-                <form
                   class="number-of-items ml-md-4 mb-4 m-md-0 d-none d-xl-block"
                   method="get"
                 >
                   <select
                     class="form-select border-0 border-bottom shadow-none outline-none py-2"
                     name="orderby"
-                    v-model="perPage"
+                    v-model="per_page"
+                    @change="getBooks"
                   >
-                    <option value="10">{{ $t('misc.Show') }} 10</option>
+                    <option value="12">{{ $t('misc.Show') }} 12</option>
                     <option value="15">{{ $t('misc.Show') }} 15</option>
                     <option value="20" selected="selected">
                       {{ $t('misc.Show') }} 20
@@ -410,8 +376,8 @@
                     <option value="25">{{ $t('misc.Show') }} 25</option>
                     <option value="30">{{ $t('misc.Show') }} 30</option>
                   </select>
-                  <!-- Select -->
-                </form>
+                  Select 
+                </form> -->
 
                 <ul
                   class="nav nav-tab ml-lg-4 justify-content-center justify-content-md-start ml-md-auto"
@@ -439,8 +405,9 @@
             </div>
 
             <!-- Tab Content -->
-            <div class="tab-content">
+            <div class="tab-content position-relative">
               <div class="tab-pane fade show active">
+                <Loading v-if="loading" />
                 <ul v-if="list" id="" class="products list-unstyled mb-6">
                   <book-card-list
                     v-for="book in books"
@@ -459,7 +426,7 @@
                     :items="book"
                   />
                 </ul>
-                <!-- <div class="container">
+                <div class="container" v-if="pageCount > 1">
                   <paginate
                     v-model="page"
                     :page-count="pageCount"
@@ -472,7 +439,7 @@
                     :page-class="'page-item'"
                     :break-view-class="'break-view'"
                   ></paginate>
-                </div> -->
+                </div>
               </div>
             </div>
           </div>
@@ -485,16 +452,16 @@
 <script>
 import BookCard from '@/components/BookCard.vue'
 import BookCardList from '@/components/BookCardList.vue'
-// import Paginate from 'vuejs-paginate-next'
+import Loading from './Loading.vue'
+import Paginate from 'vuejs-paginate-next'
 export default {
   // components: { BookCardList, BookCard, Paginate },
-  components: { BookCardList, BookCard },
+  components: { BookCardList, BookCard, Loading, Paginate },
   data() {
     return {
       selectedItem: 0,
       books: null,
       list: false,
-      perPage: 10,
       page: 1,
       categories: null,
       publishers: null,
@@ -507,17 +474,20 @@ export default {
       writer: '',
       language: '',
       type: '',
+      pageCount: '',
     }
   },
   mounted() {
     this.getMainGategories()
     this.getPublishers()
     this.getBooks()
+    if (this.$route.query.page) {
+      this.page = Number(this.$route.query.page)
+    }
   },
   methods: {
     onChangePage(e) {
-      console.log(e)
-      // this.pageOfItems = pageOfItems
+      this.$router.push(`?page=${e}`)
     },
     getMainGategories() {
       this.axios
@@ -540,19 +510,36 @@ export default {
       })
     },
     getBooks() {
+      this.$store.commit('setLoading', true)
       let url
-      if (this.$route.params.id == 'all') {
-        url = `books?section&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}`
-      } else {
-        if (this.rate.length) {
-          const min = this.rate.reduce((a, b) => Math.min(a, b))
-          this.rates = min
+      if (this.$route.query.page) {
+        let e = this.$route.query.page
+        if (!this.$route.params.id) {
+          url = `books?section&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}&page=${e}`
+        } else {
+          if (this.rate.length) {
+            const min = this.rate.reduce((a, b) => Math.min(a, b))
+            this.rates = min
+          }
+          url = `books?section=${this.$route.params.id}&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}&page=${e}`
         }
-        url = `books?section=${this.$route.params.id}&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}`
+      } else {
+        if (!this.$route.params.id) {
+          url = `books?section&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}`
+        } else {
+          if (this.rate.length) {
+            const min = this.rate.reduce((a, b) => Math.min(a, b))
+            this.rates = min
+          }
+          url = `books?section=${this.$route.params.id}&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}`
+        }
       }
       this.$nextTick(() => {
         this.axios.get(`${url}`).then((data) => {
           this.books = data.data.data
+          this.page = data.data.paginationData.current_page
+          this.pageCount = data.data.paginationData.last_page
+          this.$store.commit('setLoading', false)
         })
       })
     },
@@ -563,9 +550,8 @@ export default {
     },
   },
   computed: {
-    pageCount() {
-      return this.perPage
-      // return this.books.length / this.perPage
+    loading() {
+      return this.$store.getters.loading
     },
   },
   watch: {
@@ -646,5 +632,8 @@ select {
 }
 .pagination {
   justify-content: center;
+}
+.loading {
+  position: absolute !important;
 }
 </style>

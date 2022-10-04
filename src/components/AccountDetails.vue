@@ -8,6 +8,37 @@
         {{ $t('misc.Edit Account') }}
       </div>
       <div class="row">
+        <div class="col-12 mb-5 text-center">
+          <label
+            class="pointer portrait"
+            for="file_portrait"
+            name="file_portrait"
+            style="position: relative !important;"
+          >
+            <div class="image-holder mx-auto mb-4" v-if="accountDetails.photo">
+              <!-- <img
+                v-if="fromServer"
+                class="w-full h-full"
+                :src="`/${preview}`"
+                alt="image"
+              /> -->
+              <img class="w-100" :src="`${preview}`" alt="image" />
+            </div>
+            <div class="image-holder mx-auto mb-4" v-else>
+              <img
+                class="w-100"
+                src="@/assets/image-placeholder-icon-5.jpg"
+                alt="image"
+              />
+            </div>
+          </label>
+          <input
+            class="d-none"
+            id="file_portrait"
+            type="file"
+            @input="previewMainMedia($event)"
+          />
+        </div>
         <div class="col-md-6 mb-4">
           <div class="js-form-message">
             <label for="exampleFormControlInput1">
@@ -79,33 +110,6 @@
             </div>
           </div>
         </div>
-        <!-- <div class="col-md-4">
-          <div class="form-group mb-4">
-            <div class="js-form-message js-focus-state">
-              <label id="signinEmailLabel" class="form-label" for="governorate">
-                {{ $t('misc.Governorate') }}
-              </label>
-              <select
-                v-model="accountDetails.governorate"
-                name="governorate"
-                id="governorate"
-                @change="getCities($event)"
-                class="form-select rounded-0 height-4"
-              >
-                <option value="" disabled>
-                  {{ $t('misc.Select government') }}
-                </option>
-                <option
-                  v-for="government in governments"
-                  :key="government.id"
-                  :value="government.id"
-                >
-                  {{ government.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div> -->
         <div class="col-md-6" v-if="cities">
           <div class="form-group mb-4">
             <div class="js-form-message js-focus-state">
@@ -275,6 +279,7 @@ export default {
         city: '',
         address: '',
         language: '',
+        photo: '',
       },
       oldPassword: '',
       password: '',
@@ -283,6 +288,7 @@ export default {
       countries: null,
       cities: null,
       test: true,
+      preview: null,
     }
   },
   mounted() {
@@ -297,7 +303,6 @@ export default {
       })
     },
     getCities(e) {
-      console.log(e)
       this.cities = null
       let url = ''
       if (e == undefined) {
@@ -315,6 +320,7 @@ export default {
         .get('user/my-profile')
         .then((data) => {
           let result = data.data.data
+          this.accountDetails.photo = result.photo
           this.accountDetails.name = result.name
           this.accountDetails.userName = result.userName
           this.accountDetails.country = result.country.country_code
@@ -323,9 +329,9 @@ export default {
           this.accountDetails.city = result.city.id
           this.accountDetails.address = result.address
           this.accountDetails.language = result.language
-          console.log(result.city.id)
         })
         .finally(() => {
+          this.preview = this.accountDetails.photo
           if (this.accountDetails.country == '') {
             this.accountDetails.country = this.countryId
             this.getCities()
@@ -333,8 +339,17 @@ export default {
         })
     },
     updateProfile() {
+      const frmData = new FormData()
+      frmData.append('photo', this.accountDetails.photo)
+      frmData.append('name', this.accountDetails.name)
+      frmData.append('userName', this.accountDetails.userName)
+      frmData.append('country', this.accountDetails.country)
+      frmData.append('phone', this.accountDetails.phone)
+      frmData.append('city', this.accountDetails.city)
+      frmData.append('address', this.accountDetails.address)
+      frmData.append('language', this.accountDetails.language)
       axios
-        .post('user/update-my-profile', this.accountDetails, {
+        .post('user/update-my-profile', frmData, {
           headers: {
             'Accept-Language': Cookie.get('locale'),
           },
@@ -345,7 +360,9 @@ export default {
             return
           }
           Cookie.set('locale', this.accountDetails.language)
-          this.$toast.success(res.data.message)
+          this.$store.commit('message', res.data.message)
+          this.$store.commit('popupMode', 'success')
+          this.$store.commit('popup')
           setTimeout(() => {
             window.location.reload()
           }, 300)
@@ -376,6 +393,12 @@ export default {
             window.location.reload()
           }, 300)
         })
+      }
+    },
+    previewMainMedia(event) {
+      if (event.target.files.length != 0) {
+        this.accountDetails.photo = event.target.files[0]
+        this.preview = URL.createObjectURL(this.accountDetails.photo)
       }
     },
   },
@@ -414,6 +437,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.portrait {
+  width: 200px;
+}
 .is-rtl {
   p,
   h1,
@@ -430,5 +456,8 @@ export default {
     text-align: right;
     direction: rtl;
   }
+}
+.pointer {
+  cursor: pointer !important;
 }
 </style>

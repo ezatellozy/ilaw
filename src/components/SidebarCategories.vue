@@ -69,7 +69,7 @@
                                 </div>
                                 <ul class="">
                                   <li>
-                                    <router-link to="/shop/all">
+                                    <router-link to="/shop">
                                       {{ $t('misc.By Books') }}
                                     </router-link>
                                   </li>

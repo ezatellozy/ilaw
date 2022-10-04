@@ -62,7 +62,7 @@ const routes = [
     component: OrderRecived,
   },
   {
-    path: '/shop/:id',
+    path: '/shop/:id?',
     name: 'shop',
     component: Shop,
   },

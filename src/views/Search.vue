@@ -170,63 +170,7 @@
                   </li>
                 </ul>
               </b-accordion-item>
-              <!-- <b-accordion-item :title="$t('misc.by price')">
-                <form
-                  method="get"
-                  action="https://themes.woocommerce.com/storefront/shop/"
-                >
-                  <div class="price_slider_wrapper">
-                    <div
-                      class="price_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"
-                      style=""
-                    >
-                      <div
-                        class="ui-slider-range ui-widget-header ui-corner-all"
-                        style="left: 0%; width: 100%;"
-                      ></div>
-                      <span
-                        class="ui-slider-handle ui-state-default ui-corner-all"
-                        tabindex="0"
-                        style="left: 0%;"
-                      ></span>
-                      <span
-                        class="ui-slider-handle ui-state-default ui-corner-all"
-                        tabindex="0"
-                        style="left: 98%;"
-                      ></span>
-                    </div>
-                    <div class="price_slider_amount">
-                      <input
-                        type="text"
-                        id="min_price"
-                        name="min_price"
-                        value="2"
-                        data-min="2"
-                        placeholder="Min price"
-                        style="display: none;"
-                      />
-                      <input
-                        type="text"
-                        id="max_price"
-                        name="max_price"
-                        value="1495"
-                        data-max="1495"
-                        placeholder="Max price"
-                        style="display: none;"
-                      />
-                      <button type="submit" class="button d-none">
-                        Filter
-                      </button>
-                      <div class="mx-auto price_label mt-2" style="">
-                        Price:
-                        <span class="from">£2</span>
-                        —
-                        <span class="to">£1,495</span>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </b-accordion-item> -->
+
               <b-accordion-item :title="$t('misc.By review')">
                 <div
                   class="form-group d-flex align-items-center justify-content-between font-size-1 text-lh-md text-secondary mb-2 pb-1"
@@ -357,62 +301,7 @@
             <div
               class="shop-control-bar d-lg-flex justify-content-end align-items-center mb-5 text-center text-md-left"
             >
-              <!-- <div class="shop-control-bar__left mb-2 mt-2 m-lg-0">
-                <p class="woocommerce-result-count m-0">
-                  {{ $t('misc.Showing') }}
-                  <bdi>1–12 of 126</bdi>
-                  {{ $t('misc.results') }}
-                </p>
-              </div> -->
               <div class="shop-control-bar__right d-md-flex align-items-center">
-                <!-- <form
-                  class="woocommerce-ordering ml-2 mb-4 m-md-0"
-                  method="get"
-                >
-                  <select
-                    class="form-select border-0 border-bottom shadow-none outline-none py-2"
-                    name="orderby"
-                    aria-label="Default select example"
-                  >
-                    <option value="popularity">
-                      {{ $t('misc.Sort by popularity') }}
-                    </option>
-                    <option value="default" selected>
-                      {{ $t('misc.Default sorting') }}
-                    </option>
-                    <option value="date">
-                      {{ $t('misc.Sort by newness') }}
-                    </option>
-                    <option value="price">
-                      {{ $t('misc.Sort by price: low to high ') }}
-                    </option>
-                    <option value="price-desc">
-                      {{ $t('misc.Sort by price: high to low') }}
-                    </option>
-                  </select>
-          
-                </form> -->
-
-                <form
-                  class="number-of-items ml-md-4 mb-4 m-md-0 d-none d-xl-block"
-                  method="get"
-                >
-                  <select
-                    class="form-select border-0 border-bottom shadow-none outline-none py-2"
-                    name="orderby"
-                    v-model="perPage"
-                  >
-                    <option value="10">{{ $t('misc.Show') }} 10</option>
-                    <option value="15">{{ $t('misc.Show') }} 15</option>
-                    <option value="20" selected="selected">
-                      {{ $t('misc.Show') }} 20
-                    </option>
-                    <option value="25">{{ $t('misc.Show') }} 25</option>
-                    <option value="30">{{ $t('misc.Show') }} 30</option>
-                  </select>
-                  <!-- Select -->
-                </form>
-
                 <ul
                   class="nav nav-tab ml-lg-4 justify-content-center justify-content-md-start ml-md-auto"
                 >
@@ -441,6 +330,7 @@
             <!-- Tab Content -->
             <div class="tab-content">
               <div class="tab-pane fade show active">
+                <Loading v-if="loading" />
                 <ul v-if="list" id="" class="products list-unstyled mb-6">
                   <book-card-list
                     v-for="book in books"
@@ -459,20 +349,20 @@
                     :items="book"
                   />
                 </ul>
-                <!-- <div class="container">
-                  <paginate
-                    v-model="page"
-                    :page-count="pageCount"
-                    :click-handler="onChangePage"
-                    :prev-text="$t('misc.prev')"
-                    :next-text="$t('misc.next')"
-                    :page-range="3"
-                    :margin-pages="0"
-                    :container-class="'pagination'"
-                    :page-class="'page-item'"
-                    :break-view-class="'break-view'"
-                  ></paginate>
-                </div> -->
+              </div>
+              <div class="container" v-if="pageCount > 1">
+                <paginate
+                  v-model="page"
+                  :page-count="pageCount"
+                  :click-handler="onChangePage"
+                  :prev-text="$t('misc.prev')"
+                  :next-text="$t('misc.next')"
+                  :page-range="3"
+                  :margin-pages="0"
+                  :container-class="'pagination'"
+                  :page-class="'page-item'"
+                  :break-view-class="'break-view'"
+                ></paginate>
               </div>
             </div>
           </div>
@@ -485,17 +375,16 @@
 <script>
 import BookCard from '@/components/BookCard.vue'
 import BookCardList from '@/components/BookCardList.vue'
-// import Paginate from 'vuejs-paginate-next'
+import Paginate from 'vuejs-paginate-next'
+import Loading from './Loading.vue'
 export default {
   // components: { BookCardList, BookCard, Paginate },
-  components: { BookCardList, BookCard },
+  components: { BookCardList, BookCard, Paginate, Loading },
   data() {
     return {
       selectedItem: 0,
       books: null,
       list: false,
-      perPage: 10,
-      page: 1,
       categories: null,
       publishers: null,
       pageOfItems: [],
@@ -506,17 +395,21 @@ export default {
       writer: '',
       language: '',
       type: '',
+      page: 1,
+      pageCount: '',
     }
   },
   mounted() {
     this.getMainGategories()
     this.getPublishers()
     this.getBooks()
+    if (this.$route.query.page) {
+      this.page = Number(this.$route.query.page)
+    }
   },
   methods: {
     onChangePage(e) {
-      console.log(e)
-      // this.pageOfItems = pageOfItems
+      this.$router.push(`?page=${e}`)
     },
     getMainGategories() {
       this.axios
@@ -538,33 +431,50 @@ export default {
       })
     },
     getBooks() {
+      this.$store.commit('setLoading', true)
       let url
-      if (this.$route.params.id == 'all') {
-        url = 'books'
-      } else {
-        if (this.rate.length) {
-          const min = this.rate.reduce((a, b) => Math.min(a, b))
-          this.rates = min
+      if (this.$route.query.page) {
+        let e = this.$route.query.page
+        if (!this.$route.params.id) {
+          url = `books?section&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}&page=${e}`
+        } else {
+          if (this.rate.length) {
+            const min = this.rate.reduce((a, b) => Math.min(a, b))
+            this.rates = min
+          }
+          url = `books?section=${this.$route.params.id}&publisher=${this.publisher}&writer=${this.writer}&language=${this.language}&type=${this.type}&rate=${this.rates}&page=${e}`
         }
-        url = `books?section=${
-          this.$route.params.id == 'all' ? '' : this.$route.params.id
-        }&name=${
-          this.$route.params.name == 'queryall' ? '' : this.$route.params.name
-        }&publisher=${this.publisher}&writer=${this.writer}&language=${
-          this.language
-        }&type=${this.type}&rate=${this.rates}`
+      } else {
+        if (this.$route.params.id == 'all') {
+          url = 'books'
+        } else {
+          if (this.rate.length) {
+            const min = this.rate.reduce((a, b) => Math.min(a, b))
+            this.rates = min
+          }
+          url = `books?section=${
+            this.$route.params.id == 'all' ? '' : this.$route.params.id
+          }&name=${
+            this.$route.params.name == 'queryall' ? '' : this.$route.params.name
+          }&publisher=${this.publisher}&writer=${this.writer}&language=${
+            this.language
+          }&type=${this.type}&rate=${this.rates}`
+        }
       }
+
       this.$nextTick(() => {
         this.axios.get(`${url}`).then((data) => {
           this.books = data.data.data
+          this.page = data.data.paginationData.current_page
+          this.pageCount = data.data.paginationData.last_page
+          this.$store.commit('setLoading', false)
         })
       })
     },
   },
   computed: {
-    pageCount() {
-      return this.perPage
-      // return this.books.length / this.perPage
+    loading() {
+      return this.$store.getters.loading
     },
   },
   watch: {

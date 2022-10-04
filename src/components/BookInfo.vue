@@ -1094,7 +1094,7 @@ export default {
 
       // this.item.total = this.item.price * this.item.quntity
 
-      this.$store.commit('addToCart', this.item)
+      this.$store.dispatch('addToCart', this.item)
     },
     addToWashList() {
       this.$store.dispatch('addToWashlist', this.book)

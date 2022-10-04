@@ -21,10 +21,10 @@
               <li class="nav-item shop">
                 <b-dropdown
                   id="shop"
-                  class="link-black-100 fw-bold d-flex align-items-center"
+                  class="link-black-100 fw-bold d-flex align-items-center h-100"
                   :text="$t('nav.shops')"
                 >
-                  <router-link to="/shop/all">
+                  <router-link to="/shop">
                     <b-dropdown-item>
                       {{ $t('misc.By Books') }}
                     </b-dropdown-item>
