@@ -60,6 +60,8 @@
     "In Stock": "En stock",
     "type": "Type",
     "Ok": "Ok",
+    "The image size must be less than 2M": "The image size must be less than 2M",
+    "The image field is required": "The image field is required",
     "Select subject": "Select subject",
     "Book": "Book",
     "unavailable": "Indisponible",

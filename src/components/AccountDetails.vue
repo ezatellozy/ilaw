@@ -36,8 +36,16 @@
             class="d-none"
             id="file_portrait"
             type="file"
+            accept="image/*"
             @input="previewMainMedia($event)"
           />
+
+          <div class="error-msg text-center" v-if="imageMaxLength">
+            {{ $t(`misc.The image size must be less than 2M`) }}
+          </div>
+          <div class="error-msg text-center" v-if="!preview">
+            {{ $t(`misc.The image field is required`) }}
+          </div>
         </div>
         <div class="col-md-6 mb-4">
           <div class="js-form-message">
@@ -270,6 +278,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      v$: useVuelidate(),
       accountDetails: {
         name: '',
         userName: '',
@@ -289,8 +298,12 @@ export default {
       cities: null,
       test: true,
       preview: null,
+      photoErrMsg: '',
+      phoneErrMsg: '',
+      imageMaxLength: false,
     }
   },
+
   mounted() {
     this.getProfile()
     this.getCountries()
@@ -339,8 +352,16 @@ export default {
         })
     },
     updateProfile() {
+      if (this.preview == '') {
+        return
+      }
+      let checkUrl = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/
+
       const frmData = new FormData()
-      frmData.append('photo', this.accountDetails.photo)
+
+      if (!checkUrl.test(this.preview)) {
+        frmData.append('photo', this.accountDetails.photo)
+      }
       frmData.append('name', this.accountDetails.name)
       frmData.append('userName', this.accountDetails.userName)
       frmData.append('country', this.accountDetails.country)
@@ -369,16 +390,24 @@ export default {
         })
     },
     async changePassword() {
+      if (this.preview == '') {
+        return
+      }
       const isFormCorrect = await this.v$.$validate()
+
       if (isFormCorrect) {
+        let checkUrl = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/
         let frmdata = new FormData()
+
         frmdata.append('name', this.accountDetails.name)
+        if (!checkUrl.test(this.preview)) {
+          frmdata.append('photo', this.accountDetails.photo)
+        }
         frmdata.append('userName', this.accountDetails.userName)
         frmdata.append('country', this.accountDetails.country)
         frmdata.append('phone', this.accountDetails.phone)
         frmdata.append('city', this.accountDetails.city)
         frmdata.append('email', this.accountDetails.email)
-        frmdata.append('governorate', this.accountDetails.governorate)
         frmdata.append('address', this.accountDetails.address)
         frmdata.append('language', this.accountDetails.language)
         frmdata.append('password', this.password)
@@ -388,7 +417,9 @@ export default {
             return
           }
           this.$store.dispatch('logout')
-          this.$toast.success(data.data.message)
+          this.$store.commit('message', data.data.message)
+          this.$store.commit('popupMode', 'success')
+          this.$store.commit('popup')
           setTimeout(() => {
             window.location.reload()
           }, 300)
@@ -396,8 +427,18 @@ export default {
       }
     },
     previewMainMedia(event) {
+      this.imageMaxLength = false
+      let maxSize = 2048 * 1024
+      let targetSize = event.target.files[0].size
+      if (targetSize > maxSize) {
+        this.accountDetails.photo = ''
+        this.preview = ''
+        this.imageMaxLength = true
+        return
+      }
       if (event.target.files.length != 0) {
         this.accountDetails.photo = event.target.files[0]
+
         this.preview = URL.createObjectURL(this.accountDetails.photo)
       }
     },
@@ -414,11 +455,6 @@ export default {
         this.getCities()
       }
     },
-    // governmentId: function (n) {
-    //   if (n) {
-    //     this.getCities()
-    //   }
-    // },
   },
   validations() {
     return {
@@ -429,9 +465,6 @@ export default {
         sameAsPassword: sameAs(this.password),
       },
     }
-  },
-  setup() {
-    return { v$: useVuelidate() }
   },
 }
 </script>

@@ -323,7 +323,12 @@ export default createStore({
                 })
             }
 
-            toast.success(resp.data.message)
+            if (resp.data.message) {
+              context.commit('message', resp.data.message)
+              context.commit('popupMode', 'success')
+              context.commit('popup')
+            }
+
             context.commit('auth_success')
 
             resolve(resp)

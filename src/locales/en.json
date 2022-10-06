@@ -67,6 +67,8 @@
     "Or": "Or",
     "Ok": "Ok",
     "code": "Code",
+    "The image size must be less than 2M": "The image size must be less than 2M",
+    "The image field is required": "The image field is required",
 
     "Sign in with Google": "Sign in with Google",
     "Sign in with Facebook": "Sign in with Facebook",

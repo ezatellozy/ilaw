@@ -66,6 +66,8 @@
     "Or": "أو",
     "Ok": "موافق",
     "code": "الكود",
+    "The image size must be less than 2M": "حجم الصوره يجب الا يزيد عن 2 ميجا",
+    "The image field is required": "حقل الصوره مطلوب",
     "Select subject": "الموضوع",
     "Sign in with Google": "تسجيل الدخول بإستخدام حساب جوجل",
     "Sign in with Facebook": "تسجيل الدخول بإستخدام الفيسبوك",

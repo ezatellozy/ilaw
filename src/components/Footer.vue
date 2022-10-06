@@ -128,7 +128,7 @@
                     {{ $t('nav.faq') }}
                   </a>
                 </li>
-                <li class="py-2">
+                <li class="py-2" v-if="!isLoggedIn">
                   <a
                     role="button"
                     @click="openUserMenu"
@@ -243,6 +243,9 @@ export default {
   computed: {
     year() {
       return new Date().getFullYear()
+    },
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn
     },
   },
 }
